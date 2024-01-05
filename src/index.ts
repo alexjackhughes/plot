@@ -15,7 +15,10 @@ wss.on("connection", (ws: Socket) => {
 	ws.on("message", (data) => {
 		const message = data.toString()
 
-		sendLog(message)
+		sendLog( message )
+
+		// Send a confirmation message back to the client
+		ws.send("Message received!");
 	})
 
 	ws.on("pong", heartbeat)

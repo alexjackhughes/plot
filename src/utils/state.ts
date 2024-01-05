@@ -15,7 +15,7 @@ export type Socket = WebSocket & { isAlive: boolean }
 
 export const newState = (socket: Socket): State => ({
 	status: "ROOM",
-	roomCode: null,
+	roomCode: '1',
 	user: {
 		socket: socket,
 		pseudo: null,

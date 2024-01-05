@@ -1,8 +1,8 @@
 import { LogSnag } from 'logsnag';
 
 const logsnag = new LogSnag({
-  token: process.env.LOGSNAG_TOKEN,
-  project: 'spancebands',
+  token: process.env.LOGSNAG_TOKEN ?? '',
+  project: 'spacebands',
 } )
 
 

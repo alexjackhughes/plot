@@ -36,7 +36,12 @@ wss.on("connection", (ws: Socket) => {
 		const message = data.toString()
 		sendLog( message )
 
-		const messageObj = JSON.parse(data.toString()) as ClientMessage;
+		const messageObj = JSON.parse( data.toString() ) as ClientMessage;
+
+		// Make sure it's in the right format
+		if ( !messageObj.device_id ) {
+			return ws.send( "ERROR: No device_id in message\r\n" );
+		}
 
 		// Send acknowledgment for the received message
 		ws.send("ACK\r\n");

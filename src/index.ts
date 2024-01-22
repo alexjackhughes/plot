@@ -7,6 +7,26 @@ import { Socket, newState } from "./utils/state.js"
 import { WebSocketServer } from "ws"
 import { sendLog } from "./utils/logging"
 
+// Define types for clarity
+interface ClientMessage {
+    utc_time: {
+        hour: number,
+        minute: number,
+        second: number,
+    },
+    event_type: number,
+    device_id: string,
+    beacon_id: string,
+    duration: number
+}
+
+interface ServerMessage {
+    device_id: string,
+    haptic_trigger: number,
+    beacon_trigger: number,
+    noise_trigger: number
+}
+
 const wss = new WebSocketServer({ port: Number(process.env.PORT) })
 
 wss.on("connection", (ws: Socket) => {
@@ -14,11 +34,23 @@ wss.on("connection", (ws: Socket) => {
 
 	ws.on("message", (data) => {
 		const message = data.toString()
-
 		sendLog( message )
 
-		// Send a confirmation message back to the client
-		ws.send("Message received!");
+		const messageObj = JSON.parse(data.toString()) as ClientMessage;
+
+		// Send acknowledgment for the received message
+		ws.send("ACK\r\n");
+
+		// Fixed response message with device settings
+		const response: ServerMessage = {
+				device_id: messageObj.device_id, // Using the same device_id from the client message
+				haptic_trigger: 2, // Fixed value
+				beacon_trigger: 5, // Fixed value
+				noise_trigger: 85 // Fixed value
+		};
+
+		// Send the response message with device settings
+		ws.send(JSON.stringify(response));
 	})
 
 	ws.on("pong", heartbeat)

@@ -15,7 +15,7 @@ interface ClientMessage {
 	},
 	event_type: number,
 	device_id: string,
-	beacon_id: string, // This is the beacon ID, but we don't know the type of the beacon nor have a way to get this information
+	beacon_id: string, // This is the beacon ID, this will be hardcoded on our side
 	duration: number // in seconds
 }
 

@@ -61,11 +61,11 @@ wss.on( "connection", async ( ws: Socket ) => {
 		// Fixed response message with device settings
 		const response: ServerMessage = {
 			device_id: messageObj.device_id, // Using the same device_id from the client message
-			haptic_trigger: 2, // 2.5 m/s squared (dangerous limit), vibration levels - so in future, this will be different intensity threshold (range and time) for if there's an issue
+			haptic_trigger: 12, // 2.5 m/s squared (dangerous limit), vibration levels - so in future, this will be different intensity threshold (range and time) for if there's an issue
 			machine_trigger: 10, // in meters
 			ppe_trigger: 3, // in meters
-			access_trigger: 2, // in metersx
-			noise_trigger: 85 // 60 - 120 decibels (dB) max limit
+			access_trigger: 3, // in metersx
+			noise_trigger: 86 // 60 - 120 decibels (dB) max limit
 		};
 
 		// Send the response message with device settings

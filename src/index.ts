@@ -39,13 +39,13 @@ wss.on( "connection", async ( ws: Socket ) => {
 
 	ws.on( "message", ( data ) => {
 		const message = data.toString()
-		console.log( 'message' )
+		console.log( 'try again' )
 		console.log( message )
 
 		const messageObj = JSON.parse( data.toString() ) as ClientMessage;
 
-		transformAndFlattenData(messageObj)
-		sendBigLog( message )
+		const formatted = transformAndFlattenData(messageObj)
+		sendBigLog( formatted )
 
 		// Make sure it's in the right format
 		if ( !messageObj.device_id ) {

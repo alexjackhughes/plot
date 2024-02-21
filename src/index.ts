@@ -1,11 +1,10 @@
 import { heartbeat, keepAlive } from "./utils/keepalive.js"
-import { ask } from "./utils/log.js"
 import {
 	close,
 } from "./utils/message.js"
 import { Socket, newState } from "./utils/state.js"
 import { WebSocketServer } from "ws"
-import { sendErrorLog, sendLog } from "./utils/logging"
+import { sendBigLog, sendErrorLog } from "./utils/logging"
 
 interface ClientMessage {
 	utc_time: {
@@ -43,7 +42,7 @@ wss.on( "connection", async ( ws: Socket ) => {
 		console.log( 'message' )
 		console.log( message )
 
-		sendLog( message )
+		sendBigLog( message )
 
 		const messageObj = JSON.parse( data.toString() ) as ClientMessage;
 

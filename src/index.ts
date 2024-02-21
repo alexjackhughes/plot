@@ -39,7 +39,7 @@ wss.on( "connection", async ( ws: Socket ) => {
 
 	ws.on( "message", ( data ) => {
 		const message = data.toString()
-		console.log( 'try again' )
+		console.log( '@alex messages' )
 		console.log( message )
 
 		const messageObj = JSON.parse( data.toString() ) as ClientMessage;

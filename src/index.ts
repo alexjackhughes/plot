@@ -42,9 +42,10 @@ wss.on( "connection", async ( ws: Socket ) => {
 		console.log( 'message' )
 		console.log( message )
 
-		sendBigLog( message )
-
 		const messageObj = JSON.parse( data.toString() ) as ClientMessage;
+
+		transformAndFlattenData(messageObj)
+		sendBigLog( message )
 
 		// Make sure it's in the right format
 		if ( !messageObj.device_id ) {
@@ -76,3 +77,48 @@ wss.on( "connection", async ( ws: Socket ) => {
 
 const interval = keepAlive( wss )
 wss.on( "close", () => clearInterval( interval ) )
+
+
+interface UTCtime {
+  hour: number;
+  minute: number;
+  second: number;
+}
+
+interface InputData {
+  utc_time: UTCtime;
+  event_type: number;
+  device_id: string;
+  beacon_id: string;
+  duration: number;
+}
+
+interface FlattenedData {
+  [key: string]: number | string;
+}
+
+function transformAndFlattenData(inputData: InputData): FlattenedData {
+  // Correct the time first if necessary
+  const extraHours: number = Math.floor(inputData.utc_time.minute / 60);
+  const correctedMinutes: number = inputData.utc_time.minute % 60;
+
+  inputData.utc_time.hour += extraHours;
+  inputData.utc_time.minute = correctedMinutes;
+
+  // Function to transform keys
+  const transformKey = (key: string): string =>
+    key.toLowerCase().replace(/_/g, '-');
+
+  // Flatten and transform the data
+  const flattenedData: FlattenedData = {
+    [transformKey('utc_time-hour')]: inputData.utc_time.hour,
+    [transformKey('utc_time-minute')]: inputData.utc_time.minute,
+    [transformKey('utc_time-second')]: inputData.utc_time.second,
+    [transformKey('event_type')]: inputData.event_type,
+    [transformKey('device_id')]: inputData.device_id,
+    [transformKey('beacon_id')]: inputData.beacon_id,
+    [transformKey('duration')]: inputData.duration,
+  };
+
+  return flattenedData;
+}

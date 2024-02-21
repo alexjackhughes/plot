@@ -11,7 +11,23 @@ export const sendLog = async ( message: string ) => {
     channel: "devices",
     event: "New device message",
     user_id: "user-123",
-    icon: "💰",
+    icon: "✅",
+    notify: true,
+    tags: {
+      plan: "premium",
+      cycle: "monthly",
+      trial: false,
+      message: message,
+    }
+  })
+}
+
+export const sendErrorLog = async ( message: string ) => {
+  await logsnag.track({
+    channel: "devices",
+    event: "New error message",
+    user_id: "user-123",
+    icon: "❌",
     notify: true,
     tags: {
       plan: "premium",

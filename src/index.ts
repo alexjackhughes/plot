@@ -5,7 +5,7 @@ import {
 } from "./utils/message.js"
 import { Socket, newState } from "./utils/state.js"
 import { WebSocketServer } from "ws"
-import { sendLog } from "./utils/logging"
+import { sendErrorLog, sendLog } from "./utils/logging"
 
 interface ClientMessage {
 	utc_time: {
@@ -15,7 +15,7 @@ interface ClientMessage {
 	},
 	event_type: number,
 	device_id: string,
-	beacon_id: string, // This is the beacon ID, this will be hardcoded on our side
+	beacon_id: string, // This is the beacon ID, we will need to hardcode these our side, so that we can map them to the correct device type
 	duration: number // in seconds
 }
 
@@ -46,6 +46,7 @@ wss.on( "connection", async ( ws: Socket ) => {
 
 		// Make sure it's in the right format
 		if ( !messageObj.device_id ) {
+			sendErrorLog( message )
 			return ws.send( "ERROR: No device_id in message\r\n" );
 		}
 
@@ -60,8 +61,8 @@ wss.on( "connection", async ( ws: Socket ) => {
 
 		// Fixed response message with device settings
 		const response: ServerMessage = {
-			device_id: messageObj.device_id, // Using the same device_id from the client message
-			haptic_trigger: 12, // 2.5 m/s squared (dangerous limit), vibration levels - so in future, this will be different intensity threshold (range and time) for if there's an issue
+			device_id: messageObj.device_id || 'NO ID', // Using the same device_id from the client message
+			haptic_trigger: 10, // 2.5 m/s squared (dangerous limit), vibration levels - so in future, this will be different intensity threshold (range and time) for if there's an issue
 			machine_trigger: 10, // in meters
 			ppe_trigger: 3, // in meters
 			access_trigger: 3, // in metersx

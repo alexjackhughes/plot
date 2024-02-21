@@ -40,6 +40,9 @@ wss.on( "connection", async ( ws: Socket ) => {
 
 	ws.on( "message", ( data ) => {
 		const message = data.toString()
+		console.log( 'message' )
+		console.log( message )
+
 		sendLog( message )
 
 		const messageObj = JSON.parse( data.toString() ) as ClientMessage;
@@ -50,23 +53,18 @@ wss.on( "connection", async ( ws: Socket ) => {
 			return ws.send( "ERROR: No device_id in message\r\n" );
 		}
 
-		// TODO: If possible, it would be good at this point to use the charging station to register, the devices - but isn't required
-
 		// Send acknowledgment for the received message
 		ws.send( "ACK\r\n" );
-
-		// TODO: Save the required data here
-
-		// TODO: Fetch the required data here
 
 		// Fixed response message with device settings
 		const response: ServerMessage = {
 			device_id: messageObj.device_id || 'NO ID', // Using the same device_id from the client message
-			haptic_trigger: 10, // 2.5 m/s squared (dangerous limit), vibration levels - so in future, this will be different intensity threshold (range and time) for if there's an issue
-			machine_trigger: 10, // in meters
-			ppe_trigger: 3, // in meters
-			access_trigger: 3, // in metersx
-			noise_trigger: 86 // 60 - 120 decibels (dB) max limit
+			haptic_trigger: 12, // 2.5 m/s squared (dangerous limit), vibration levels - so in future, this will be different intensity threshold (range and time) for if there's an issue
+			noise_trigger: 85, // 60 - 120 decibels (dB) max limit
+
+			machine_trigger: 5, // in meters
+			ppe_trigger: 5, // in meters
+			access_trigger: 5 // in meters
 		};
 
 		// Send the response message with device settings

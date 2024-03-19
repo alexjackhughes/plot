@@ -1,5 +1,5 @@
 export interface SendingData {
-  utc_time: {
+  event_time: {
     hour: number;
     minute: number;
     second: number;
@@ -40,7 +40,7 @@ export const getData = ( data: any ): SendingData | RecieveSettings => {
   }
 
   return {
-    utc_time: {
+    event_time: {
       hour: data.utc_time.hour,
       minute: data.utc_time.minute,
       second: data.utc_time.second
@@ -57,9 +57,9 @@ export function flattenData(data: SendingData | RecieveSettings): any {
   // Check for the type of data based on request_type
   if (data.request_type === 0) {
     // Data is of SendingData type
-    const { utc_time, ...rest } = data;
+    const { event_time, ...rest } = data;
     return {
-      ...utc_time, // Spread the utc_time object to flatten it
+      ...event_time, // Spread the utc_time object to flatten it
       ...rest, // Include the rest of the properties
     };
   } else {

@@ -41,9 +41,9 @@ export const getData = ( data: any ): SendingData | RecieveSettings => {
 
   return {
     event_time: {
-      hour: data.utc_time.hour,
-      minute: data.utc_time.minute,
-      second: data.utc_time.second
+      hour: data.event_time.hour,
+      minute: data.event_time.minute,
+      second: data.event_time.second
     },
     event_type: data.event_type,
     device_id: data.device_id,

@@ -1,83 +1,50 @@
-import { heartbeat, keepAlive } from "./utils/keepalive.js"
-import {
-	close,
-} from "./utils/message.js"
-import { Socket, newState } from "./utils/state.js"
-import { WebSocketServer } from "ws"
-import { sendBigLog, sendErrorLog } from "./utils/logging"
+import { heartbeat, keepAlive } from "./utils/keepalive.js";
+import { close } from "./utils/message.js";
+import { Socket, newState } from "./utils/state.js";
+import { WebSocketServer } from "ws";
+import { sendBigLog } from "./utils/logging";
+import { ServerMessage, flattenData, getData } from "./utils/models.js";
 
-interface ClientMessage {
-	utc_time: {
-		hour: number,
-		minute: number,
-		second: number,
-	},
-	event_type: number,
-	device_id: string,
-	beacon_id: string, // This is the beacon ID, we will need to hardcode these our side, so that we can map them to the correct device type
-	duration: number // in seconds
-}
+const wss = new WebSocketServer({ port: Number(process.env.PORT) });
 
-interface ServerMessage {
-	device_id: string,
-	haptic_trigger: number,
-	machine_trigger: number,
-	ppe_trigger: number,
-	access_trigger: number,
-	noise_trigger: number
-}
+wss.on("connection", async (ws: Socket) => {
+  const state = newState(ws);
 
-// Allowed ranges for beacon triggers:
-// ● machine_trigger: 10-15m
-// ● ppe_trigger: 2-3m
-// ● access_trigger: 2 - 3m
+  ws.on("message", (data) => {
+    const message = data.toString();
+    console.log("@alex messages");
+    console.log(message);
 
-const wss = new WebSocketServer( { port: Number( process.env.PORT ) } )
+    const messageData = getData(JSON.parse(data.toString()))
 
-wss.on( "connection", async ( ws: Socket ) => {
-	const state = newState( ws )
+    // Send a log of the event
+    const flattened = flattenData(messageData);
+    sendBigLog(flattened);
 
-	ws.on( "message", ( data ) => {
-		const message = data.toString()
-		console.log( '@alex messages' )
-		console.log( message )
+    // Send acknowledgment for the received message
+    ws.send("ACK\r\n");
 
-		const messageObj = JSON.parse( data.toString() ) as ClientMessage;
+    // Fixed response message with device settings
+    const response: ServerMessage = {
+      device_id: messageData.device_id || "NO ID",
+      haptic_trigger: 12,
+      noise_trigger: 85,
 
-		const formatted = transformAndFlattenData(messageObj)
-		sendBigLog( formatted )
+      machine_trigger: 5,
+      ppe_trigger: 5,
+      access_trigger: 5,
+    };
 
-		// Make sure it's in the right format
-		if ( !messageObj.device_id ) {
-			sendErrorLog( message )
-			return ws.send( "ERROR: No device_id in message\r\n" );
-		}
+    // Send the response message with device settings
+    ws.send(JSON.stringify(response));
+  });
 
-		// Send acknowledgment for the received message
-		ws.send( "ACK\r\n" );
+  ws.on("pong", heartbeat);
+  ws.on("close", () => close(state));
+});
 
-		// Fixed response message with device settings
-		const response: ServerMessage = {
-			device_id: messageObj.device_id || 'NO ID', // Using the same device_id from the client message
-			haptic_trigger: 12, // 2.5 m/s squared (dangerous limit), vibration levels - so in future, this will be different intensity threshold (range and time) for if there's an issue
-			noise_trigger: 85, // 60 - 120 decibels (dB) max limit
-
-			machine_trigger: 5, // in meters
-			ppe_trigger: 5, // in meters
-			access_trigger: 5 // in meters
-		};
-
-		// Send the response message with device settings
-		ws.send( JSON.stringify( response ) );
-	} )
-
-	ws.on( "pong", heartbeat )
-	ws.on( "close", () => close( state ) )
-} )
-
-const interval = keepAlive( wss )
-wss.on( "close", () => clearInterval( interval ) )
-
+const interval = keepAlive(wss);
+wss.on("close", () => clearInterval(interval));
 
 interface UTCtime {
   hour: number;
@@ -107,17 +74,17 @@ function transformAndFlattenData(inputData: InputData): FlattenedData {
 
   // Function to transform keys
   const transformKey = (key: string): string =>
-    key.toLowerCase().replace(/_/g, '-');
+    key.toLowerCase().replace(/_/g, "-");
 
   // Flatten and transform the data
   const flattenedData: FlattenedData = {
-    [transformKey('utc_time-hour')]: inputData.event_time.hour,
-    [transformKey('utc_time-minute')]: inputData.event_time.minute,
-    [transformKey('utc_time-second')]: inputData.event_time.second,
-    [transformKey('event_type')]: inputData.event_type,
-    [transformKey('device_id')]: inputData.device_id,
-    [transformKey('beacon_id')]: inputData.beacon_id,
-    [transformKey('duration')]: inputData.duration,
+    [transformKey("utc_time-hour")]: inputData.event_time.hour,
+    [transformKey("utc_time-minute")]: inputData.event_time.minute,
+    [transformKey("utc_time-second")]: inputData.event_time.second,
+    [transformKey("event_type")]: inputData.event_type,
+    [transformKey("device_id")]: inputData.device_id,
+    [transformKey("beacon_id")]: inputData.beacon_id,
+    [transformKey("duration")]: inputData.duration,
   };
 
   return flattenedData;

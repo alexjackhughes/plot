@@ -1,12 +1,11 @@
-import { LogSnag } from 'logsnag';
+import { LogSnag } from "logsnag";
 
 const logsnag = new LogSnag({
-  token: process.env.LOGSNAG_TOKEN ?? '',
-  project: 'spacebands',
-} )
+  token: process.env.LOGSNAG_TOKEN ?? "",
+  project: "spacebands",
+});
 
-
-export const sendLog = async ( message: string ) => {
+export const sendLog = async (message: string) => {
   await logsnag.track({
     channel: "devices",
     event: "New device message",
@@ -18,11 +17,11 @@ export const sendLog = async ( message: string ) => {
       cycle: "monthly",
       trial: false,
       message: message,
-    }
-  })
-}
+    },
+  });
+};
 
-export const sendBigLog = async ( message: any ) => {
+export const sendBigLog = async (message: any) => {
   await logsnag.track({
     channel: "devices",
     event: "New device message",
@@ -30,12 +29,12 @@ export const sendBigLog = async ( message: any ) => {
     icon: "✅",
     notify: true,
     tags: {
-      ...message
-    }
-  })
-}
+      ...message,
+    },
+  });
+};
 
-export const sendErrorLog = async ( message: string ) => {
+export const sendErrorLog = async (message: string) => {
   await logsnag.track({
     channel: "devices",
     event: "New error message",
@@ -47,6 +46,6 @@ export const sendErrorLog = async ( message: string ) => {
       cycle: "monthly",
       trial: false,
       message: message,
-    }
-  })
-}
+    },
+  });
+};

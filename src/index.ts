@@ -15,14 +15,16 @@ wss.on("connection", async (ws: Socket) => {
     console.log("@alex messages");
     console.log(message);
 
-    const messageData = getData(JSON.parse(data.toString()))
+    const messageData = getData(JSON.parse(data.toString()));
 
-    // Send a log of the event
-    const flattened = flattenData(messageData);
-    sendBigLog(flattened);
+    if (messageData.request_type === 0) {
+      // Send a log of the event
+      const flattened = flattenData(messageData);
+      sendBigLog(flattened);
 
-    // Send acknowledgment for the received message
-    ws.send("ACK\r\n");
+      // Send acknowledgment for the received message
+      ws.send("ACK\r\n");
+    }
 
     // Fixed response message with device settings
     const response: ServerMessage = {
@@ -45,47 +47,3 @@ wss.on("connection", async (ws: Socket) => {
 
 const interval = keepAlive(wss);
 wss.on("close", () => clearInterval(interval));
-
-interface UTCtime {
-  hour: number;
-  minute: number;
-  second: number;
-}
-
-interface InputData {
-  event_time: UTCtime;
-  event_type: number;
-  device_id: string;
-  beacon_id: string;
-  duration: number;
-}
-
-interface FlattenedData {
-  [key: string]: number | string;
-}
-
-function transformAndFlattenData(inputData: InputData): FlattenedData {
-  // Correct the time first if necessary
-  const extraHours: number = Math.floor(inputData.event_time.minute / 60);
-  const correctedMinutes: number = inputData.event_time.minute % 60;
-
-  inputData.event_time.hour += extraHours;
-  inputData.event_time.minute = correctedMinutes;
-
-  // Function to transform keys
-  const transformKey = (key: string): string =>
-    key.toLowerCase().replace(/_/g, "-");
-
-  // Flatten and transform the data
-  const flattenedData: FlattenedData = {
-    [transformKey("utc_time-hour")]: inputData.event_time.hour,
-    [transformKey("utc_time-minute")]: inputData.event_time.minute,
-    [transformKey("utc_time-second")]: inputData.event_time.second,
-    [transformKey("event_type")]: inputData.event_type,
-    [transformKey("device_id")]: inputData.device_id,
-    [transformKey("beacon_id")]: inputData.beacon_id,
-    [transformKey("duration")]: inputData.duration,
-  };
-
-  return flattenedData;
-}

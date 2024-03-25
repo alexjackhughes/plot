@@ -4,7 +4,7 @@ export interface SendingData {
     minute: number;
     second: number;
   };
-  event_type: number;
+  event_type: number; // 1 is haptic, 2 is beacon, 3 is noise
   device_id: string;
   beacon_id: string;
   duration: number; // in milliseconds

@@ -33,21 +33,21 @@ export const mapBeaconIdToDatabaseId = (id: string): number => {
     case "730":
       return 59;
     case "735":
-      return 60
+      return 60;
     case "740":
-      return 59
+      return 59;
     case "731":
-      return 56
+      return 56;
     case "736":
-      return 57
+      return 57;
     case "741":
-      return 58
+      return 58;
     case "728":
-      return 53
+      return 53;
     case "737":
-      return 54
+      return 54;
     case "742":
-      return 55
+      return 55;
     // Should never return
     default:
       return 59;

@@ -7,8 +7,8 @@ import { createClient } from "@supabase/supabase-js";
 import { SendingData } from "./models";
 import { getBeaconType, mapBeaconIdToDatabaseId } from "./beacons";
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL || "";
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || "";
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -52,6 +52,10 @@ const insertNoise = async ({ device_id, duration }: SendingData) => {
         rec_updated_on: null,
       },
     ]);
+
+  if (error) {
+    console.log("Error inserting noise event", error);
+  }
 };
 
 const insertHaptic = async ({ device_id, duration }: SendingData) => {
@@ -70,6 +74,10 @@ const insertHaptic = async ({ device_id, duration }: SendingData) => {
         rec_updated_on: null,
       },
     ]);
+
+  if (error) {
+    console.log("Error inserting haptic event", error);
+  }
 };
 
 const insertBeacon = async (data: SendingData) => {
@@ -100,6 +108,10 @@ const insertPPE = async ({ beacon_id, device_id }: SendingData) => {
       rec_updated_on: new Date().toISOString(), // ISO 8601 format
     },
   ]);
+
+  if (error) {
+    console.log("Error inserting PPE event", error);
+  }
 };
 
 const insertUnauthorizedAccess = async ({
@@ -121,6 +133,10 @@ const insertUnauthorizedAccess = async ({
         rec_added_on: new Date().toISOString(), // ISO 8601 format
       },
     ]);
+
+  if (error) {
+    console.log("Error inserting unauthorized access event", error);
+  }
 };
 
 const insertMachineCollision = async ({
@@ -145,6 +161,10 @@ const insertMachineCollision = async ({
         rec_updated_on: new Date().toISOString(), // ISO 8601 format
       },
     ]);
+
+  if (error) {
+    console.log("Error inserting machine collision event", error);
+  }
 };
 
 const deviceIdToWearableDeviceId = (device_id: string): string => {

@@ -1,20 +1,23 @@
 {
   // #region Formatter
   "editor.codeActionsOnSave": {
-    "source.organizeImports.rome": "explicit"
+    "source.fixAll": "explicit"
   },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[javascript]": {
-    "editor.defaultFormatter": "rome.rome"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[json]": {
-    "editor.defaultFormatter": "rome.rome"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  // Adjustments for a consistent formatting experience
+  "prettier.useEditorConfig": false,
   // #endregion
+
   // #region Debugger
   "debug.javascript.autoAttachFilter": "onlyWithFlag",
   "debug.internalConsoleOptions": "openOnSessionStart"

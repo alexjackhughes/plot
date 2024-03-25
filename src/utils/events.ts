@@ -39,21 +39,19 @@ export const insertEvent = async (data: SendingData): Promise<void> => {
 const insertNoise = async ({ device_id, duration }: SendingData) => {
   console.log("getting here");
 
-  const { data, error } = await supabase
-    .from("device_fact_noise")
-    .insert([
-      {
-        wearable_device_id: deviceIdToWearableDeviceId(device_id), // We need to get this from the above
-        event_date_time: new Date().toISOString(), // ISO 8601 format
-        loud_noise_duration: duration,
-        alert_dismissed: false,
-        alert_accepted_date_time: new Date().toISOString(),
-        rec_added_by_user_id: null,
-        rec_added_on: new Date().toISOString(), // ISO 8601 format
-        rec_updated_by_user_id: null,
-        rec_updated_on: null,
-      },
-    ]);
+  const { data, error } = await supabase.from("device_fact_noise").insert([
+    {
+      wearable_device_id: deviceIdToWearableDeviceId(device_id), // We need to get this from the above
+      event_date_time: new Date().toISOString(), // ISO 8601 format
+      loud_noise_duration: duration / 1000,
+      alert_dismissed: true,
+      alert_accepted_date_time: new Date().toISOString(),
+      rec_added_by_user_id: null,
+      rec_added_on: new Date().toISOString(), // ISO 8601 format
+      rec_updated_by_user_id: null,
+      rec_updated_on: null,
+    },
+  ]);
 
   if (error) {
     console.log("Error inserting noise event", error);
@@ -67,7 +65,7 @@ const insertHaptic = async ({ device_id, duration }: SendingData) => {
       {
         wearable_device_id: deviceIdToWearableDeviceId(device_id),
         event_date_time: new Date().toISOString(), // ISO 8601 format
-        hav_duration: duration,
+        hav_duration: duration / 1000,
         alert_dismissed: false,
         alert_accepted_date_time: null,
         rec_added_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946",
@@ -104,9 +102,9 @@ const insertPPE = async ({ beacon_id, device_id }: SendingData) => {
       alert_accepted: true,
       alert_accepted_date_time: new Date().toISOString(), // ISO 8601 format
       ppe_type: "Helmet",
-      rec_added_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946",
+      rec_added_by_user_id: null,
       rec_added_on: new Date().toISOString(), // ISO 8601 format
-      rec_updated_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946",
+      rec_updated_by_user_id: null,
       rec_updated_on: new Date().toISOString(), // ISO 8601 format
     },
   ]);
@@ -119,6 +117,7 @@ const insertPPE = async ({ beacon_id, device_id }: SendingData) => {
 const insertUnauthorizedAccess = async ({
   device_id,
   beacon_id,
+  duration,
 }: SendingData) => {
   const { data, error } = await supabase
     .from("device_fact_zone_permit")
@@ -129,9 +128,9 @@ const insertUnauthorizedAccess = async ({
         beacon_device_id: mapBeaconIdToDatabaseId(beacon_id),
         alert_accepted: true,
         alert_accepted_date_time: new Date().toISOString(), // ISO 8601 format
-        proximity_duration: 10,
+        proximity_duration: duration / 1000,
         alert_acceptance_duration: 5,
-        rec_added_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946",
+        rec_added_by_user_id: null,
         rec_added_on: new Date().toISOString(), // ISO 8601 format
       },
     ]);
@@ -155,7 +154,7 @@ const insertMachineCollision = async ({
         beacon_device_id: mapBeaconIdToDatabaseId(beacon_id),
         alert_accepted: true,
         alert_accepted_date_time: new Date().toISOString(), // ISO 8601 format
-        proximity_duration: duration,
+        proximity_duration: duration / 1000,
         alert_acceptance_duration: 5,
         rec_added_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946",
         rec_added_on: new Date().toISOString(), // ISO 8601 format
@@ -175,10 +174,10 @@ const deviceIdToWearableDeviceId = (device_id: string): string => {
       return "7";
     case "005":
       return "8";
-    case "006":
+    case "006": // this
       return "9";
     case "008":
-      return "10";
+      return "10"; // this
     case "009":
       return "11";
     case "010":

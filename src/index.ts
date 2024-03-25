@@ -36,9 +36,9 @@ wss.on("connection", async (ws: Socket) => {
       haptic_trigger: 12,
       noise_trigger: 85,
 
-      machine_trigger: 5,
-      ppe_trigger: 5,
-      access_trigger: 5,
+      machine_trigger: 12,
+      ppe_trigger: 2,
+      access_trigger: 2,
     };
 
     // Send the response message with device settings

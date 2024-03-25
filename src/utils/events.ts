@@ -37,6 +37,8 @@ export const insertEvent = async (data: SendingData): Promise<void> => {
 };
 
 const insertNoise = async ({ device_id, duration }: SendingData) => {
+  console.log("getting here");
+
   const { data, error } = await supabase
     .from("tb_sbcore_device_fact_noise")
     .insert([
@@ -46,7 +48,7 @@ const insertNoise = async ({ device_id, duration }: SendingData) => {
         loud_noise_duration: duration,
         alert_dismissed: false,
         alert_accepted_date_time: null,
-        rec_added_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946", // Potentially remove this? Will it break?
+        rec_added_by_user_id: null,
         rec_added_on: new Date().toISOString(), // ISO 8601 format
         rec_updated_by_user_id: null,
         rec_updated_on: null,

@@ -37,7 +37,7 @@ export const insertEvent = async (data: SendingData): Promise<void> => {
 };
 
 const insertNoise = async ({ device_id, duration }: SendingData) => {
-  const { data, error } = await supabase.from("device_fact_noise").insert([
+  const { data, error } = await supabase.from("noise").insert([
     {
       wearable_device_id: deviceIdToWearableDeviceId(device_id), // We need to get this from the above
       event_date_time: new Date().toISOString(), // ISO 8601 format
@@ -57,21 +57,19 @@ const insertNoise = async ({ device_id, duration }: SendingData) => {
 };
 
 const insertHaptic = async ({ device_id, duration }: SendingData) => {
-  const { error } = await supabase
-    .from("device_fact_hand_arm_vibration")
-    .insert([
-      {
-        wearable_device_id: deviceIdToWearableDeviceId(device_id),
-        event_date_time: new Date().toISOString(), // ISO 8601 format
-        hav_duration: duration / 1000,
-        alert_dismissed: false,
-        alert_accepted_date_time: null,
-        rec_added_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946",
-        rec_added_on: new Date().toISOString(), // ISO 8601 format
-        rec_updated_by_user_id: null,
-        rec_updated_on: new Date().toISOString(),
-      },
-    ]);
+  const { error } = await supabase.from("hand_arm_vibration").insert([
+    {
+      wearable_device_id: deviceIdToWearableDeviceId(device_id),
+      event_date_time: new Date().toISOString(), // ISO 8601 format
+      hav_duration: duration / 1000,
+      alert_dismissed: false,
+      alert_accepted_date_time: null,
+      rec_added_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946",
+      rec_added_on: new Date().toISOString(), // ISO 8601 format
+      rec_updated_by_user_id: null,
+      rec_updated_on: new Date().toISOString(),
+    },
+  ]);
 
   if (error) {
     console.log("Error inserting haptic event", error);
@@ -92,7 +90,7 @@ const insertBeacon = async (data: SendingData) => {
 };
 
 const insertPPE = async ({ beacon_id, device_id }: SendingData) => {
-  const { data, error } = await supabase.from("device_fact_ppe_check").insert([
+  const { data, error } = await supabase.from("ppe_check").insert([
     {
       wearable_device_id: deviceIdToWearableDeviceId(device_id),
       beacon_device_id: mapBeaconIdToDatabaseId(beacon_id),
@@ -117,21 +115,19 @@ const insertUnauthorizedAccess = async ({
   beacon_id,
   duration,
 }: SendingData) => {
-  const { data, error } = await supabase
-    .from("device_fact_zone_permit")
-    .insert([
-      {
-        wearable_device_id: deviceIdToWearableDeviceId(device_id),
-        event_date_time: new Date().toISOString(), // ISO 8601 format
-        beacon_device_id: mapBeaconIdToDatabaseId(beacon_id),
-        alert_accepted: true,
-        alert_accepted_date_time: new Date().toISOString(), // ISO 8601 format
-        proximity_duration: duration / 1000,
-        alert_acceptance_duration: 5,
-        rec_added_by_user_id: null,
-        rec_added_on: new Date().toISOString(), // ISO 8601 format
-      },
-    ]);
+  const { data, error } = await supabase.from("zone_permit").insert([
+    {
+      wearable_device_id: deviceIdToWearableDeviceId(device_id),
+      event_date_time: new Date().toISOString(), // ISO 8601 format
+      beacon_device_id: mapBeaconIdToDatabaseId(beacon_id),
+      alert_accepted: true,
+      alert_accepted_date_time: new Date().toISOString(), // ISO 8601 format
+      proximity_duration: duration / 1000,
+      alert_acceptance_duration: 5,
+      rec_added_by_user_id: null,
+      rec_added_on: new Date().toISOString(), // ISO 8601 format
+    },
+  ]);
 
   if (error) {
     console.log("Error inserting unauthorized access event", error);
@@ -143,23 +139,21 @@ const insertMachineCollision = async ({
   device_id,
   duration,
 }: SendingData) => {
-  const { data, error } = await supabase
-    .from("device_fact_machine_collision")
-    .insert([
-      {
-        wearable_device_id: deviceIdToWearableDeviceId(device_id),
-        event_date_time: new Date().toISOString(), // ISO 8601 format
-        beacon_device_id: mapBeaconIdToDatabaseId(beacon_id),
-        alert_accepted: true,
-        alert_accepted_date_time: new Date().toISOString(), // ISO 8601 format
-        proximity_duration: duration / 1000,
-        alert_acceptance_duration: 5,
-        rec_added_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946",
-        rec_added_on: new Date().toISOString(), // ISO 8601 format
-        rec_updated_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946",
-        rec_updated_on: new Date().toISOString(), // ISO 8601 format
-      },
-    ]);
+  const { data, error } = await supabase.from("machine_collision").insert([
+    {
+      wearable_device_id: deviceIdToWearableDeviceId(device_id),
+      event_date_time: new Date().toISOString(), // ISO 8601 format
+      beacon_device_id: mapBeaconIdToDatabaseId(beacon_id),
+      alert_accepted: true,
+      alert_accepted_date_time: new Date().toISOString(), // ISO 8601 format
+      proximity_duration: duration / 1000,
+      alert_acceptance_duration: 5,
+      rec_added_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946",
+      rec_added_on: new Date().toISOString(), // ISO 8601 format
+      rec_updated_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946",
+      rec_updated_on: new Date().toISOString(), // ISO 8601 format
+    },
+  ]);
 
   if (error) {
     console.log("Error inserting machine collision event", error);

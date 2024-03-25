@@ -41,7 +41,7 @@ const insertNoise = async ({ device_id, duration }: SendingData) => {
     {
       wearable_device_id: deviceIdToWearableDeviceId(device_id), // We need to get this from the above
       event_date_time: new Date().toISOString(), // ISO 8601 format
-      loud_noise_duration: duration / 1000,
+      loud_noise_duration: convertToSeconds(duration),
       alert_dismissed: true,
       alert_accepted_date_time: new Date().toISOString(),
       rec_added_by_user_id: null,
@@ -61,7 +61,7 @@ const insertHaptic = async ({ device_id, duration }: SendingData) => {
     {
       wearable_device_id: deviceIdToWearableDeviceId(device_id),
       event_date_time: new Date().toISOString(), // ISO 8601 format
-      hav_duration: duration / 1000,
+      hav_duration: convertToSeconds(duration),
       alert_dismissed: false,
       alert_accepted_date_time: null,
       rec_added_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946",
@@ -122,7 +122,7 @@ const insertUnauthorizedAccess = async ({
       beacon_device_id: mapBeaconIdToDatabaseId(beacon_id),
       alert_accepted: true,
       alert_accepted_date_time: new Date().toISOString(), // ISO 8601 format
-      proximity_duration: duration / 1000,
+      proximity_duration: convertToSeconds(duration),
       alert_acceptance_duration: 5,
       rec_added_by_user_id: null,
       rec_added_on: new Date().toISOString(), // ISO 8601 format
@@ -146,7 +146,7 @@ const insertMachineCollision = async ({
       beacon_device_id: mapBeaconIdToDatabaseId(beacon_id),
       alert_accepted: true,
       alert_accepted_date_time: new Date().toISOString(), // ISO 8601 format
-      proximity_duration: duration / 1000,
+      proximity_duration: convertToSeconds(duration),
       alert_acceptance_duration: 5,
       rec_added_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946",
       rec_added_on: new Date().toISOString(), // ISO 8601 format
@@ -178,3 +178,7 @@ const deviceIdToWearableDeviceId = (device_id: string): string => {
       return "7";
   }
 };
+
+function convertToSeconds(number: number): number {
+  return Math.round(number / 1000);
+}

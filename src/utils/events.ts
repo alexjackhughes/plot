@@ -37,8 +37,6 @@ export const insertEvent = async (data: SendingData): Promise<void> => {
 };
 
 const insertNoise = async ({ device_id, duration }: SendingData) => {
-  console.log("getting here");
-
   const { data, error } = await supabase.from("device_fact_noise").insert([
     {
       wearable_device_id: deviceIdToWearableDeviceId(device_id), // We need to get this from the above
@@ -49,7 +47,7 @@ const insertNoise = async ({ device_id, duration }: SendingData) => {
       rec_added_by_user_id: null,
       rec_added_on: new Date().toISOString(), // ISO 8601 format
       rec_updated_by_user_id: null,
-      rec_updated_on: null,
+      rec_updated_on: new Date().toISOString(),
     },
   ]);
 
@@ -71,7 +69,7 @@ const insertHaptic = async ({ device_id, duration }: SendingData) => {
         rec_added_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946",
         rec_added_on: new Date().toISOString(), // ISO 8601 format
         rec_updated_by_user_id: null,
-        rec_updated_on: null,
+        rec_updated_on: new Date().toISOString(),
       },
     ]);
 
@@ -174,11 +172,11 @@ const deviceIdToWearableDeviceId = (device_id: string): string => {
       return "7";
     case "005":
       return "8";
-    case "006": // this
+    case "006":
       return "9";
-    case "008":
-      return "10"; // this
-    case "009":
+    case "008": // this
+      return "10";
+    case "009": // this
       return "11";
     case "010":
       return "12";

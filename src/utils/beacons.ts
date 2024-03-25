@@ -5,6 +5,8 @@ type BeaconsType = {
   [key: string]: Proximity;
 };
 
+
+// ALEX HERE
 // Explicitly declare Beacons as BeaconsType
 export const Beacons: BeaconsType = {
   "1": "PPE", // 728
@@ -23,6 +25,7 @@ export const Beacons: BeaconsType = {
   "15": "MachineCollision", // 742
 };
 
+// This is wrong, because we are passing in the wrong beacon
 export function getBeaconType(id: string): string | undefined {
   return Beacons[id];
 }

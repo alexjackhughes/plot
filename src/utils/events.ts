@@ -155,7 +155,7 @@ const insertMachineCollision = async ({
         beacon_device_id: mapBeaconIdToDatabaseId(beacon_id),
         alert_accepted: true,
         alert_accepted_date_time: new Date().toISOString(), // ISO 8601 format
-        proximity_duration: { duration },
+        proximity_duration: duration,
         alert_acceptance_duration: 5,
         rec_added_by_user_id: "a40df00f-1d7b-4793-aa58-c70ef4063946",
         rec_added_on: new Date().toISOString(), // ISO 8601 format

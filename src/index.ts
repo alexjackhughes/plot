@@ -4,23 +4,27 @@ import { Socket, newState } from "./utils/state.js";
 import { WebSocketServer } from "ws";
 import { sendBigLog } from "./utils/logging";
 import { ServerMessage, flattenData, getData } from "./utils/models.js";
+import { insertEvent } from "./utils/events.js";
 
 const wss = new WebSocketServer({ port: Number(process.env.PORT) });
 
 wss.on("connection", async (ws: Socket) => {
   const state = newState(ws);
 
-  ws.on("message", (data) => {
-    const message = data.toString();
-    console.log("@alex messages");
-    console.log(message);
-
+  ws.on("message", async (data) => {
     const messageData = getData(JSON.parse(data.toString()));
 
     if (messageData.request_type === 0) {
+      // Log in Railway
+      const message = data.toString();
+      console.log("Device Message:", message);
+
       // Send a log of the event
       const flattened = flattenData(messageData);
       sendBigLog(flattened);
+
+      // Insert the event into the database
+      await insertEvent(messageData);
 
       // Send acknowledgment for the received message
       ws.send("ACK\r\n");

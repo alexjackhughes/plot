@@ -11,15 +11,6 @@ export interface SendingData {
   request_type: 0;
 }
 
-const x: SendingData = {
-  event_time: { hour: 0, minute: 0, second: 4 },
-  event_type: 3,
-  device_id: "008",
-  beacon_id: "0",
-  duration: 1426,
-  request_type: 0,
-};
-
 export interface RecieveSettings {
   device_id: string;
   request_type: 1;

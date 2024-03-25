@@ -47,7 +47,7 @@ const insertNoise = async ({ device_id, duration }: SendingData) => {
         event_date_time: new Date().toISOString(), // ISO 8601 format
         loud_noise_duration: duration,
         alert_dismissed: false,
-        alert_accepted_date_time: null,
+        alert_accepted_date_time: new Date().toISOString(),
         rec_added_by_user_id: null,
         rec_added_on: new Date().toISOString(), // ISO 8601 format
         rec_updated_by_user_id: null,

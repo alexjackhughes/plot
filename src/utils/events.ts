@@ -40,7 +40,7 @@ const insertNoise = async ({ device_id, duration }: SendingData) => {
   console.log("getting here");
 
   const { data, error } = await supabase
-    .from("tb_sbcore_device_fact_noise")
+    .from("device_fact_noise")
     .insert([
       {
         wearable_device_id: deviceIdToWearableDeviceId(device_id), // We need to get this from the above

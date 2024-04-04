@@ -15,34 +15,36 @@ wss.on("connection", async (ws: Socket) => {
     const messageData = getData(JSON.parse(data.toString()));
 
     if (messageData.request_type === 0) {
-      // Log in Railway
+      // Log for Railway
       const message = data.toString();
       console.log("Device Message:", message);
 
-      // Send a log of the event
+      // Log for LogSnag
       const flattened = flattenData(messageData);
       sendBigLog(flattened);
 
-      // Insert the event into the database
+      // Add event into database
       await insertEvent(messageData);
 
       // Send acknowledgment for the received message
       ws.send("ACK\r\n");
+      return;
+    } else {
+      // Fixed response message with device settings
+      const response: ServerMessage = {
+        device_id: messageData.device_id || "NO ID",
+        haptic_trigger: 12,
+        noise_trigger: 85,
+
+        machine_trigger: 12,
+        ppe_trigger: 2,
+        access_trigger: 2,
+      };
+
+      // Send the response message with device settings
+      ws.send(JSON.stringify(response));
+      return;
     }
-
-    // Fixed response message with device settings
-    const response: ServerMessage = {
-      device_id: messageData.device_id || "NO ID",
-      haptic_trigger: 12,
-      noise_trigger: 85,
-
-      machine_trigger: 12,
-      ppe_trigger: 2,
-      access_trigger: 2,
-    };
-
-    // Send the response message with device settings
-    ws.send(JSON.stringify(response));
   });
 
   ws.on("pong", heartbeat);

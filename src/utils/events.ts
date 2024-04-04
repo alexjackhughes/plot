@@ -160,6 +160,7 @@ const insertMachineCollision = async ({
   }
 };
 
+// You can find the ID here: user_device
 const deviceIdToWearableDeviceId = (device_id: string): string => {
   switch (device_id) {
     case "002":
@@ -168,12 +169,12 @@ const deviceIdToWearableDeviceId = (device_id: string): string => {
       return "8";
     case "006":
       return "9";
-    case "008": // this
+    case "008":
       return "10";
-    case "009": // this
-      return "11";
+    case "009":
+      return "14";
     case "010":
-      return "12";
+      return "15";
     default:
       return "7";
   }

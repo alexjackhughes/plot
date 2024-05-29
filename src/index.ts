@@ -83,13 +83,13 @@ const fakeData = (id: string): DeviceData => {
     sensor_haptic: {
       enable: 1,
       icon_display: 1,
-      vibration_alert: 0,
+      vibration_alert: 1,
       sound_alert: 1,
       trigger_condition: 2,
     },
     sensor_MIC: {
       enable: 1,
-      icon_display: 0,
+      icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
       trigger_condition: 1,
@@ -98,12 +98,12 @@ const fakeData = (id: string): DeviceData => {
       enable: 1,
       icon_display: 1,
       vibration_alert: 1,
-      sound_alert: 0,
+      sound_alert: 1,
       trigger_condition: 3,
     },
     sensor_PPE2: {
-      enable: 0,
-      icon_display: 0,
+      enable: 1,
+      icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
       trigger_condition: 2,
@@ -111,8 +111,8 @@ const fakeData = (id: string): DeviceData => {
     sensor_PPE3: {
       enable: 1,
       icon_display: 1,
-      vibration_alert: 0,
-      sound_alert: 0,
+      vibration_alert: 1,
+      sound_alert: 1,
       trigger_condition: 1,
     },
     sensor_access1: {
@@ -123,10 +123,10 @@ const fakeData = (id: string): DeviceData => {
       trigger_condition: 3,
     },
     sensor_access2: {
-      enable: 0,
-      icon_display: 0,
-      vibration_alert: 0,
-      sound_alert: 0,
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
       trigger_condition: 1,
     },
     sensor_access3: {
@@ -144,10 +144,10 @@ const fakeData = (id: string): DeviceData => {
       trigger_condition: 3,
     },
     sensor_forklift2: {
-      enable: 0,
-      icon_display: 0,
-      vibration_alert: 0,
-      sound_alert: 0,
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
       trigger_condition: 2,
     },
     sensor_forklift3: {

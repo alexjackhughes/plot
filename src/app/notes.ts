@@ -233,13 +233,17 @@ const getProximityDetails = (beaconId: string): ProximityDetails => {
   };
 };
 
+function convertMillisecondsToSeconds(milliseconds: number): number {
+  return Math.ceil(milliseconds / 1000);
+}
+
 interface UsableEvent {
   eventDate: Date;
   eventType: WearableEventType;
-  deviceId: string;
+  displayId: string;
   beaconMinor: string | undefined;
   isBeacon: boolean;
-  duration: number;
+  duration: number; // seconds rounded up
   proximityDetails: ProximityDetails;
 }
 
@@ -247,10 +251,10 @@ const createUsableEvent = (input: WearableEvent): UsableEvent => {
   return {
     eventDate: getDateWithEventTime(input.event_time),
     eventType: getWearableEventType(input.event_type),
-    deviceId: input.device_id,
+    displayId: input.device_id,
     beaconMinor: input.beacon_minor.length > 0 ? input.beacon_minor : undefined,
     isBeacon: input.beacon_minor.length > 0 ? true : false,
-    duration: input.duration,
+    duration: convertMillisecondsToSeconds(input.duration),
     proximityDetails: getProximityDetails(input.beacon_minor),
   };
 };

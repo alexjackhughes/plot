@@ -39,10 +39,10 @@ wss.on("connection", async (ws: Socket) => {
       //   machine_trigger: 12,
       //   ppe_trigger: 2,
       //   access_trigger: 2,
-      // };
 
       // // Send the response message with device settings
-      // ws.send(JSON.stringify(response));
+      // Sending fake data
+      ws.send(JSON.stringify(fakeData(messageData.device_id || "123")));
       return;
     }
   });
@@ -53,3 +53,109 @@ wss.on("connection", async (ws: Socket) => {
 
 const interval = keepAlive(wss);
 wss.on("close", () => clearInterval(interval));
+
+interface DeviceData {
+  device_id: string;
+  sensor_haptic: SensorConfig;
+  sensor_MIC: SensorConfig;
+  sensor_PPE1: SensorConfig;
+  sensor_PPE2: SensorConfig;
+  sensor_PPE3: SensorConfig;
+  sensor_access1: SensorConfig;
+  sensor_access2: SensorConfig;
+  sensor_access3: SensorConfig;
+  sensor_forklift1: SensorConfig;
+  sensor_forklift2: SensorConfig;
+  sensor_forklift3: SensorConfig;
+}
+
+interface SensorConfig {
+  enable: number;
+  icon_display: number;
+  vibration_alert: number;
+  sound_alert: number;
+  trigger_condition: number;
+}
+
+const fakeData = (id: string): DeviceData => {
+  return {
+    device_id: id,
+    sensor_haptic: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 0,
+      sound_alert: 1,
+      trigger_condition: 2,
+    },
+    sensor_MIC: {
+      enable: 1,
+      icon_display: 0,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 1,
+    },
+    sensor_PPE1: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 0,
+      trigger_condition: 3,
+    },
+    sensor_PPE2: {
+      enable: 0,
+      icon_display: 0,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 2,
+    },
+    sensor_PPE3: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 0,
+      sound_alert: 0,
+      trigger_condition: 1,
+    },
+    sensor_access1: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 3,
+    },
+    sensor_access2: {
+      enable: 0,
+      icon_display: 0,
+      vibration_alert: 0,
+      sound_alert: 0,
+      trigger_condition: 1,
+    },
+    sensor_access3: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 2,
+    },
+    sensor_forklift1: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 3,
+    },
+    sensor_forklift2: {
+      enable: 0,
+      icon_display: 0,
+      vibration_alert: 0,
+      sound_alert: 0,
+      trigger_condition: 2,
+    },
+    sensor_forklift3: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 1,
+    },
+  };
+};

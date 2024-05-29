@@ -5,7 +5,13 @@ const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || "";
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export const getWearable = async (id: string) => {};
+export const getWearable = async (id: string): Promise<any> => {
+  const { data, error } = await supabase
+    .from("wearable")
+    .select("*")
+    .eq("display_id", id);
+  return data;
+};
 
 export const getBeacon = async (id: string) => {};
 

@@ -65,6 +65,7 @@ b) We store the formatted data as an event in the database
 c) We send an ACK back to the device
 */
 
+import { getWearable } from "./db";
 import { WearableEvent, WearableEventTime } from "./models";
 
 type WearableEventType = "haptic" | "beacon" | "noise";
@@ -165,12 +166,16 @@ const createUsableEvent = (input: WearableEvent): UsableEvent => {
   };
 };
 
-export const receiveData = (event: WearableEvent): void => {
+export const receiveData = async (event: WearableEvent): Promise<void> => {
   // 1. Format the data in an easy to use way
   const usableEvent = createUsableEvent(event);
 
   // 2. Insert the data into supabase
   // a) We fetch the wearable from the display_id
+  const wearable = await getWearable(usableEvent.displayId);
+
+  if (!wearable) return console.error("Wearable not found");
+
   // b) If it's 1 or 2, we can just store the event with that info
   // c) If it's 3, we must also fetch the beacon from beacon_minor and store that info too
 };

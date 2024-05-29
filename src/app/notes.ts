@@ -274,3 +274,19 @@ export const handleEvent = (event: WearableEvent): void => {
 
 // 5. Our beacon logic is wrong, there needs to be a new table for each organisation, which includes all nine types
 // and an allow list for that organisation, and you use that to decide who has and hasn't got access
+
+/**
+ * We get a wearable ID
+ * The watch is asking for a list of settings for this wearable, to block the nine types of beacons
+ * So we need to get the wearable from the wearable ID
+ * And the organisation from the wearable
+ * Then we need to get the nine types of beacons from the organisation ID
+ * Then we need to check this wearableId against the allow list for each of the nine types
+ *
+ * The beacons on the other side should have a type, which is one of the nine types (smallMachine etc)
+ * Which links 1:1 with the nine types and the allowlist for the organisation
+ *
+ * We are then making edits to this list, rather than to the beacon itself
+ * We are also using this type to fetch the users
+ *
+ */

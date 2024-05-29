@@ -93,7 +93,7 @@ export const fakeWearableSettings = (id: string): WearableSettings => {
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: 1,
+      trigger_condition: 99,
     },
     sensor_PPE1: {
       enable: 1,

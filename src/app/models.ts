@@ -86,7 +86,7 @@ export const fakeWearableSettings = (id: string): WearableSettings => {
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: 2,
+      trigger_condition: 20,
     },
     sensor_MIC: {
       enable: 1,
@@ -107,14 +107,14 @@ export const fakeWearableSettings = (id: string): WearableSettings => {
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: 2,
+      trigger_condition: 5,
     },
     sensor_PPE3: {
       enable: 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: 1,
+      trigger_condition: 10,
     },
     sensor_access1: {
       enable: 0,
@@ -128,14 +128,14 @@ export const fakeWearableSettings = (id: string): WearableSettings => {
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: 1,
+      trigger_condition: 5,
     },
     sensor_access3: {
       enable: 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: 2,
+      trigger_condition: 10,
     },
     sensor_forklift1: {
       enable: 1,
@@ -149,14 +149,14 @@ export const fakeWearableSettings = (id: string): WearableSettings => {
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: 2,
+      trigger_condition: 5,
     },
     sensor_forklift3: {
       enable: 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: 1,
+      trigger_condition: 10,
     },
   };
 };

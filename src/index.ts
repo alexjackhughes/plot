@@ -23,26 +23,26 @@ wss.on("connection", async (ws: Socket) => {
       const flattened = flattenData(messageData);
       sendBigLog(flattened);
 
-      // Add event into database
-      await insertEvent(messageData);
+      // // Add event into database
+      // await insertEvent(messageData);
 
       // Send acknowledgment for the received message
       ws.send("ACK\r\n");
       return;
     } else {
       // Fixed response message with device settings
-      const response: ServerMessage = {
-        device_id: messageData.device_id || "NO ID",
-        haptic_trigger: 12,
-        noise_trigger: 85,
+      // const response: ServerMessage = {
+      //   device_id: messageData.device_id || "NO ID",
+      //   haptic_trigger: 12,
+      //   noise_trigger: 85,
 
-        machine_trigger: 12,
-        ppe_trigger: 2,
-        access_trigger: 2,
-      };
+      //   machine_trigger: 12,
+      //   ppe_trigger: 2,
+      //   access_trigger: 2,
+      // };
 
-      // Send the response message with device settings
-      ws.send(JSON.stringify(response));
+      // // Send the response message with device settings
+      // ws.send(JSON.stringify(response));
       return;
     }
   });

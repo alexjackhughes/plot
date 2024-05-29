@@ -11,6 +11,10 @@ type BeaconsType = {
 // Then there is an ID on the sticker of the beacon
 // So, what happens is the user adds the "sticker_id", which we then need to match to a "beacon_id", before
 // finally attaching the event to a "database_id"
+
+// In the future, the plan will be to have a "beacon_id_to_sticker_id" map, we can then use that ID to search
+// for the database_id, using the sticker_id. This way, clients can add the beacons themselves, and we can
+// still know the correct ones
 export const Beacons: BeaconsType = {
   "1": "PPE", // 728 // 66
   "2": "PPE", // 729 // NONE

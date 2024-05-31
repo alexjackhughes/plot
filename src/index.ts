@@ -5,6 +5,8 @@ import { WebSocketServer } from "ws";
 
 import { sendBigLog } from "./app/logging.js";
 import { fakeWearableSettings, flattenData, getData } from "./app/models.js";
+import { sendData } from "./app/sendData.js";
+import { receiveData } from "./app/receiveData.js";
 
 const wss = new WebSocketServer({ port: Number(process.env.PORT) });
 
@@ -15,8 +17,8 @@ wss.on("connection", async (ws: Socket) => {
     const messageData = getData(JSON.parse(data.toString()));
 
     // Log for Railway
-    const message = data.toString();
-    console.log("Device Message:", message);
+    // const message = data.toString();
+    // console.log("Device Message:", message);
 
     if (messageData.request_type === 0) {
       // Log the event for LogSnag
@@ -24,15 +26,15 @@ wss.on("connection", async (ws: Socket) => {
       sendBigLog(flattened);
 
       // Here we insert the event into the database
+      await receiveData(messageData);
 
       // Send acknowledgment for the received message
       ws.send("ACK\r\n");
       return;
     } else {
-      // Fixed response message with device settings
-      ws.send(
-        JSON.stringify(fakeWearableSettings(messageData.device_id || "123")),
-      );
+      // Fetch the settings and send them back to the device
+      const data = await sendData(messageData);
+      ws.send(JSON.stringify(data));
       return;
     }
   });

@@ -172,9 +172,11 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
 
   // 2. Insert the data into supabase
   // a) We fetch the wearable from the display_id
-  const wearable = await getWearable(usableEvent.displayId);
+  console.log("event", usableEvent);
 
-  if (!wearable) return console.error("Wearable not found");
+  // const wearable = await getWearable(usableEvent.displayId);
+
+  // if (!wearable) return console.error("Wearable not found");
 
   // b) If it's 1 or 2, we can just store the event with that info
   // c) If it's 3, we must also fetch the beacon from beacon_minor and store that info too

@@ -4,7 +4,7 @@ import { close } from "./utils/message.js";
 import { WebSocketServer } from "ws";
 
 import { sendBigLog } from "./app/logging.js";
-import { fakeWearableSettings, flattenData, getData } from "./app/models.js";
+import { flattenData, getData } from "./app/models.js";
 import { sendData } from "./app/sendData.js";
 import { receiveData } from "./app/receiveData.js";
 
@@ -17,8 +17,8 @@ wss.on("connection", async (ws: Socket) => {
     const messageData = getData(JSON.parse(data.toString()));
 
     // Log for Railway
-    // const message = data.toString();
-    // console.log("Device Message:", message);
+    const message = data.toString();
+    console.log("Device Message:", message);
 
     if (messageData.request_type === 0) {
       // Log the event for LogSnag

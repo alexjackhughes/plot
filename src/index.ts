@@ -30,6 +30,7 @@ wss.on("connection", async (ws: Socket) => {
 
       // Send acknowledgment for the received message
       ws.send("ACK\r\n");
+
       return;
     } else {
       // Fetch the settings and send them back to the device

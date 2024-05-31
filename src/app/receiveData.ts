@@ -65,10 +65,15 @@ b) We store the formatted data as an event in the database
 c) We send an ACK back to the device
 */
 
-import { getWearable } from "./db";
+import { getBeacon, getWearable, insertEvent } from "./db";
 import { WearableEvent, WearableEventTime } from "./models";
 
-type WearableEventType = "haptic" | "beacon" | "noise";
+type WearableEventType =
+  | "HandArmVibration"
+  | "MovingMachinery"
+  | "LoudNoise"
+  | "PreventativeProtectiveEquipment"
+  | "UnauthorisedAccess";
 
 const getDateWithEventTime = (eventTime: WearableEventTime): Date => {
   const today = new Date();
@@ -82,12 +87,12 @@ const getDateWithEventTime = (eventTime: WearableEventTime): Date => {
 const getWearableEventType = (eventType: number): WearableEventType => {
   switch (eventType) {
     case 1:
-      return "haptic";
+      return "HandArmVibration";
     case 2:
-      return "beacon";
+      return "MovingMachinery"; // we need to get this from the beacon
     case 3:
     default:
-      return "noise";
+      return "LoudNoise";
   }
 };
 
@@ -99,44 +104,42 @@ type ProximityType =
 type Size = "small" | "medium" | "large";
 
 type ProximityDetails = {
-  eventType: ProximityType;
+  type: ProximityType;
   size: Size;
 };
 
-type BeaconDescriptor =
-  | "SmallMachine"
-  | "MediumMachine"
-  | "LargeMachine"
-  | "SmallPPE"
-  | "MediumPPE"
-  | "LargePPE"
-  | "SmallUnauthorised"
-  | "MediumUnauthorised"
-  | "LargeUnauthorised";
-
-const getBeaconDescriptor = (beaconId: string): BeaconDescriptor => {
+const getProximityDetails = (beaconId: string): ProximityDetails => {
   const beaconDescriptorId = parseInt(beaconId.charAt(0), 10);
 
   switch (beaconDescriptorId) {
     case 1:
-      return "SmallPPE";
+      return {
+        type: "PreventativeProtectiveEquipment",
+        size: "small",
+      };
     case 2:
-      return "MediumPPE";
+      return {
+        type: "PreventativeProtectiveEquipment",
+        size: "medium",
+      };
     case 3:
-      return "LargePPE";
+      return {
+        type: "PreventativeProtectiveEquipment",
+        size: "large",
+      };
     case 4:
-      return "SmallUnauthorised";
+      return { type: "UnauthorisedAccess", size: "small" };
     case 5:
-      return "MediumUnauthorised";
+      return { type: "UnauthorisedAccess", size: "medium" };
     case 6:
-      return "LargeUnauthorised";
+      return { type: "UnauthorisedAccess", size: "large" };
     case 7:
-      return "SmallMachine";
+      return { type: "MovingMachinery", size: "small" };
     case 8:
-      return "MediumMachine";
+      return { type: "MovingMachinery", size: "medium" };
     case 9:
     default:
-      return "LargeMachine";
+      return { type: "MovingMachinery", size: "large" };
   }
 };
 
@@ -144,14 +147,14 @@ function convertMillisecondsToSeconds(milliseconds: number): number {
   return Math.ceil(milliseconds / 1000);
 }
 
-interface UsableEvent {
+export interface UsableEvent {
   eventDate: Date;
   eventType: WearableEventType;
   displayId: string;
-  beaconId: string | undefined;
+  beaconId?: string | null;
   isBeacon: boolean;
   duration: number; // seconds and they are rounded up
-  beaconDescriptor: BeaconDescriptor;
+  beacon: ProximityDetails;
 }
 
 const createUsableEvent = (input: WearableEvent): UsableEvent => {
@@ -159,10 +162,10 @@ const createUsableEvent = (input: WearableEvent): UsableEvent => {
     eventDate: getDateWithEventTime(input.event_time),
     eventType: getWearableEventType(input.event_type),
     displayId: input.device_id,
-    beaconId: input.beacon_minor.length > 0 ? input.beacon_minor : undefined,
+    beaconId: input.beacon_minor.length > 0 ? input.beacon_minor : null,
     isBeacon: input.beacon_minor.length > 0 ? true : false,
     duration: convertMillisecondsToSeconds(input.duration),
-    beaconDescriptor: getBeaconDescriptor(input.beacon_minor),
+    beacon: getProximityDetails(input.beacon_minor),
   };
 };
 
@@ -170,14 +173,19 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
   // 1. Format the data in an easy to use way
   const usableEvent = createUsableEvent(event);
 
-  // 2. Insert the data into supabase
-  // a) We fetch the wearable from the display_id
-  console.log("event", usableEvent);
+  let wearable = await getWearable(usableEvent.displayId);
+  if (!wearable) return console.error("Wearable not found");
 
-  // const wearable = await getWearable(usableEvent.displayId);
+  // 2. If the event is a beacon event, get the beacon details
+  if (usableEvent.isBeacon) {
+    const beacon = await getBeacon(usableEvent.beaconId);
 
-  // if (!wearable) return console.error("Wearable not found");
+    wearable = {
+      ...wearable,
+      beaconId: beacon.id,
+    };
+  }
 
-  // b) If it's 1 or 2, we can just store the event with that info
-  // c) If it's 3, we must also fetch the beacon from beacon_minor and store that info too
+  // 3. Store the event in the database
+  await insertEvent(usableEvent, wearable);
 };

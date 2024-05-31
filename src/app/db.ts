@@ -1,33 +1,74 @@
-import { createClient } from "@supabase/supabase-js";
+import { Wearable } from "@prisma/client";
+import prisma from "../../prisma/db";
+import { UsableEvent } from "./receiveData";
 
-const supabaseUrl = process.env.SUPABASE_URL || "";
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || "";
+export const getWearable = async (displayId: string): Promise<any> => {
+  try {
+    const wearable = await prisma.wearable.findUnique({
+      where: {
+        displayId,
+      },
+    });
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    if (!wearable) {
+      throw new Error("Wearable not found");
+    }
 
-export const getWearable = async (id: string): Promise<any> => {
-  const { data, error } = await supabase
-    .from("wearable")
-    .select("*")
-    .eq("display_id", id);
-  return data;
+    return wearable;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
 
-export const getBeacon = async (id: string) => {};
+export const getBeacon = async (displayId: string) => {
+  try {
+    const beacon = await prisma.beacon.findFirst({
+      where: {
+        displayId: displayId,
+      },
+    });
 
-export const addEvent = async (event: any) => {
-  // An example insert
-  // const { data, error } = await supabase.from("noise").insert([
-  //   {
-  //     wearable_device_id: deviceIdToWearableDeviceId(device_id), // We need to get this from the above
-  //     event_date_time: new Date().toISOString(), // ISO 8601 format
-  //     loud_noise_duration: convertToSeconds(duration),
-  //     alert_dismissed: true,
-  //     alert_accepted_date_time: new Date().toISOString(),
-  //     rec_added_by_user_id: null,
-  //     rec_added_on: new Date().toISOString(), // ISO 8601 format
-  //     rec_updated_by_user_id: null,
-  //     rec_updated_on: new Date().toISOString(),
-  //   },
-  // ]);
+    if (!beacon) {
+      throw new Error("Beacon not found");
+    }
+
+    return beacon;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
+export const insertEvent = async (
+  usableEvent: UsableEvent,
+  wearable: Wearable,
+) => {
+  try {
+    let eventType = usableEvent.isBeacon
+      ? usableEvent.beacon.type
+      : usableEvent.eventType;
+
+    const event = await prisma.event.create({
+      data: {
+        timestamp: usableEvent.eventDate,
+        eventType: eventType,
+        deviceId: usableEvent.displayId,
+        beaconId: usableEvent.beaconId || null,
+        organizationId: wearable.organizationId,
+        duration: usableEvent.duration,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    return event;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
 };

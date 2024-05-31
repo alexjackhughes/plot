@@ -1,3 +1,9 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -6,158 +12,6 @@ datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
-}
-
-model User {
-  id             String             @id @default(dbgenerated("gen_random_uuid()"))
-  email          String?            @unique
-  firstName      String?            @map("first_name")
-  lastName       String?            @map("last_name")
-  avatarUrl      String?            @map("avatar_url")
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
-  organizationId String
-  authorization  AuthorizationLevel
-  wearableId     String?            @unique
-  events         Event?
-  organization   Organization       @relation(fields: [organizationId], references: [id])
-  wearable       Wearable?          @relation(fields: [wearableId], references: [id])
-
-  @@map("users")
-}
-
-model Organization {
-  id                     String                  @id @default(dbgenerated("gen_random_uuid()"))
-  name                   String                  @unique
-  websiteUrl             String?                 @map("website_url")
-  industry               String
-  avatarUrl              String?                 @map("avatar_url")
-  createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @updatedAt
-  description            String?
-  location               String?
-  size                   Int?
-  primaryContactEmail    String?                 @map("primary_contact_email")
-  contractLength         Int?                    @map("contract_length")
-  machineLarge           Int                     @default(10)
-  machineMedium          Int                     @default(3)
-  machineSmall           Int                     @default(2)
-  ppeZoneLarge           Int                     @default(10)
-  ppeZoneMedium          Int                     @default(3)
-  ppeZoneSmall           Int                     @default(2)
-  unauthorisedZoneLarge  Int                     @default(10)
-  unauthorisedZoneMedium Int                     @default(3)
-  unauthorisedZoneSmall  Int                     @default(2)
-  beaconTypes            BeaconType[]
-  beacons                Beacon[]
-  chargingStations       ChargingStation[]
-  events                 Event[]
-  allowList              OrganizationAllowList[]
-  users                  User[]
-  wearables              Wearable[]
-
-  @@index([primaryContactEmail], map: "idx_organization_primary_contact")
-  @@map("organizations")
-}
-
-model OrganizationAllowList {
-  id             String       @id @default(dbgenerated("gen_random_uuid()"))
-  email          String
-  organizationId String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @default(now()) @updatedAt
-  organization   Organization @relation(fields: [organizationId], references: [id])
-
-  @@unique([email, organizationId])
-  @@map("organization_allow_list")
-}
-
-model BeaconType {
-  id             String       @id @default(dbgenerated("gen_random_uuid()"))
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @default(now()) @updatedAt
-  descriptor     Descriptor
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  Beacon         Beacon[]
-  allowList      Wearable[]
-
-  @@unique([descriptor, organizationId])
-  @@map("beacon_type")
-}
-
-model Wearable {
-  id             String       @id @default(dbgenerated("gen_random_uuid()"))
-  userId         String?      @unique
-  organizationId String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  displayName    String?
-  displayId      String?      @unique
-  beaconId       String?
-  beaconTypeId   String?
-  events         Event[]
-  user           User?
-  beacon         Beacon?      @relation(fields: [beaconId], references: [id])
-  BeaconType     BeaconType?  @relation(fields: [beaconTypeId], references: [id])
-  organization   Organization @relation(fields: [organizationId], references: [id])
-
-  @@index([organizationId], map: "idx_wearable_organization")
-  @@index([userId], map: "idx_wearable_user")
-  @@index([beaconId], map: "idx_wearable_beacon")
-  @@map("wearables")
-}
-
-model Beacon {
-  id             String       @id @default(dbgenerated("gen_random_uuid()"))
-  type           EventType
-  organizationId String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  displayName    String?
-  displayId      String?
-  beaconTypeId   String?
-  beaconType     BeaconType?  @relation(fields: [beaconTypeId], references: [id])
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  events         Event[]
-  Wearable       Wearable[]
-
-  @@index([organizationId], map: "idx_beacon_organization")
-  @@map("beacons")
-}
-
-model ChargingStation {
-  id             String       @id @default(dbgenerated("gen_random_uuid()"))
-  organizationId String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  displayName    String?
-  displayId      String?
-  organization   Organization @relation(fields: [organizationId], references: [id])
-
-  @@index([organizationId], map: "idx_charging_station_organization")
-  @@map("charging_stations")
-}
-
-model Event {
-  id             String       @id @default(dbgenerated("gen_random_uuid()"))
-  timestamp      DateTime
-  eventType      EventType
-  deviceId       String?
-  beaconId       String?
-  userId         String?      @unique
-  organizationId String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  duration       Int
-  beacon         Beacon?      @relation(fields: [beaconId], references: [id])
-  wearable       Wearable?    @relation(fields: [deviceId], references: [id])
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  user           User?        @relation(fields: [userId], references: [id])
-
-  @@index([organizationId, timestamp], map: "idx_event_organization_timestamp")
-  @@index([duration], map: "idx_event_duration")
-  @@map("events")
 }
 
 enum EventType {
@@ -179,10 +33,185 @@ enum Descriptor {
   SmallMachine
   MediumMachine
   LargeMachine
+
   SmallPPE
   MediumPPE
   LargePPE
+
   SmallUnauthorised
   MediumUnauthorised
   LargeUnauthorised
+}
+
+model User {
+  id             String   @id @default(dbgenerated("gen_random_uuid()"))
+  email          String?  @unique
+  firstName      String?  @map("first_name")
+  lastName       String?  @map("last_name")
+  avatarUrl      String?  @map("avatar_url")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  organizationId String
+
+  wearableId String?   @unique
+  wearable   Wearable? @relation(fields: [wearableId], references: [id])
+
+  authorization AuthorizationLevel
+  organization  Organization       @relation(fields: [organizationId], references: [id])
+  events        Event[]
+
+  @@map("users")
+}
+
+model Organization {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()"))
+  name                String   @unique
+  websiteUrl          String?  @map("website_url")
+  industry            String
+  avatarUrl           String?  @map("avatar_url")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  description         String?
+  location            String?
+  size                Int?
+  primaryContactEmail String?  @map("primary_contact_email")
+  contractLength      Int?     @map("contract_length")
+
+  allowList        OrganizationAllowList[]
+  users            User[]
+  wearables        Wearable[]
+  beacons          Beacon[]
+  chargingStations ChargingStation[]
+  events           Event[]
+  beaconTypes      BeaconType[]
+
+  // PPE Zone Proximity Distances
+  ppeZoneSmall  Int @default(2)
+  ppeZoneMedium Int @default(3)
+  ppeZoneLarge  Int @default(10)
+
+  // Unauthorised Zone Proximity Distances
+  unauthorisedZoneSmall  Int @default(2)
+  unauthorisedZoneMedium Int @default(3)
+  unauthorisedZoneLarge  Int @default(10)
+
+  // Machine Proximity Distances
+  machineSmall  Int @default(2)
+  machineMedium Int @default(3)
+  machineLarge  Int @default(10)
+
+  @@index([primaryContactEmail], name: "idx_organization_primary_contact")
+  @@map("organizations")
+}
+
+model OrganizationAllowList {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  email     String
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+
+  @@unique([email, organizationId])
+  @@map("organization_allow_list")
+}
+
+model BeaconType {
+  id         String     @id @default(dbgenerated("gen_random_uuid()"))
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt @default(now())
+  descriptor Descriptor
+  allowList  Wearable[]
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  Beacon         Beacon[]
+
+  @@unique([descriptor, organizationId])
+  @@map("beacon_type")
+}
+
+model Wearable {
+  id          String   @id @default(dbgenerated("gen_random_uuid()"))
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  displayName String?
+  displayId   String? @unique
+
+  user   User?
+  userId String? @unique
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+
+  events Event[]
+
+  beacon   Beacon? @relation(fields: [beaconId], references: [id])
+  beaconId String?
+
+  BeaconType   BeaconType? @relation(fields: [beaconTypeId], references: [id])
+  beaconTypeId String?
+
+  @@index([organizationId], name: "idx_wearable_organization")
+  @@index([userId], name: "idx_wearable_user")
+  @@index([beaconId], name: "idx_wearable_beacon")
+  @@map("wearables")
+}
+
+model Beacon {
+  id          String    @id @default(dbgenerated("gen_random_uuid()"))
+  type        EventType
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  displayName String?
+  displayId   String?
+
+  beaconType   BeaconType? @relation(fields: [beaconTypeId], references: [id])
+  beaconTypeId String?
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+
+  events   Event[]
+  Wearable Wearable[]
+
+  @@index([organizationId], name: "idx_beacon_organization")
+  @@map("beacons")
+}
+
+model ChargingStation {
+  id          String   @id @default(dbgenerated("gen_random_uuid()"))
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  displayName String?
+  displayId   String?
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+
+  @@index([organizationId], name: "idx_charging_station_organization")
+  @@map("charging_stations")
+}
+
+model Event {
+  id             String    @id @default(dbgenerated("gen_random_uuid()"))
+  timestamp      DateTime
+  eventType      EventType
+  deviceId       String?
+  beaconId       String?
+  userId         String?   @unique
+  organizationId String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  duration       Int
+
+  user         User?        @relation(fields: [userId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+  wearable     Wearable?    @relation(fields: [deviceId], references: [id])
+  beacon       Beacon?      @relation(fields: [beaconId], references: [id])
+
+  @@index([organizationId, timestamp], name: "idx_event_organization_timestamp")
+  @@index([duration], name: "idx_event_duration")
+  @@map("events")
 }

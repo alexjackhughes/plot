@@ -72,3 +72,29 @@ export const insertEvent = async (
     await prisma.$disconnect();
   }
 };
+
+export async function getOrganizationById(organizationId: string) {
+  try {
+    // Fetch the organization from the database
+    const organization = await prisma.organization.findUnique({
+      where: {
+        id: organizationId,
+      },
+      include: {
+        beaconTypes: true,
+      },
+    });
+
+    if (!organization) {
+      throw new Error(`Organization with ID ${organizationId} not found`);
+    }
+
+    return organization;
+  } catch (error) {
+    console.error("Error fetching organization:", error);
+    throw error;
+  } finally {
+    // Disconnect the Prisma Client
+    await prisma.$disconnect();
+  }
+}

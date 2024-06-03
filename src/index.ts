@@ -26,7 +26,7 @@ wss.on("connection", async (ws: Socket) => {
       sendBigLog(flattened);
 
       // Here we insert the event into the database
-      await receiveData(messageData);
+      // await receiveData(messageData);
 
       // Send acknowledgment for the received message
       ws.send("ACK\r\n");
@@ -34,7 +34,7 @@ wss.on("connection", async (ws: Socket) => {
       return;
     } else {
       // Fetch the settings and send them back to the device
-      const data = await sendData(messageData);
+      // data = await sendData(messageData);
       ws.send(JSON.stringify(data));
       return;
     }

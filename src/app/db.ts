@@ -55,7 +55,7 @@ export const insertEvent = async (
       data: {
         timestamp: usableEvent.eventDate,
         eventType: eventType,
-        deviceId: usableEvent.displayId,
+        deviceId: wearable.id,
         beaconId: usableEvent.beaconId || null,
         organizationId: wearable.organizationId,
         duration: usableEvent.duration,
@@ -81,7 +81,11 @@ export async function getOrganizationById(organizationId: string) {
         id: organizationId,
       },
       include: {
-        beaconTypes: true,
+        beaconTypes: {
+          include: {
+            allowList: true, // Include the allowList of Wearables for each BeaconType
+          },
+        },
       },
     });
 

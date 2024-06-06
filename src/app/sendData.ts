@@ -86,126 +86,134 @@ And then another function that fetches:
 2. We have the wearable_id
 */
 
+import { Wearable } from "@prisma/client";
 import { getOrganizationById, getWearable } from "./db";
 import { SendSettings } from "./models";
+
+interface BeaconTypeToWeableId {
+  [key: string]: string[];
+}
 
 export const sendData = async (
   settings: SendSettings,
 ): Promise<WearableSettings> => {
   let wearableSettings: WearableSettings;
   // 0. For testing data quickly
-  return fakeWearableSettings(settings.device_id || "123");
+  // return fakeWearableSettings(settings.device_id || "123");
 
-  // // 1. We fetch the wearable from its display id
-  // const wearable = await getWearable(settings.device_id);
+  // 1. We fetch the wearable from its display id
+  const wearable = await getWearable(settings.device_id);
 
-  // // 2. We fetch the organisation from the org id
-  // const org = await getOrganizationById(wearable.organizationId);
+  // 2. We fetch the organisation from the org id
+  const org = await getOrganizationById(wearable.organizationId);
 
-  // // 2. b)TO-DO: We use the beaconTypes and their allow lists to look for exemptions and make changes
-  // let wearableExempt: BeaconTypeMap = {
-  //   SmallMachine: false,
-  //   MediumMachine: false,
-  //   LargeMachine: false,
+  // 3. a) We need to create a list of beacon types to the exempt wearables.
+  let beaconTypeToWearableIds: BeaconTypeToWeableId = {};
 
-  //   SmallPPE: false,
-  //   MediumPPE: false,
-  //   LargePPE: false,
+  org.beaconTypes.map((beaconType) => {
+    const userIds = beaconType.allowList.map((wearable) => wearable.userId);
 
-  //   SmallUnauthorised: false,
-  //   MediumUnauthorised: false,
-  //   LargeUnauthorised: false,
-  // };
+    beaconTypeToWearableIds = {
+      ...beaconTypeToWearableIds,
+      [beaconType.descriptor]: userIds,
+    };
+  });
 
-  // // 3. Map the distances to the org ones with ternary checks for exemptions
-  // wearableSettings = {
-  //   device_id: settings.device_id,
-  //   sensor_haptic: {
-  //     enable: 1,
-  //     icon_display: 1,
-  //     vibration_alert: 1,
-  //     sound_alert: 1,
-  //     trigger_condition: 20,
-  //   },
-  //   sensor_MIC: {
-  //     enable: 1,
-  //     icon_display: 1,
-  //     vibration_alert: 1,
-  //     sound_alert: 1,
-  //     trigger_condition: 99,
-  //   },
-  //   sensor_PPE1: {
-  //     enable: 1,
-  //     icon_display: 1,
-  //     vibration_alert: 1,
-  //     sound_alert: 1,
-  //     trigger_condition: wearableExempt.SmallPPE ? 0 : org.ppeZoneSmall,
-  //   },
-  //   sensor_PPE2: {
-  //     enable: 1,
-  //     icon_display: 1,
-  //     vibration_alert: 1,
-  //     sound_alert: 1,
-  //     trigger_condition: wearableExempt.MediumPPE ? 0 : org.ppeZoneMedium,
-  //   },
-  //   sensor_PPE3: {
-  //     enable: 1,
-  //     icon_display: 1,
-  //     vibration_alert: 1,
-  //     sound_alert: 1,
-  //     trigger_condition: wearableExempt.LargePPE ? 0 : org.ppeZoneLarge,
-  //   },
-  //   sensor_access1: {
-  //     enable: 1,
-  //     icon_display: 1,
-  //     vibration_alert: 1,
-  //     sound_alert: 1,
-  //     trigger_condition: wearableExempt.SmallUnauthorised
-  //       ? 0
-  //       : org.unauthorisedZoneSmall,
-  //   },
-  //   sensor_access2: {
-  //     enable: 1,
-  //     icon_display: 1,
-  //     vibration_alert: 1,
-  //     sound_alert: 1,
-  //     trigger_condition: wearableExempt.MediumUnauthorised
-  //       ? 0
-  //       : org.unauthorisedZoneMedium,
-  //   },
-  //   sensor_access3: {
-  //     enable: 1,
-  //     icon_display: 1,
-  //     vibration_alert: 1,
-  //     sound_alert: 1,
-  //     trigger_condition: wearableExempt.LargeUnauthorised
-  //       ? 0
-  //       : org.unauthorisedZoneLarge,
-  //   },
-  //   sensor_forklift1: {
-  //     enable: 1,
-  //     icon_display: 1,
-  //     vibration_alert: 1,
-  //     sound_alert: 1,
-  //     trigger_condition: wearableExempt.SmallMachine ? 0 : org.machineSmall,
-  //   },
-  //   sensor_forklift2: {
-  //     enable: 1,
-  //     icon_display: 1,
-  //     vibration_alert: 1,
-  //     sound_alert: 1,
-  //     trigger_condition: wearableExempt.MediumMachine ? 0 : org.machineMedium,
-  //   },
-  //   sensor_forklift3: {
-  //     enable: 1,
-  //     icon_display: 1,
-  //     vibration_alert: 1,
-  //     sound_alert: 1,
-  //     trigger_condition: wearableExempt.LargeMachine ? 0 : org.machineLarge,
-  //   },
-  // };
+  // 3. b) We use the beaconTypes and their allow lists to look for exemptions and make changes
+  let wearableExempt = isWearableExemptFromTypes(
+    wearable,
+    beaconTypeToWearableIds,
+  );
 
-  // return wearableSettings;
+  // 4. Map the distances to the org ones with ternary checks for exemptions
+  wearableSettings = {
+    device_id: settings.device_id,
+    sensor_haptic: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 20,
+    },
+    sensor_MIC: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 99,
+    },
+    sensor_PPE1: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: wearableExempt.SmallPPE ? 0 : org.ppeZoneSmall,
+    },
+    sensor_PPE2: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: wearableExempt.MediumPPE ? 0 : org.ppeZoneMedium,
+    },
+    sensor_PPE3: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: wearableExempt.LargePPE ? 0 : org.ppeZoneLarge,
+    },
+    sensor_access1: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: wearableExempt.SmallUnauthorised
+        ? 0
+        : org.unauthorisedZoneSmall,
+    },
+    sensor_access2: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: wearableExempt.MediumUnauthorised
+        ? 0
+        : org.unauthorisedZoneMedium,
+    },
+    sensor_access3: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: wearableExempt.LargeUnauthorised
+        ? 0
+        : org.unauthorisedZoneLarge,
+    },
+    sensor_forklift1: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: wearableExempt.SmallMachine ? 0 : org.machineSmall,
+    },
+    sensor_forklift2: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: wearableExempt.MediumMachine ? 0 : org.machineMedium,
+    },
+    sensor_forklift3: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: wearableExempt.LargeMachine ? 0 : org.machineLarge,
+    },
+  };
+
+  return wearableSettings;
 };
 
 interface BeaconTypeMap {
@@ -327,3 +335,28 @@ export const fakeWearableSettings = (id: string): WearableSettings => {
     },
   };
 };
+
+function isWearableExemptFromTypes(
+  wearable: Wearable,
+  typesToWearableIds: BeaconTypeToWeableId,
+): BeaconTypeMap {
+  let exemptions: BeaconTypeMap = {
+    SmallMachine: false,
+    MediumMachine: false,
+    LargeMachine: false,
+
+    SmallPPE: false,
+    MediumPPE: false,
+    LargePPE: false,
+
+    SmallUnauthorised: false,
+    MediumUnauthorised: false,
+    LargeUnauthorised: false,
+  };
+
+  for (const key in typesToWearableIds) {
+    exemptions[key] = typesToWearableIds[key].includes(wearable.userId);
+  }
+
+  return exemptions;
+}

@@ -26,7 +26,7 @@ wss.on("connection", async (ws: Socket) => {
       sendBigLog(flattened);
 
       // Here we insert the event into the database
-      // await receiveData(messageData);
+      await receiveData(messageData);
 
       // Send acknowledgment for the received message
       ws.send("ACK\r\n");

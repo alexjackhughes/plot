@@ -33,6 +33,8 @@ wss.on("connection", async (ws: Socket) => {
 
       return;
     } else {
+      console.log("We are going to send data to devices");
+
       // Fetch the settings and send them back to the device
       let data = await sendData(messageData);
       ws.send(JSON.stringify(data));

@@ -89,6 +89,7 @@ And then another function that fetches:
 import { Wearable } from "@prisma/client";
 import { getOrganizationById, getWearable } from "./db";
 import { SendSettings } from "./models";
+import { sendBigLog } from "./logging";
 
 interface BeaconTypeToWeableId {
   [key: string]: string[];
@@ -212,6 +213,9 @@ export const sendData = async (
       trigger_condition: wearableExempt.LargeMachine ? 0 : org.machineLarge,
     },
   };
+
+  // Add better logging - Alex remove
+  await sendBigLog(wearableSettings);
 
   return wearableSettings;
 };

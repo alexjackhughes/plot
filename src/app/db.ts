@@ -67,7 +67,12 @@ export const insertEvent = async (
 
     return event;
   } catch (error) {
-    console.log("ERROR: Inserting event");
+    console.log(
+      "ERROR: Inserting event",
+      usableEvent?.displayId,
+      wearable.id,
+      beacon?.id,
+    );
     console.error(error);
     throw error;
   } finally {

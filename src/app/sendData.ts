@@ -126,6 +126,8 @@ export const sendData = async (
     beaconTypeToWearableIds,
   );
 
+  console.log("EVENT", wearableExempt);
+
   // 4. Map the distances to the org ones with ternary checks for exemptions
   wearableSettings = {
     device_id: settings.device_id,

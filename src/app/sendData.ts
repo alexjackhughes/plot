@@ -214,9 +214,6 @@ export const sendData = async (
     },
   };
 
-  // Add better logging - Alex remove
-  await sendBigLog(wearableSettings);
-
   return wearableSettings;
 };
 

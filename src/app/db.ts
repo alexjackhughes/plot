@@ -1,4 +1,4 @@
-import { Wearable } from "@prisma/client";
+import { Beacon, Wearable } from "@prisma/client";
 import prisma from "../../prisma/db";
 import { UsableEvent } from "./receiveData";
 
@@ -45,6 +45,7 @@ export const getBeacon = async (displayId: string) => {
 export const insertEvent = async (
   usableEvent: UsableEvent,
   wearable: Wearable,
+  beacon?: Beacon,
 ) => {
   try {
     let eventType = usableEvent.isBeacon
@@ -56,7 +57,7 @@ export const insertEvent = async (
         timestamp: usableEvent.eventDate,
         eventType: eventType,
         deviceId: wearable.id,
-        beaconId: usableEvent.beaconId || null,
+        beaconId: beacon.id || null, // Alex there is an error here!
         organizationId: wearable.organizationId,
         duration: usableEvent.duration,
         createdAt: new Date(),

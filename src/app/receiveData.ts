@@ -65,6 +65,7 @@ b) We store the formatted data as an event in the database
 c) We send an ACK back to the device
 */
 
+import { Beacon } from "@prisma/client";
 import { getBeacon, getWearable, insertEvent } from "./db";
 import { WearableEvent, WearableEventTime } from "./models";
 
@@ -181,16 +182,13 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
   let wearable = await getWearable(usableEvent.displayId);
   if (!wearable) return console.error("Wearable not found");
 
+  let beacon: Beacon = undefined;
+
   // 2. If the event is a beacon event, get the beacon details
   if (usableEvent.isBeacon) {
-    const beacon = await getBeacon(usableEvent.beaconId);
-
-    wearable = {
-      ...wearable,
-      beaconId: beacon.id,
-    };
+    beacon = await getBeacon(usableEvent.beaconId);
   }
 
   // 3. Store the event in the database
-  await insertEvent(usableEvent, wearable);
+  await insertEvent(usableEvent, wearable, beacon);
 };

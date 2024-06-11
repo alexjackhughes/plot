@@ -5,12 +5,12 @@ export interface WearableEventTime {
 }
 
 export interface WearableEvent {
-  "event-time": WearableEventTime;
-  "event-type": number;
-  "device-id": string;
-  "beacon-minor": number;
+  event_time: { hour: number; minute: number; second: number };
+  event_type: number;
+  device_id: string;
+  beacon_minor: string;
   duration: number;
-  "request-type": 0;
+  request_type: 0;
 }
 
 export interface SendSettings {
@@ -27,26 +27,28 @@ export const getData = (data: any): WearableEvent | SendSettings => {
   }
 
   return {
-    "event-time": {
+    event_time: {
       hour: data.event_time.hour,
       minute: data.event_time.minute,
       second: data.event_time.second,
     },
-    "event-type": data.event_type,
-    "device-id": data.device_id,
-    "beacon-minor": data.beacon_minor,
+    event_type: data.event_type,
+    device_id: data.device_id,
+    beacon_minor: data.beacon_minor,
     duration: data.duration,
-    "request-type": 0,
+    request_type: 0,
   };
 };
 
 export function flattenData(data: WearableEvent | SendSettings): any {
   // Check for the type of data based on request_type
-  if (data["request-type"] === 0) {
+  if (data.request_type === 0) {
     // Data is of SendingData type
+    const { event_time, ...rest } = data;
+
     return {
-      ...data["event-time"], // Spread the utc_time object to flatten it
-      ...data, // Include the rest of the properties
+      ...event_time, // Spread the utc_time object to flatten it
+      ...rest, // Include the rest of the properties
     };
   } else {
     // Data is of RecieveSettings type, no need to flatten

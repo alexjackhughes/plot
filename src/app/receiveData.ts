@@ -66,7 +66,6 @@ c) We send an ACK back to the device
 */
 
 import { getBeacon, getWearable, insertEvent } from "./db";
-import { sendBigLog } from "./logging";
 import { WearableEvent, WearableEventTime } from "./models";
 
 type WearableEventType =
@@ -159,20 +158,15 @@ export interface UsableEvent {
 }
 
 const createUsableEvent = (input: WearableEvent): UsableEvent => {
-  // I think these might scored - not underscored _
-  // beacon id is 0 always, otherwise it's a number
-
   return {
-    eventDate: getDateWithEventTime(input["event-time"]),
-    eventType: getWearableEventType(input["event-type"]),
-    displayId: input["device-id"],
+    eventDate: getDateWithEventTime(input.event_time),
+    eventType: getWearableEventType(input.event_type),
+    displayId: input.device_id,
     beaconId:
-      input["beacon-minor"] !== 0
-        ? input["beacon-minor"].toLocaleString()
-        : null, // Beacon ID was 0 if it was not a beacon event
-    isBeacon: input["beacon-minor"] !== 0 ? true : false,
+      input.beacon_minor === "0" ? null : input.beacon_minor.toLocaleString(),
+    isBeacon: input.beacon_minor === "0" ? false : true,
     duration: convertMillisecondsToSeconds(input.duration),
-    beacon: getProximityDetails(input["beacon-minor"].toLocaleString()),
+    beacon: getProximityDetails(input.beacon_minor.toLocaleString()),
   };
 };
 

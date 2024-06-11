@@ -102,6 +102,9 @@ export const sendData = async (
   // 0. For testing data quickly
   // return fakeWearableSettings(settings.device_id || "123");
 
+  // For railway log
+  console.log("Trying to send data");
+
   // 1. We fetch the wearable from its display id
   const wearable = await getWearable(settings.device_id);
 
@@ -255,89 +258,6 @@ interface SensorConfig {
   sound_alert: number;
   trigger_condition: number;
 }
-
-export const fakeWearableSettings = (id: string): WearableSettings => {
-  return {
-    device_id: id,
-    sensor_haptic: {
-      enable: 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
-      trigger_condition: 20,
-    },
-    sensor_MIC: {
-      enable: 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
-      trigger_condition: 99,
-    },
-    sensor_PPE1: {
-      enable: 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
-      trigger_condition: 3,
-    },
-    sensor_PPE2: {
-      enable: 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
-      trigger_condition: 5,
-    },
-    sensor_PPE3: {
-      enable: 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
-      trigger_condition: 10,
-    },
-    sensor_access1: {
-      enable: 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
-      trigger_condition: 3,
-    },
-    sensor_access2: {
-      enable: 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
-      trigger_condition: 5,
-    },
-    sensor_access3: {
-      enable: 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
-      trigger_condition: 10,
-    },
-    sensor_forklift1: {
-      enable: 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
-      trigger_condition: 3,
-    },
-    sensor_forklift2: {
-      enable: 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
-      trigger_condition: 5,
-    },
-    sensor_forklift3: {
-      enable: 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
-      trigger_condition: 10,
-    },
-  };
-};
 
 function isWearableExemptFromTypes(
   wearable: Wearable,

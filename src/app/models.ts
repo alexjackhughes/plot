@@ -8,7 +8,7 @@ export interface WearableEvent {
   event_time: WearableEventTime;
   event_type: number;
   device_id: string;
-  beacon_minor: string;
+  beacon_minor: string | number;
   duration: number;
   request_type: 0;
 }

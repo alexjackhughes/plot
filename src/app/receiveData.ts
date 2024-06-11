@@ -163,10 +163,11 @@ const createUsableEvent = (input: WearableEvent): UsableEvent => {
     eventDate: getDateWithEventTime(input.event_time),
     eventType: getWearableEventType(input.event_type),
     displayId: input.device_id,
-    beaconId: input.beacon_minor.length > 0 ? input.beacon_minor : null,
-    isBeacon: input.beacon_minor.length > 0 ? true : false,
+    beaconId:
+      input.beacon_minor !== 0 ? input.beacon_minor.toLocaleString() : null, // Beacon ID was 0 if it was not a beacon event
+    isBeacon: input.beacon_minor !== 0 ? true : false,
     duration: convertMillisecondsToSeconds(input.duration),
-    beacon: getProximityDetails(input.beacon_minor),
+    beacon: getProximityDetails(input.beacon_minor.toLocaleString()),
   };
 };
 

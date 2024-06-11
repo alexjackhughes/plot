@@ -66,6 +66,7 @@ c) We send an ACK back to the device
 */
 
 import { getBeacon, getWearable, insertEvent } from "./db";
+import { sendBigLog } from "./logging";
 import { WearableEvent, WearableEventTime } from "./models";
 
 type WearableEventType =
@@ -175,6 +176,9 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
 
   let wearable = await getWearable(usableEvent.displayId);
   if (!wearable) return console.error("Wearable not found");
+
+  // Just for testing - Alex remove
+  await sendBigLog(usableEvent);
 
   // 2. If the event is a beacon event, get the beacon details
   if (usableEvent.isBeacon) {

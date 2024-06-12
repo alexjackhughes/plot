@@ -48,22 +48,34 @@ export const insertEvent = async (
   beacon?: Beacon,
 ) => {
   try {
-    let eventType = usableEvent.isBeacon
-      ? usableEvent.beacon.type
-      : usableEvent.eventType;
+    if (usableEvent.isBeacon && !beacon) {
+      const eventType = beacon.type;
 
-    const event = await prisma.event.create({
-      data: {
-        timestamp: usableEvent.eventDate,
-        eventType: eventType,
-        deviceId: wearable.id,
-        beaconId: beacon.id || null, // Alex there is an error here!
-        organizationId: wearable.organizationId,
-        duration: usableEvent.duration,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    });
+      await prisma.event.create({
+        data: {
+          timestamp: usableEvent.eventDate,
+          eventType: eventType,
+          deviceId: wearable.id,
+          beaconId: beacon.id, // Is this causing a bug
+          organizationId: wearable.organizationId,
+          duration: usableEvent.duration,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      });
+    } else {
+      await prisma.event.create({
+        data: {
+          timestamp: usableEvent.eventDate,
+          eventType: usableEvent.eventType,
+          deviceId: wearable.id,
+          organizationId: wearable.organizationId,
+          duration: usableEvent.duration,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      });
+    }
 
     return event;
   } catch (error) {

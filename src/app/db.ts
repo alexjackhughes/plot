@@ -47,7 +47,7 @@ export const getBeacon = async (displayId: string) => {
 export const insertEvent = async (
   usableEvent: UsableEvent,
   wearable: Wearable,
-  beacon?: Beacon,
+  beacon?: undefined | Beacon,
 ) => {
   try {
     if (usableEvent.isBeacon && beacon) {
@@ -58,7 +58,7 @@ export const insertEvent = async (
           timestamp: usableEvent.eventDate,
           eventType: eventType,
           deviceId: wearable.id,
-          beaconId: beacon.id, // Is this causing a bug
+          beaconId: beacon.id,
           organizationId: wearable.organizationId,
           duration: usableEvent.duration,
           createdAt: new Date(),

@@ -76,8 +76,6 @@ export const insertEvent = async (
         },
       });
     }
-
-    return event;
   } catch (error) {
     console.log(
       "ERROR: Inserting event",

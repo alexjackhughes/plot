@@ -23,6 +23,8 @@ export const getWearable = async (displayId: string): Promise<any> => {
 
 export const getBeacon = async (displayId: string) => {
   try {
+    console.log("Getting beacon with displayId:", displayId);
+
     const beacon = await prisma.beacon.findFirst({
       where: {
         displayId: displayId,

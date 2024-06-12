@@ -199,7 +199,7 @@ export const sendData = async (
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: wearableExempt.SmallMachine ? 0 : org.machineSmall,
+      trigger_condition: 0, // Disabling for everyone for testing ALEX // wearableExempt.SmallMachine ? 0 : org.machineSmall,
     },
     sensor_forklift2: {
       enable: 1,

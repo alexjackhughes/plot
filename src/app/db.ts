@@ -50,7 +50,7 @@ export const insertEvent = async (
   beacon?: Beacon,
 ) => {
   try {
-    if (usableEvent.isBeacon && !beacon) {
+    if (usableEvent.isBeacon && beacon) {
       const eventType = beacon.type;
 
       await prisma.event.create({

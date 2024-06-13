@@ -14,14 +14,18 @@ wss.on("connection", async (ws: Socket) => {
   const state = newState(ws);
 
   ws.on("message", async (data) => {
-    const rawData = JSON.parse(data.toString());
+    try {
+      const rawData = JSON.parse(data.toString());
 
-    // We bug out if the message is not in the correct format
-    if (
-      !rawData ||
-      !(typeof rawData === "object") ||
-      !("request_type" in rawData)
-    ) {
+      if (
+        !rawData ||
+        !(typeof rawData === "object") ||
+        !("request_type" in rawData)
+      ) {
+        ws.send("NACK\r\n");
+        return;
+      }
+    } catch (error) {
       ws.send("NACK\r\n");
       return;
     }

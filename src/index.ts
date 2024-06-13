@@ -16,11 +16,17 @@ wss.on("connection", async (ws: Socket) => {
   ws.on("message", async (data) => {
     const messageData = getData(JSON.parse(data.toString()));
 
+    // We bug out if the message is not in the correct format
+    if (!messageData || messageData.request_type === undefined) {
+      ws.send("NACK\r\n");
+      return;
+    }
+
     // Log for Railway
     const message = data.toString();
     console.log("Device Message:", message);
 
-    if (messageData.request_type === 0) {
+    if (messageData?.request_type === 0) {
       // Log the event for LogSnag
       const flattened = flattenData(messageData);
       sendBigLog(flattened);

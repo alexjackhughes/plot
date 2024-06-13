@@ -154,7 +154,7 @@ export const sendData = async (
       trigger_condition: org.ppeZoneSmall || 1,
     },
     sensor_PPE2: {
-      enable: wearableExempt.MediumPPE ? 0 : 1,
+      enable: 0, // DISABLE THIS
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,

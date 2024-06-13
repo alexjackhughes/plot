@@ -17,28 +17,38 @@ wss.on("connection", async (ws: Socket) => {
     const messageData = getData(JSON.parse(data.toString()));
 
     // We bug out if the message is not in the correct format
-    if (!messageData || messageData.request_type === undefined) {
+    if (
+      messageData &&
+      typeof messageData === "object" &&
+      "request_type" in messageData
+    ) {
       ws.send("NACK\r\n");
       return;
     }
 
     // Log for Railway
-    const message = data.toString();
-    console.log("Device Message:", message);
+    // const message = data.toString();
+    // console.log("Device Message:", message);
 
     if (messageData?.request_type === 0) {
-      // Log the event for LogSnag
-      const flattened = flattenData(messageData);
-      sendBigLog(flattened);
+      try {
+        // Log the event for LogSnag
+        const flattened = flattenData(messageData);
+        sendBigLog(flattened);
 
-      // Here we insert the event into the database
-      await receiveData(messageData);
-
-      // Send acknowledgment for the received message
-      ws.send("ACK\r\n");
+        // Here we insert the event into the database
+        await receiveData(messageData);
+      } catch (error) {
+        console.error("Error saving data:", error);
+      } finally {
+        // Send acknowledgment for the received message
+        ws.send("ACK\r\n");
+      }
 
       return;
     } else {
+      console.log("Asked to fetch settings");
+
       // Fetch the settings and send them back to the device
       let data = await sendData(messageData);
       ws.send(JSON.stringify(data));

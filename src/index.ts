@@ -22,11 +22,13 @@ wss.on("connection", async (ws: Socket) => {
         !(typeof rawData === "object") ||
         !("request_type" in rawData)
       ) {
-        ws.send("NACK\r\n");
+        console.log("Error parsing data");
+        ws.send("ACK\r\n");
         return;
       }
     } catch (error) {
-      ws.send("NACK\r\n");
+      console.log("Error parsing data");
+      ws.send("ACK\r\n");
       return;
     }
 
@@ -36,6 +38,7 @@ wss.on("connection", async (ws: Socket) => {
     // Log for Railway
     // const message = data.toString();
     // console.log("Device Message:", message);
+
     if (messageData.request_type === 0) {
       try {
         // Log the event for LogSnag

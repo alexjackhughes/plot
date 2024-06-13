@@ -18,9 +18,11 @@ wss.on("connection", async (ws: Socket) => {
 
     // We bug out if the message is not in the correct format
     if (
-      messageData &&
-      typeof messageData === "object" &&
-      "request_type" in messageData
+      !(
+        messageData &&
+        typeof messageData === "object" &&
+        "request_type" in messageData
+      )
     ) {
       ws.send("NACK\r\n");
       return;

@@ -147,73 +147,67 @@ export const sendData = async (
       trigger_condition: 99,
     },
     sensor_PPE1: {
-      enable: 1,
+      enable: wearableExempt.SmallPPE ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: wearableExempt.SmallPPE ? 0 : org.ppeZoneSmall,
+      trigger_condition: org.ppeZoneSmall || 1,
     },
     sensor_PPE2: {
-      enable: 1,
+      enable: wearableExempt.MediumPPE ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: wearableExempt.MediumPPE ? 0 : org.ppeZoneMedium,
+      trigger_condition: org.ppeZoneMedium || 3,
     },
     sensor_PPE3: {
-      enable: 1,
+      enable: wearableExempt.LargePPE ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: wearableExempt.LargePPE ? 0 : org.ppeZoneLarge,
+      trigger_condition: org.ppeZoneLarge || 6,
     },
     sensor_access1: {
-      enable: 1,
+      enable: wearableExempt.SmallUnauthorised ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: wearableExempt.SmallUnauthorised
-        ? 0
-        : org.unauthorisedZoneSmall,
+      trigger_condition: org.unauthorisedZoneSmall || 1,
     },
     sensor_access2: {
-      enable: 1,
+      enable: wearableExempt.MediumUnauthorised ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: wearableExempt.MediumUnauthorised
-        ? 0
-        : org.unauthorisedZoneMedium,
+      trigger_condition: org.unauthorisedZoneMedium || 3,
     },
     sensor_access3: {
-      enable: 1,
+      enable: wearableExempt.LargeUnauthorised ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: wearableExempt.LargeUnauthorised
-        ? 0
-        : org.unauthorisedZoneLarge,
+      trigger_condition: org.unauthorisedZoneLarge || 6,
     },
     sensor_forklift1: {
-      enable: 1,
+      enable: wearableExempt.SmallMachine ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: 0, // Disabling for everyone for testing ALEX // wearableExempt.SmallMachine ? 0 : org.machineSmall,
+      trigger_condition: org.machineSmall || 1,
     },
     sensor_forklift2: {
-      enable: 1,
+      enable: wearableExempt.MediumMachine ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: wearableExempt.MediumMachine ? 0 : org.machineMedium,
+      trigger_condition: org.machineMedium || 3,
     },
     sensor_forklift3: {
-      enable: 1,
+      enable: wearableExempt.LargeMachine ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: wearableExempt.LargeMachine ? 0 : org.machineLarge,
+      trigger_condition: org.machineLarge || 6,
     },
   };
 

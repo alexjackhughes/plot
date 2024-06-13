@@ -14,17 +14,20 @@ wss.on("connection", async (ws: Socket) => {
   const state = newState(ws);
 
   ws.on("message", async (data) => {
-    const messageData = getData(JSON.parse(data.toString()));
+    const rawData = JSON.parse(data.toString());
 
     // We bug out if the message is not in the correct format
     if (
-      !messageData ||
-      !(typeof messageData === "object") ||
-      !("request_type" in messageData)
+      !rawData ||
+      !(typeof rawData === "object") ||
+      !("request_type" in rawData)
     ) {
       ws.send("NACK\r\n");
       return;
     }
+
+    // Otherwise format the data nicely
+    const messageData = getData(JSON.parse(data.toString()));
 
     // Log for Railway
     // const message = data.toString();

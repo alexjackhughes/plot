@@ -21,21 +21,21 @@ export interface SendSettings {
 export const getData = (data: any): WearableEvent | SendSettings => {
   if (data.request_type === 1) {
     return {
-      device_id: data.device_id,
+      device_id: data?.device_id,
       request_type: 1,
     };
   }
 
   return {
     event_time: {
-      hour: data.event_time.hour,
-      minute: data.event_time.minute,
-      second: data.event_time.second,
+      hour: data?.event_time?.hour,
+      minute: data?.event_time?.minute,
+      second: data?.event_time?.second,
     },
-    event_type: data.event_type,
-    device_id: data.device_id,
-    beacon_minor: data.beacon_minor,
-    duration: data.duration,
+    event_type: data?.event_type,
+    device_id: data?.device_id,
+    beacon_minor: data?.beacon_minor,
+    duration: data?.duration,
     request_type: 0,
   };
 };

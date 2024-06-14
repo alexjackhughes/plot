@@ -147,21 +147,21 @@ export const sendData = async (
       trigger_condition: 99,
     },
     sensor_PPE1: {
-      enable: 0, //wearableExempt.SmallPPE ? 0 : 1,
+      enable: wearableExempt.SmallPPE ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
       trigger_condition: org.ppeZoneSmall || 1,
     },
     sensor_PPE2: {
-      enable: 0, // DISABLE THIS
+      enable: wearableExempt.MediumPPE ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
       trigger_condition: org.ppeZoneMedium || 3,
     },
     sensor_PPE3: {
-      enable: 0, // wearableExempt.LargePPE ? 0 : 1,
+      enable: wearableExempt.LargePPE ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,

@@ -111,6 +111,7 @@ export const sendData = async (
   // 2. We fetch the organisation from the org id
   const org = await getOrganizationById(wearable.organizationId);
 
+  // THIS IS NOT WORKING - ALEX FIX:
   // 3. a) We need to create a list of beacon types to the exempt wearables.
   let beaconTypeToWearableIds: BeaconTypeToWeableId = {};
 
@@ -123,11 +124,22 @@ export const sendData = async (
     };
   });
 
+  console.log("HUGHES, TESTING DATA");
+
+  // For testing the data quickly
+  Object.keys(beaconTypeToWearableIds).map((key) => {
+    console.log(key, beaconTypeToWearableIds[key]);
+  });
+
   // 3. b) We use the beaconTypes and their allow lists to look for exemptions and make changes
   let wearableExempt = isWearableExemptFromTypes(
     wearable,
     beaconTypeToWearableIds,
   );
+
+  Object.keys(beaconTypeToWearableIds).map((key) => {
+    console.log(key, beaconTypeToWearableIds[key]);
+  });
 
   // 4. Map the distances to the org ones with ternary checks for exemptions
   wearableSettings = {

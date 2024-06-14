@@ -116,11 +116,13 @@ export const sendData = async (
   let beaconTypeToWearableIds: BeaconTypeToWeableId = {};
 
   org.beaconTypes.map((beaconType) => {
-    const userIds = beaconType.allowList.map((wearable) => wearable.userId);
+    const displayIds = beaconType.allowList.map(
+      (wearable) => wearable.displayId,
+    ); // This isn't wqorking because sometimes the wearable is not connected to a specifcic user, that means we are sending NULL but actually we want send like TRUE or match the DISPLAY ID
 
     beaconTypeToWearableIds = {
       ...beaconTypeToWearableIds,
-      [beaconType.descriptor]: userIds,
+      [beaconType.descriptor]: displayIds,
     };
   });
 
@@ -159,63 +161,63 @@ export const sendData = async (
       trigger_condition: 99,
     },
     sensor_PPE1: {
-      enable: 1, // wearableExempt.SmallPPE ? 0 : 1,
+      enable: wearableExempt.SmallPPE ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
       trigger_condition: org.ppeZoneSmall || 1,
     },
     sensor_PPE2: {
-      enable: 1, //wearableExempt.MediumPPE ? 0 : 1,
+      enable: wearableExempt.MediumPPE ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
       trigger_condition: org.ppeZoneMedium || 3,
     },
     sensor_PPE3: {
-      enable: 1, // wearableExempt.LargePPE ? 0 : 1,
+      enable: wearableExempt.LargePPE ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
       trigger_condition: org.ppeZoneLarge || 6,
     },
     sensor_access1: {
-      enable: 1, // wearableExempt.SmallUnauthorised ? 0 : 1,
+      enable: wearableExempt.SmallUnauthorised ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
       trigger_condition: org.unauthorisedZoneSmall || 1,
     },
     sensor_access2: {
-      enable: 1, // wearableExempt.MediumUnauthorised ? 0 : 1,
+      enable: wearableExempt.MediumUnauthorised ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
       trigger_condition: org.unauthorisedZoneMedium || 3,
     },
     sensor_access3: {
-      enable: 1, //wearableExempt.LargeUnauthorised ? 0 : 1,
+      enable: wearableExempt.LargeUnauthorised ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
       trigger_condition: org.unauthorisedZoneLarge || 6,
     },
     sensor_forklift1: {
-      enable: 0, // wearableExempt.SmallMachine ? 0 : 1,
+      enable: wearableExempt.SmallMachine ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
       trigger_condition: org.machineSmall || 1,
     },
     sensor_forklift2: {
-      enable: 1, //wearableExempt.MediumMachine ? 0 : 1,
+      enable: wearableExempt.MediumMachine ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
       trigger_condition: org.machineMedium || 3,
     },
     sensor_forklift3: {
-      enable: 1, //wearableExempt.LargeMachine ? 0 : 1,
+      enable: wearableExempt.LargeMachine ? 0 : 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
@@ -282,8 +284,49 @@ function isWearableExemptFromTypes(
   };
 
   for (const key in typesToWearableIds) {
-    exemptions[key] = typesToWearableIds[key].includes(wearable.userId);
+    exemptions[key] = typesToWearableIds[key].includes(wearable.displayId);
   }
 
   return exemptions;
 }
+
+/**
+ UGHES, TESTING DATA
+
+SmallMachine [ null, null, null ]
+
+MediumMachine []
+
+LargeMachine []
+
+SmallPPE [ null ]
+
+MediumPPE []
+
+LargePPE []
+
+SmallUnauthorised []
+
+MediumUnauthorised []
+
+LargeUnauthorised []
+
+SmallMachine [ null, null, null ]
+
+MediumMachine []
+
+LargeMachine []
+
+SmallPPE [ null ]
+
+MediumPPE []
+
+LargePPE []
+
+SmallUnauthorised []
+
+MediumUnauthorised []
+
+LargeUnauthorised []
+
+ */

@@ -50,6 +50,8 @@ export const insertEvent = async (
   beacon?: undefined | Beacon,
 ) => {
   try {
+    console.log("Adding event");
+
     if (usableEvent.isBeacon && beacon) {
       const eventType = beacon.type;
 

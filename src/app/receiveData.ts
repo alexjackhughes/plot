@@ -177,7 +177,7 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
 
   // For railway log
   const message = usableEvent.toString();
-  console.log("event received:", message);
+  console.log("Event received:", message);
 
   let wearable = await getWearable(usableEvent.displayId);
   if (!wearable) return console.error("Wearable not found");

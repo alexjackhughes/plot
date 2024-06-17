@@ -102,9 +102,6 @@ export const sendData = async (
   // 0. For testing data quickly
   // return fakeWearableSettings(settings.device_id || "123");
 
-  // For railway log
-  console.log("Trying to send data");
-
   // 1. We fetch the wearable from its display id
   const wearable = await getWearable(settings.device_id);
 
@@ -126,19 +123,15 @@ export const sendData = async (
   });
 
   // For testing the data quickly
-  Object.keys(beaconTypeToWearableIds).map((key) => {
-    console.log(key, beaconTypeToWearableIds[key]);
-  });
+  // Object.keys(beaconTypeToWearableIds).map((key) => {
+  //   console.log(key, beaconTypeToWearableIds[key]);
+  // });
 
   // 3. b) We use the beaconTypes and their allow lists to look for exemptions and make changes
   let wearableExempt = isWearableExemptFromTypes(
     wearable,
     beaconTypeToWearableIds,
   );
-
-  Object.keys(beaconTypeToWearableIds).map((key) => {
-    console.log(key, beaconTypeToWearableIds[key]);
-  });
 
   // 4. Map the distances to the org ones with ternary checks for exemptions
   wearableSettings = {
@@ -286,44 +279,3 @@ function isWearableExemptFromTypes(
 
   return exemptions;
 }
-
-/**
- UGHES, TESTING DATA
-
-SmallMachine [ null, null, null ]
-
-MediumMachine []
-
-LargeMachine []
-
-SmallPPE [ null ]
-
-MediumPPE []
-
-LargePPE []
-
-SmallUnauthorised []
-
-MediumUnauthorised []
-
-LargeUnauthorised []
-
-SmallMachine [ null, null, null ]
-
-MediumMachine []
-
-LargeMachine []
-
-SmallPPE [ null ]
-
-MediumPPE []
-
-LargePPE []
-
-SmallUnauthorised []
-
-MediumUnauthorised []
-
-LargeUnauthorised []
-
- */

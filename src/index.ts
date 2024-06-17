@@ -56,7 +56,7 @@ wss.on("connection", async (ws: Socket) => {
 
       return;
     } else {
-      console.log("Asked to fetch settings");
+      console.log("Sending settings:");
 
       // Fetch the settings and send them back to the device
       let data = await sendData(messageData);

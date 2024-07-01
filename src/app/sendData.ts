@@ -148,7 +148,7 @@ export const sendData = async (
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: 99,
+      trigger_condition: 83,
     },
     sensor_PPE1: {
       enable: wearableExempt.SmallPPE ? 0 : 1,

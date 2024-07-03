@@ -141,14 +141,14 @@ export const sendData = async (
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: 5,
+      trigger_condition: 20,
     },
     sensor_MIC: {
       enable: 1,
       icon_display: 1,
       vibration_alert: 1,
       sound_alert: 1,
-      trigger_condition: 83,
+      trigger_condition: 93,
     },
     sensor_PPE1: {
       enable: wearableExempt.SmallPPE ? 0 : 1,

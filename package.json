@@ -16,7 +16,7 @@
     "format": "npx prettier . --write"
   },
   "dependencies": {
-    "@prisma/client": "^5.14.0",
+    "@prisma/client": "^5.15.0",
     "@supabase/supabase-js": "^2.39.8",
     "esbuild": "^0.17.16",
     "logsnag": "^1.0.0",

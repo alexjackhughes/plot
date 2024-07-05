@@ -20,7 +20,7 @@
     "@supabase/supabase-js": "^2.39.8",
     "esbuild": "^0.17.16",
     "logsnag": "^1.0.0",
-    "ws": "^8.13.0"
+    "ws": "^8.17.0"
   },
   "devDependencies": {
     "@types/node": "^18.15.11",

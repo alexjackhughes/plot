@@ -125,3 +125,29 @@ export async function getOrganizationById(organizationId: string) {
     await prisma.$disconnect();
   }
 }
+
+export const wearableUpdated = async (id: string) => {
+  const date = new Date();
+
+  await prisma.wearable.update({
+    where: {
+      id,
+    },
+    data: {
+      updatedAt: date,
+    },
+  });
+};
+
+export const beaconUpdated = async (id: string) => {
+  const date = new Date();
+
+  await prisma.beacon.update({
+    where: {
+      id,
+    },
+    data: {
+      updatedAt: date,
+    },
+  });
+};

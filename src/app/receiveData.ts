@@ -83,13 +83,24 @@ type WearableEventType =
   | "UnauthorisedAccess";
 
 const getDateWithEventTime = (eventTime: WearableEventTime): Date => {
-  const today = new Date();
+  const today = createDate(eventTime);
+
   today.setHours(eventTime.hour);
   today.setMinutes(eventTime.minute);
   today.setSeconds(eventTime.second);
   today.setMilliseconds(0); // Ensure no leftover milliseconds
   return today;
 };
+
+function createDate(eventTime: WearableEventTime): Date {
+  const { year, month, day } = eventTime;
+
+  if (year !== undefined && month !== undefined && day !== undefined) {
+    return new Date(Date.UTC(year, month - 1, day));
+  }
+
+  return new Date();
+}
 
 const getWearableEventType = (eventType: number): WearableEventType => {
   switch (eventType) {

@@ -55,13 +55,23 @@ wss.on("connection", async (ws: Socket) => {
       }
 
       return;
-    } else {
+    } else if (messageData.request_type === 1) {
       console.log("Sending settings:");
 
       // Fetch the settings and send them back to the device
       let data = await sendData(messageData);
       ws.send(JSON.stringify(data));
       return;
+    } else {
+      const flattened = flattenData(messageData);
+      sendBigLog(flattened);
+
+      // For request type 2, we hardcode the firmware version and send it back
+      ws.send(
+        JSON.stringify({
+          firmware_version: "2.2.4",
+        }),
+      );
     }
   });
 

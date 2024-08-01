@@ -1,11 +1,14 @@
 export interface WearableEventTime {
+  year?: number;
+  month?: number;
+  day?: number;
   hour: number;
   minute: number;
   second: number;
 }
 
 export interface WearableEvent {
-  event_time: { hour: number; minute: number; second: number };
+  event_time: WearableEventTime;
   event_type: number;
   device_id: string;
   beacon_minor: string;

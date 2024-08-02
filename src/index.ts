@@ -37,7 +37,7 @@ wss.on("connection", async (ws: Socket) => {
 
     // Log for Railway
     // const message = data.toString();
-    // console.log("Device Message:", message);
+    // console.log("Device Message:", message, messageData.request_type);
 
     if (messageData.request_type === 0) {
       try {
@@ -63,15 +63,14 @@ wss.on("connection", async (ws: Socket) => {
       ws.send(JSON.stringify(data));
       return;
     } else {
-      const flattened = flattenData(messageData);
-      sendBigLog(flattened);
+      sendBigLog(messageData);
 
-      // For request type 2, we hardcode the firmware version and send it back
       ws.send(
         JSON.stringify({
-          firmware_version: "2.2.4",
+          firmware_version: "2.2.4", // hardcoded firmware
         }),
       );
+      return;
     }
   });
 

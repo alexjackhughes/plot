@@ -21,7 +21,23 @@ export interface SendSettings {
   request_type: 1;
 }
 
-export const getData = (data: any): WearableEvent | SendSettings => {
+export interface VersionSettings {
+  charger_id: string;
+  firmware_version: string;
+  request_type: 2;
+}
+
+export const getData = (
+  data: any,
+): WearableEvent | SendSettings | VersionSettings => {
+  if (data.request_type === 2) {
+    return {
+      charger_id: data?.charger_id || "",
+      firmware_version: data?.firmware_version || "",
+      request_type: 2,
+    };
+  }
+
   if (data.request_type === 1) {
     return {
       device_id: data?.device_id,
@@ -43,7 +59,9 @@ export const getData = (data: any): WearableEvent | SendSettings => {
   };
 };
 
-export function flattenData(data: WearableEvent | SendSettings): any {
+export function flattenData(
+  data: WearableEvent | SendSettings | VersionSettings,
+): any {
   // Check for the type of data based on request_type
   if (data.request_type === 0) {
     // Data is of SendingData type

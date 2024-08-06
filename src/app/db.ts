@@ -11,7 +11,7 @@ export const getWearable = async (displayId: string): Promise<any> => {
     });
 
     if (!wearable) {
-      throw new Error("Wearable not found");
+      return console.error("Wearable not found");
     }
 
     return wearable;
@@ -32,7 +32,7 @@ export const getBeacon = async (displayId: string) => {
     });
 
     if (!beacon) {
-      throw new Error("Beacon not found");
+      return console.error("Beacon not found");
     }
 
     return beacon;
@@ -83,7 +83,7 @@ export const insertEvent = async (
       });
     }
   } catch (error) {
-    console.log(
+    console.error(
       "ERROR: Inserting event",
       usableEvent?.displayId,
       wearable.id,
@@ -119,7 +119,7 @@ export async function getOrganizationById(organizationId: string) {
     return organization;
   } catch (error) {
     console.error("Error fetching organization:", error);
-    throw error;
+    return;
   } finally {
     // Disconnect the Prisma Client
     await prisma.$disconnect();

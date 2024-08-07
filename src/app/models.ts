@@ -1,7 +1,7 @@
 export interface WearableEventTime {
-  year?: number;
-  month?: number;
-  day?: number;
+  year: number;
+  month: number;
+  day: number;
   hour: number;
   minute: number;
   second: number;
@@ -50,6 +50,9 @@ export const getData = (
       hour: data?.event_time?.hour,
       minute: data?.event_time?.minute,
       second: data?.event_time?.second,
+      day: data?.event_time?.day,
+      month: data?.event_time?.month,
+      year: data?.event_time?.year,
     },
     event_type: data?.event_type,
     device_id: data?.device_id,

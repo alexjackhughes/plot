@@ -11,7 +11,8 @@ export const getWearable = async (displayId: string): Promise<any> => {
     });
 
     if (!wearable) {
-      return console.error("Wearable not found");
+      console.error("Wearable not found");
+      return;
     }
 
     return wearable;

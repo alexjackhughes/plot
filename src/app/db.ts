@@ -21,7 +21,7 @@ export const getWearable = async (displayId: string): Promise<any> => {
   }
 };
 
-export const getBeacon = async (displayId: string) => {
+export const getBeacon = async (displayId: string): Promise<Beacon> => {
   try {
     console.log("Getting beacon with displayId:", displayId);
 
@@ -32,7 +32,8 @@ export const getBeacon = async (displayId: string) => {
     });
 
     if (!beacon) {
-      return console.error("Beacon not found");
+      console.error("Beacon not found");
+      return;
     }
 
     return beacon;

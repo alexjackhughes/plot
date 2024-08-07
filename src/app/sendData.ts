@@ -89,7 +89,6 @@ And then another function that fetches:
 import { Wearable } from "@prisma/client";
 import { getOrganizationById, getWearable } from "./db";
 import { SendSettings } from "./models";
-import { sendBigLog } from "./logging";
 
 interface BeaconTypeToWeableId {
   [key: string]: string[];
@@ -104,6 +103,10 @@ export const sendData = async (
 
   // 1. We fetch the wearable from its display id
   const wearable = await getWearable(settings.device_id);
+  if (!wearable) {
+    console.error("Wearable not found");
+    return;
+  }
 
   // 2. We fetch the organisation from the org id
   const org = await getOrganizationById(wearable.organizationId);

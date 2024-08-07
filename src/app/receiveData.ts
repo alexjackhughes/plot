@@ -197,7 +197,10 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
   console.log("Event received:", message);
 
   let wearable = await getWearable(usableEvent.displayId);
-  if (!wearable) return console.error("Wearable not found");
+  if (!wearable) {
+    console.error("Wearable not found");
+    return;
+  }
 
   await wearableUpdated(wearable.id);
 
@@ -206,7 +209,10 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
   // 2. If the event is a beacon event, get the beacon details
   if (usableEvent.isBeacon) {
     beacon = await getBeacon(usableEvent.beaconId);
-    if (!beacon) return console.error("Beacon not found");
+    if (!beacon) {
+      console.error("Beacon not found");
+      return;
+    }
 
     await beaconUpdated(beacon.id);
   }

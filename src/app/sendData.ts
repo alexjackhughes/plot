@@ -101,6 +101,9 @@ export const sendData = async (
   // 0. For testing data quickly
   // return fakeWearableSettings(settings.device_id || "123");
 
+  const isCoachman = ["0013", "0019", "0027"].includes(settings.device_id);
+  const alertDisabled = isCoachman ? 0 : 1;
+
   // 1. We fetch the wearable from its display id
   const wearable = await getWearable(settings.device_id);
   if (!wearable) {
@@ -147,10 +150,10 @@ export const sendData = async (
       trigger_condition: 3,
     },
     sensor_MIC: {
-      enable: 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      enable: alertDisabled,
+      icon_display: alertDisabled,
+      vibration_alert: alertDisabled,
+      sound_alert: alertDisabled,
       trigger_condition: 80,
     },
     sensor_PPE1: {

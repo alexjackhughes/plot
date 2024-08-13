@@ -147,7 +147,7 @@ export const sendData = async (
       icon_display: 1,
       vibration_alert: 0,
       sound_alert: 0,
-      trigger_condition: 3,
+      trigger_condition: isCoachman ? 5 : 3,
     },
     sensor_MIC: {
       enable: alertDisabled,

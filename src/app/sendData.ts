@@ -153,7 +153,7 @@ export const sendData = async (
       enable: alertDisabled,
       icon_display: alertDisabled,
       vibration_alert: alertDisabled,
-      sound_alert: alertDisabled,
+      sound_alert: 0,
       trigger_condition: 80,
     },
     sensor_PPE1: {

@@ -66,6 +66,7 @@ export const insertEvent = async (
           organizationId: wearable.organizationId,
           userId: wearable.userId,
           duration: usableEvent.duration,
+          severity: returnSeverenessOfEvent(usableEvent),
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -79,6 +80,7 @@ export const insertEvent = async (
           userId: wearable.userId,
           organizationId: wearable.organizationId,
           duration: usableEvent.duration,
+          severity: returnSeverenessOfEvent(usableEvent),
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -96,6 +98,21 @@ export const insertEvent = async (
   } finally {
     await prisma.$disconnect();
   }
+};
+
+const returnSeverenessOfEvent = (usableEvent: UsableEvent): number => {
+  if (
+    usableEvent.eventType === "PreventativeProtectiveEquipment" ||
+    usableEvent.eventType === "HandArmVibration"
+  ) {
+    return 0;
+  }
+
+  if (usableEvent.duration > 120) {
+    return 10;
+  }
+
+  return 0;
 };
 
 export async function getOrganizationById(organizationId: string) {

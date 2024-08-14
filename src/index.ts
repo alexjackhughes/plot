@@ -45,6 +45,8 @@ wss.on("connection", async (ws: Socket) => {
         const flattened = flattenData(messageData);
         sendBigLog(flattened);
 
+        if (process.env.FAKE_DB === "true") return;
+
         // Here we insert the event into the database
         await receiveData(messageData);
       } catch (error) {
@@ -57,6 +59,8 @@ wss.on("connection", async (ws: Socket) => {
       return;
     } else if (messageData.request_type === 1) {
       console.log("Sending settings:");
+
+      if (process.env.FAKE_DB === "true") return;
 
       // Fetch the settings and send them back to the device
       let data = await sendData(messageData);

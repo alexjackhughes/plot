@@ -107,7 +107,7 @@ model Organization {
 model OrganizationAllowList {
   id        String   @id @default(dbgenerated("gen_random_uuid()"))
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   email     String
 
   organization   Organization @relation(fields: [organizationId], references: [id])
@@ -120,7 +120,7 @@ model OrganizationAllowList {
 model BeaconType {
   id         String     @id @default(dbgenerated("gen_random_uuid()"))
   createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt @default(now())
+  updatedAt  DateTime   @default(now()) @updatedAt
   descriptor Descriptor
   allowList  Wearable[]
 
@@ -137,7 +137,7 @@ model Wearable {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   displayName String?
-  displayId   String? @unique
+  displayId   String?  @unique
 
   user   User?
   userId String? @unique
@@ -150,6 +150,7 @@ model Wearable {
   beacon   Beacon? @relation(fields: [beaconId], references: [id])
   beaconId String?
 
+  // Why would a wearable need a beacon type?
   BeaconType   BeaconType? @relation(fields: [beaconTypeId], references: [id])
   beaconTypeId String?
 
@@ -200,11 +201,12 @@ model Event {
   eventType      EventType
   deviceId       String?
   beaconId       String?
-  userId         String?   @unique
+  userId         String?
   organizationId String
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   duration       Int
+  severity       Int? // 10 being severe, but also allowing us in future to have different levels of severity
 
   user         User?        @relation(fields: [userId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id])

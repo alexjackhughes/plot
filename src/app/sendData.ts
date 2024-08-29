@@ -102,7 +102,10 @@ export const sendData = async (
   // return fakeWearableSettings(settings.device_id || "123");
 
   const isCoachman = ["0013", "0019", "0027"].includes(settings.device_id);
-  const alertDisabled = isCoachman ? 0 : 1;
+  const isStatom = ["0018", "0023", "0003", "0001"].includes(
+    settings.device_id,
+  );
+  const alertDisabled = isCoachman || isStatom ? 0 : 1;
 
   // 1. We fetch the wearable from its display id
   const wearable = await getWearable(settings.device_id);

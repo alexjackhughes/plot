@@ -88,7 +88,7 @@ And then another function that fetches:
 
 import { Wearable } from "@prisma/client";
 import { getOrganizationById, getWearable } from "./db";
-import { SendSettings } from "./models";
+import { SendSettings } from "./data";
 
 interface BeaconTypeToWeableId {
   [key: string]: string[];

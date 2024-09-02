@@ -4,7 +4,7 @@ import { close } from "./utils/message.js";
 import { WebSocketServer } from "ws";
 
 import { sendBigLog } from "./app/logging.js";
-import { flattenData, getData } from "./app/models.js";
+import { flattenData, getData } from "./app/data.js";
 import { sendData } from "./app/sendData.js";
 import { receiveData } from "./app/receiveData.js";
 

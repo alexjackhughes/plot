@@ -1,31 +1,4 @@
-export interface WearableEventTime {
-  year: number;
-  month: number;
-  day: number;
-  hour: number;
-  minute: number;
-  second: number;
-}
-
-export interface WearableEvent {
-  event_time: WearableEventTime;
-  event_type: number;
-  device_id: string;
-  beacon_minor: string;
-  duration: number;
-  request_type: 0;
-}
-
-export interface SendSettings {
-  device_id: string;
-  request_type: 1;
-}
-
-export interface VersionSettings {
-  charger_id: string;
-  firmware_version: string;
-  request_type: 2;
-}
+import { SendSettings, VersionSettings, WearableEvent } from "~/models/models";
 
 export const getData = (
   data: any,
@@ -42,6 +15,9 @@ export const getData = (
     return {
       device_id: data?.device_id,
       request_type: 1,
+      version: data?.version || "2.4.0",
+      first_request: data?.first_request || 0,
+      charger_id: data?.charger_id || "",
     };
   }
 
@@ -58,6 +34,9 @@ export const getData = (
     device_id: data?.device_id,
     beacon_minor: data?.beacon_minor,
     duration: data?.duration,
+    imu_level: data?.imu_level,
+    charger_id: data?.charger_id || "",
+    beacon_battery: data?.beacon_battery,
     request_type: 0,
   };
 };

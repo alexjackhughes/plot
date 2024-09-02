@@ -73,7 +73,7 @@ import {
   insertEvent,
   wearableUpdated,
 } from "./db";
-import { WearableEvent, WearableEventTime } from "./models";
+import { WearableEvent, WearableEventTime } from "~/models/models";
 
 type WearableEventType =
   | "HandArmVibration"

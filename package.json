@@ -13,19 +13,24 @@
     "dev:run": "node --inspect --no-warnings --loader ./dist/dev.js --watch dist/src",
     "build": "esbuild index=./src --bundle --minify --outdir=dist --packages=external --platform=node",
     "start": "node dist",
+    "test": "jest",
     "format": "npx prettier . --write"
   },
   "dependencies": {
     "@prisma/client": "^5.14.0",
     "@supabase/supabase-js": "^2.39.8",
+    "dayjs": "^1.11.13",
     "esbuild": "^0.17.16",
     "logsnag": "^1.0.0",
     "ws": "^8.13.0"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.12",
     "@types/node": "^18.15.11",
     "@types/ws": "^8.5.4",
+    "jest": "^29.7.0",
     "prettier": "3.2.5",
-    "prisma": "^5.14.0"
+    "prisma": "^5.14.0",
+    "ts-jest": "^29.2.5"
   }
 }

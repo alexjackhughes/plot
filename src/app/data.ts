@@ -1,4 +1,4 @@
-import { SendSettings, VersionSettings, WearableEvent } from "~/models/models";
+import { SendSettings, VersionSettings, WearableEvent } from "../models/models";
 
 export const getData = (
   data: any,

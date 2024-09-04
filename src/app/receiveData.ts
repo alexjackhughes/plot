@@ -67,13 +67,15 @@ c) We send an ACK back to the device
 
 import { Beacon } from "@prisma/client";
 import {
-  beaconUpdated,
+  updateBeacon,
   getBeacon,
   getWearable,
   insertEvent,
   wearableUpdated,
+  getChargingStation,
+  addWearable,
 } from "./db";
-import { WearableEvent, WearableEventTime } from "~/models/models";
+import { WearableEvent, WearableEventTime } from "../models/models";
 
 type WearableEventType =
   | "HandArmVibration"
@@ -172,7 +174,12 @@ export interface UsableEvent {
   beaconId?: string | null;
   isBeacon: boolean;
   duration: number; // seconds and they are rounded up
-  beacon: ProximityDetails;
+  beacon?: ProximityDetails;
+
+  // New things
+  imuLevel?: "low" | "medium" | "high" | "extreme";
+  beaconBattery?: number;
+  chargerId?: string;
 }
 
 const createUsableEvent = (input: WearableEvent): UsableEvent => {
@@ -181,10 +188,16 @@ const createUsableEvent = (input: WearableEvent): UsableEvent => {
     eventType: getWearableEventType(input.event_type),
     displayId: input.device_id,
     beaconId:
-      input.beacon_minor === "0" ? null : input.beacon_minor.toLocaleString(),
+      input.beacon_minor === "0" ? null : input.beacon_minor?.toLocaleString(),
     isBeacon: input.beacon_minor === "0" ? false : true,
     duration: convertMillisecondsToSeconds(input.duration),
-    beacon: getProximityDetails(input.beacon_minor.toLocaleString()),
+    beacon: input.beacon_minor
+      ? getProximityDetails(input.beacon_minor.toLocaleString())
+      : undefined,
+
+    beaconBattery: input.beacon_battery || undefined,
+    chargerId: input.charger_id || undefined,
+    imuLevel: (input.imu_level as any) || undefined,
   };
 };
 
@@ -193,13 +206,25 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
   const usableEvent = createUsableEvent(event);
 
   // For railway log
-  const message = JSON.stringify(usableEvent, null, 2);
-  console.log("Event received:", message);
+  const message = JSON.stringify(event, null, 2);
+  console.log("Usable Event received:", message);
 
   let wearable = await getWearable(usableEvent.displayId);
+
   if (!wearable) {
-    console.error("Wearable not found");
-    return;
+    const charger = usableEvent.chargerId
+      ? await getChargingStation(usableEvent.chargerId)
+      : false;
+
+    if (!charger) {
+      console.error("Wearable+charging station not found");
+      return;
+    }
+
+    await addWearable({
+      id: usableEvent.displayId,
+      organizationId: charger.organizationId,
+    });
   }
 
   await wearableUpdated(wearable.id);
@@ -209,12 +234,13 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
   // 2. If the event is a beacon event, get the beacon details
   if (usableEvent.isBeacon) {
     beacon = await getBeacon(usableEvent.beaconId);
+
     if (!beacon) {
       console.error("Beacon not found");
       return;
     }
 
-    await beaconUpdated(beacon.id);
+    await updateBeacon(beacon.id, beacon.battery || 100);
   }
 
   // 3. Store the event in the database

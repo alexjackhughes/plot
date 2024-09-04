@@ -8,116 +8,12 @@ export interface HavStub {
   duration: number;
 }
 
-// Imagine that we got a bunch of HAVs, and they are ready to be processed. TICK
-// The first step is to group them by their created at date. TICK
-// We then map through those groups, and reduce them to a single HAV for each of the imu levels.
-// We then, then to go through each group of imu levels, and fix the durations. This would create a list of HAVs ready to be saved.
+export function processHavs(havs: HavStub[]): HavStub[] {
+  const groupedHavs = groupHavsByDate(havs);
+  const aggregatedHavs = aggregateHavsByIMU(groupedHavs);
 
-const havs: HavStub[] = [
-  // 10 HAV stubs within 1 hour of each other (starting from 9:00 AM)
-  {
-    imu_level: "low",
-    created_at: new Date("2023-09-02T09:00:00Z"),
-    duration: 10,
-  },
-  {
-    imu_level: "medium",
-    created_at: new Date("2023-09-02T09:05:00Z"),
-    duration: 15,
-  },
-  {
-    imu_level: "high",
-    created_at: new Date("2023-09-02T09:10:00Z"),
-    duration: 20,
-  },
-  {
-    imu_level: "extreme",
-    created_at: new Date("2023-09-02T09:15:00Z"),
-    duration: 25,
-  },
-  {
-    imu_level: "low",
-    created_at: new Date("2023-09-02T09:20:00Z"),
-    duration: 30,
-  },
-  {
-    imu_level: "medium",
-    created_at: new Date("2023-09-02T09:25:00Z"),
-    duration: 12,
-  },
-  {
-    imu_level: "high",
-    created_at: new Date("2023-09-02T09:30:00Z"),
-    duration: 18,
-  },
-  {
-    imu_level: "extreme",
-    created_at: new Date("2023-09-02T09:35:00Z"),
-    duration: 22,
-  },
-  {
-    imu_level: "low",
-    created_at: new Date("2023-09-02T09:40:00Z"),
-    duration: 28,
-  },
-  {
-    imu_level: "medium",
-    created_at: new Date("2023-09-02T09:45:00Z"),
-    duration: 32,
-  },
-
-  // 10 HAV stubs at random times throughout the day
-  {
-    imu_level: "high",
-    created_at: new Date("2023-09-02T00:15:00Z"),
-    duration: 14,
-  },
-  {
-    imu_level: "extreme",
-    created_at: new Date("2023-09-02T02:30:00Z"),
-    duration: 16,
-  },
-  {
-    imu_level: "low",
-    created_at: new Date("2023-09-02T05:45:00Z"),
-    duration: 20,
-  },
-  {
-    imu_level: "medium",
-    created_at: new Date("2023-09-02T08:00:00Z"),
-    duration: 18,
-  },
-  {
-    imu_level: "high",
-    created_at: new Date("2023-09-02T11:20:00Z"),
-    duration: 15,
-  },
-  {
-    imu_level: "extreme",
-    created_at: new Date("2023-09-02T13:55:00Z"),
-    duration: 10,
-  },
-  {
-    imu_level: "low",
-    created_at: new Date("2023-09-02T16:10:00Z"),
-    duration: 25,
-  },
-  {
-    imu_level: "medium",
-    created_at: new Date("2023-09-02T19:35:00Z"),
-    duration: 30,
-  },
-  {
-    imu_level: "high",
-    created_at: new Date("2023-09-02T21:50:00Z"),
-    duration: 35,
-  },
-  {
-    imu_level: "extreme",
-    created_at: new Date("2023-09-02T23:00:00Z"),
-    duration: 40,
-  },
-];
+  return fixDurations(aggregatedHavs).filter((hav) => hav.duration > 0);
+}
 
 export function groupHavsByDate(havs: HavStub[]): HavStub[][] {
   if (havs.length === 0) return [];
@@ -189,44 +85,115 @@ export function aggregateHavsByIMU(havs: HavStub[][]): HavStub[][] {
   });
 }
 
+/**
+ * Takes a set group of HAVs and fixes the durations, so that the final result can be saved in the database.
+
+Like let’s say someone was on extreme for 60 seconds, what events will I get?
+> Low 60s
+> Medium 60s
+> High 60s
+> Extreme 60s
+
+So, we should return:
+> Low 0s
+> Medium 0s
+> High 0s
+> Extreme 60s
+
+What about if it starts low for 30s and goes extreme for 30s on the same event?
+> Low 60s
+> Medium 30s
+> High 30s
+> Extreme 30s
+
+So, we should return:
+> Low 30s
+> Medium 0s
+> High 0s
+> Extreme 10s
+
+Assuming HAV goes from low 10 seconds, medium 10 seconds, high 10 seconds, extreme 10 seconds, the event would be:
+> Low 40s
+> Medium 30s
+> High 20s
+> Extreme 10s
+
+So, we should return:
+> Low 10s
+> Medium 10s
+> High 10s
+> Extreme 10s
+
+ */
 export function fixDurations(havs: HavStub[][]): HavStub[] {
   const fixedHavs: HavStub[] = [];
 
-  havs.map((group) => {
-    /**
-   [02/09/2024, 13:45:11] Ian: Like let’s say someone was on extreme for 60 seconds, what events will I get?
-   >Low 60s
-   >Medium 60s
-   >High 60s
-   >Extreme 60s
-Is it going to be four events (low, medium, high, extreme) all at 60 seconds?
-   >yse
-What about if it starts low for 30s and goes extreme for 30s on the same event?
-  >Low 60s
-   >Medium 30s
-   >High 30s
-   >Extreme 30s
-[02/09/2024, 13:47:14] Ian: Assuming HAV goes from low 10 seconds Medium 10 seconds High 10 seconds Extreme 10 seconds the event would be
->Low 40s
->Medium 30s
->High 20s
->Extreme 10s
-     */
+  // Process each group of HAVs (each group is within the same time frame)
+  havs.forEach((group) => {
+    // Initialize variables for remaining time at each IMU level
+    let remainingLowTime = 0;
+    let remainingMediumTime = 0;
+    let remainingHighTime = 0;
+    let remainingExtremeTime = 0;
+
+    // Iterate through the group and calculate remaining times
+    group.forEach((hav) => {
+      switch (hav.imu_level) {
+        case "low":
+          remainingLowTime += hav.duration;
+          break;
+        case "medium":
+          remainingMediumTime += hav.duration;
+          break;
+        case "high":
+          remainingHighTime += hav.duration;
+          break;
+        case "extreme":
+          remainingExtremeTime += hav.duration;
+          break;
+      }
+    });
+
+    // Apply the logic to adjust the times
+    // Extreme keeps its full duration, others adjust based on higher levels
+
+    // High gets its own duration reduced by the extreme time
+    const adjustedHighTime = Math.max(
+      remainingHighTime - remainingExtremeTime,
+      0,
+    );
+    // Medium gets reduced by both high and extreme time
+    const adjustedMediumTime = Math.max(
+      remainingMediumTime - remainingHighTime,
+      0,
+    );
+    // Low gets reduced by medium, high, and extreme
+    const adjustedLowTime = Math.max(remainingLowTime - remainingMediumTime, 0);
+
+    // Create the adjusted HAV objects and push them into the result
+    fixedHavs.push(
+      {
+        imu_level: "low",
+        created_at: group[0].created_at,
+        duration: adjustedLowTime,
+      },
+      {
+        imu_level: "medium",
+        created_at: group[0].created_at,
+        duration: adjustedMediumTime,
+      },
+      {
+        imu_level: "high",
+        created_at: group[0].created_at,
+        duration: adjustedHighTime,
+      },
+      {
+        imu_level: "extreme",
+        created_at: group[0].created_at,
+        duration: remainingExtremeTime,
+      },
+    );
   });
 
-  // this can then be used to create these events
   return fixedHavs;
 }
-
-const getPreviousIMULevel = (imuLevel: ImuLevel): ImuLevel => {
-  switch (imuLevel) {
-    case "low":
-      return "low";
-    case "medium":
-      return "low";
-    case "high":
-      return "medium";
-    case "extreme":
-      return "high";
-  }
-};

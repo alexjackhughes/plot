@@ -1,6 +1,7 @@
-import { Beacon, Wearable } from "@prisma/client";
+import { Beacon, EventType, Wearable } from "@prisma/client";
 import prisma from "../../prisma/db";
 import { UsableEvent } from "./receiveData";
+import { HavStub, ImuLevel } from "../utils/havs";
 
 export const getWearable = async (displayId: string): Promise<any> => {
   try {
@@ -54,6 +55,21 @@ export const insertEvent = async (
   try {
     console.log("Adding event");
 
+    if (usableEvent.eventType === "HandArmVibration") {
+      await prisma.hav_events.create({
+        data: {
+          timestamp: usableEvent.eventDate,
+          deviceId: wearable.id,
+          organizationId: wearable.organizationId,
+          imuLevel: translateImuLeveltoDBSchema(usableEvent.imuLevel),
+          duration: usableEvent.duration,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      });
+      return;
+    }
+
     if (usableEvent.isBeacon && beacon) {
       const eventType = beacon.type;
 
@@ -71,6 +87,7 @@ export const insertEvent = async (
           updatedAt: new Date(),
         },
       });
+      return;
     } else {
       await prisma.event.create({
         data: {
@@ -97,6 +114,38 @@ export const insertEvent = async (
     throw error;
   } finally {
     await prisma.$disconnect();
+  }
+};
+
+type SafeImuLevel = "Low" | "Medium" | "High" | "Extreme";
+
+const translateImuLeveltoDBSchema = (imuLevel: string): SafeImuLevel => {
+  switch (imuLevel) {
+    case "low":
+      return "Low";
+    case "medium":
+      return "Medium";
+    case "high":
+      return "High";
+    case "extreme":
+      return "Extreme";
+    default:
+      return "Low";
+  }
+};
+
+export const translateImuSchemaToModel = (imuLevel: SafeImuLevel): ImuLevel => {
+  switch (imuLevel) {
+    case "Low":
+      return "low";
+    case "Medium":
+      return "medium";
+    case "High":
+      return "high";
+    case "Extreme":
+      return "extreme";
+    default:
+      return "low";
   }
 };
 
@@ -158,7 +207,7 @@ export const wearableUpdated = async (id: string) => {
   });
 };
 
-export const beaconUpdated = async (id: string) => {
+export const updateBeacon = async (id: string, battery: number) => {
   const date = new Date();
 
   await prisma.beacon.update({
@@ -167,6 +216,93 @@ export const beaconUpdated = async (id: string) => {
     },
     data: {
       updatedAt: date,
+      battery,
+    },
+  });
+};
+
+export const getHavEvents = async (organizationId: string) => {
+  try {
+    const havEvents = await prisma.hav_events.findMany({
+      where: {
+        organizationId,
+      },
+    });
+
+    return havEvents;
+  } catch (error) {
+    console.error("Error fetching HAV events:", error);
+    return;
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
+export const addHavEvents = async ({
+  organisationId,
+  deviceId,
+  havEvents,
+}: {
+  organisationId: string;
+  deviceId: string;
+  havEvents: HavStub[];
+}) => {
+  const data = havEvents.map((hav) => {
+    return {
+      timestamp: hav.created_at,
+      eventType: "HandArmVibration" as EventType,
+      deviceId: deviceId,
+      organizationId: organisationId,
+      duration: hav.duration,
+      severity: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  });
+
+  await prisma.event.createMany({
+    data,
+  });
+};
+
+export const deleteHavEvents = async (organizationId: string) => {
+  try {
+    await prisma.hav_events.deleteMany({
+      where: {
+        organizationId,
+      },
+    });
+  } catch (error) {
+    console.error("Error deleting HAV events:", error);
+    return;
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
+export const getChargingStation = async (id: string) => {
+  const chargingStation = prisma.chargingStation.findUnique({
+    where: {
+      id,
+    },
+  });
+  return chargingStation;
+};
+
+export const addWearable = async ({
+  id,
+  organizationId,
+}: {
+  id: string;
+  organizationId: string;
+}) => {
+  await prisma.wearable.create({
+    data: {
+      displayId: id,
+      organizationId,
+
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   });
 };

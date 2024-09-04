@@ -87,8 +87,16 @@ And then another function that fetches:
 */
 
 import { Wearable } from "@prisma/client";
-import { getOrganizationById, getWearable } from "./db";
-import { SendSettings } from "./data";
+import {
+  addHavEvents,
+  deleteHavEvents,
+  getHavEvents,
+  getOrganizationById,
+  getWearable,
+  translateImuSchemaToModel,
+} from "./db";
+import { HavStub, processHavs } from "../utils/havs";
+import { SendSettings } from "../models/models";
 
 interface BeaconTypeToWeableId {
   [key: string]: string[];
@@ -97,15 +105,43 @@ interface BeaconTypeToWeableId {
 export const sendData = async (
   settings: SendSettings,
 ): Promise<WearableSettings> => {
+  if (settings?.first_request === 1) {
+    // Here is where we process havs
+    // 1. Fetch the organisation
+    const wearable = await getWearable(settings.device_id);
+
+    if (!wearable) {
+      console.error("Wearable not found");
+      return;
+    }
+
+    const orgId = wearable.organizationId;
+
+    // 2. Fetch the HAV Events
+    const havs = await getHavEvents(orgId);
+    const formattedHavs: HavStub[] = havs.map((hav) => ({
+      imu_level: translateImuSchemaToModel(hav.imuLevel),
+      created_at: hav.timestamp,
+      duration: hav.duration,
+    }));
+
+    // 3. Process the HAV Events
+    const processedHavEvents = await processHavs(formattedHavs);
+
+    // 4. Update the HAV events into Events
+    await addHavEvents({
+      organisationId: orgId,
+      deviceId: wearable.displayId,
+      havEvents: processedHavEvents,
+    });
+
+    // 5. Delete all HAV Events
+    await deleteHavEvents(orgId);
+  }
+
   let wearableSettings: WearableSettings;
   // 0. For testing data quickly
   // return fakeWearableSettings(settings.device_id || "123");
-
-  const isCoachman = ["0013", "0019", "0027"].includes(settings.device_id);
-  const isStatom = ["0018", "0023", "0003", "0001"].includes(
-    settings.device_id,
-  );
-  const alertDisabled = isCoachman || isStatom ? 0 : 1;
 
   // 1. We fetch the wearable from its display id
   const wearable = await getWearable(settings.device_id);
@@ -145,17 +181,39 @@ export const sendData = async (
   // 4. Map the distances to the org ones with ternary checks for exemptions
   wearableSettings = {
     device_id: settings.device_id,
-    sensor_haptic: {
+    sensor_haptic_low: {
       enable: 1,
       icon_display: 1,
       vibration_alert: 0,
       sound_alert: 0,
-      trigger_condition: isCoachman ? 5 : 3,
+      trigger_condition: 3,
     },
+    sensor_haptic_medium: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 0,
+      sound_alert: 0,
+      trigger_condition: 5,
+    },
+    sensor_haptic_high: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 0,
+      sound_alert: 0,
+      trigger_condition: 10,
+    },
+    sensor_haptic_extreme: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 0,
+      sound_alert: 0,
+      trigger_condition: 15,
+    },
+
     sensor_MIC: {
-      enable: alertDisabled,
-      icon_display: alertDisabled,
-      vibration_alert: alertDisabled,
+      enable: 0,
+      icon_display: 0,
+      vibration_alert: 0,
       sound_alert: 0,
       trigger_condition: 80,
     },
@@ -243,14 +301,22 @@ interface BeaconTypeMap {
 
 export interface WearableSettings {
   device_id: string;
-  sensor_haptic: SensorConfig;
+
+  sensor_haptic_low: SensorConfig;
+  sensor_haptic_medium: SensorConfig;
+  sensor_haptic_high: SensorConfig;
+  sensor_haptic_extreme: SensorConfig;
+
   sensor_MIC: SensorConfig;
+
   sensor_PPE1: SensorConfig;
   sensor_PPE2: SensorConfig;
   sensor_PPE3: SensorConfig;
+
   sensor_access1: SensorConfig;
   sensor_access2: SensorConfig;
   sensor_access3: SensorConfig;
+
   sensor_forklift1: SensorConfig;
   sensor_forklift2: SensorConfig;
   sensor_forklift3: SensorConfig;

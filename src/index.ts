@@ -36,8 +36,8 @@ wss.on("connection", async (ws: Socket) => {
     const messageData = getData(JSON.parse(data.toString()));
 
     // Log for Railway
-    // const message = data.toString();
-    // console.log("Device Message:", message, messageData.request_type);
+    const message = data.toString();
+    console.log("Raw Device Message:", message, messageData.request_type);
 
     if (messageData.request_type === 0) {
       try {
@@ -69,9 +69,14 @@ wss.on("connection", async (ws: Socket) => {
     } else {
       sendBigLog(messageData);
 
+      // This is an allowed list for OTA updates of firmware
+      const firmware_version = ["0000"].includes(messageData.charger_id)
+        ? "2.2.5"
+        : "2.2.4";
+
       ws.send(
         JSON.stringify({
-          firmware_version: "2.2.4", // hardcoded firmware
+          firmware_version,
         }),
       );
       return;

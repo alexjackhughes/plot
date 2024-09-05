@@ -105,6 +105,8 @@ interface BeaconTypeToWeableId {
 export const sendData = async (
   settings: SendSettings,
 ): Promise<WearableSettings> => {
+  console.log("first request:", settings.first_request);
+
   if (settings?.first_request === 1) {
     console.log("A first request has been made");
     // Here is where we process havs

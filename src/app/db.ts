@@ -242,18 +242,18 @@ export const getHavEvents = async (organizationId: string) => {
 
 export const addHavEvents = async ({
   organisationId,
-  deviceId,
+  displayId,
   havEvents,
 }: {
   organisationId: string;
-  deviceId: string;
+  displayId: string;
   havEvents: HavStub[];
 }) => {
   const data = havEvents.map((hav) => {
     return {
       timestamp: hav.created_at,
       eventType: "HandArmVibration" as EventType,
-      deviceId: deviceId,
+      displayId: displayId,
       organizationId: organisationId,
       duration: hav.duration,
       severity: 0,

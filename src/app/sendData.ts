@@ -148,7 +148,7 @@ export const sendData = async (
       // 4. Update the HAV events into Events
       await addHavEvents({
         organisationId: org.id,
-        deviceId: wearable.displayId,
+        displayId: wearable.displayId,
         havEvents: processedHavEvents,
       });
 

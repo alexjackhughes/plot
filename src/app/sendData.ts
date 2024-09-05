@@ -133,13 +133,13 @@ export const sendData = async (
         duration: hav.duration,
       }));
 
-      console.log("org fetched", org.id);
-      console.log(`HAV Events fetched:, ${havs.length}`);
+      console.log("org fetched:", org.id);
+      console.log(`HAV Events fetched: ${havs.length}`);
 
       // 3. Process the HAV Events
       const processedHavEvents = await processHavs(formattedHavs);
 
-      console.log(`Processed Events:, ${processedHavEvents.length}`);
+      console.log(`Processed Events: ${processedHavEvents.length}`);
 
       console.log("adding havs");
       // 4. Update the HAV events into Events

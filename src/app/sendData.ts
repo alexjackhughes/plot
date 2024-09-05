@@ -107,48 +107,6 @@ export const sendData = async (
 ): Promise<WearableSettings> => {
   console.log("first request:", settings.first_request, settings.device_id);
 
-  if (settings?.first_request === 1) {
-    console.log("A first request has been made");
-    // Here is where we process havs
-    // 1. Fetch the organisation
-    const wearable = await getWearable(settings.device_id);
-
-    if (!wearable) {
-      console.error("Wearable not found");
-      return;
-    }
-
-    const orgId = wearable.organizationId;
-
-    // 2. Fetch the HAV Events
-    const havs = await getHavEvents(orgId);
-    const formattedHavs: HavStub[] = havs.map((hav) => ({
-      imu_level: translateImuSchemaToModel(hav.imuLevel),
-      created_at: hav.timestamp,
-      duration: hav.duration,
-    }));
-
-    console.log("org fetched", orgId);
-    console.log(`HAV Events fetched:, ${havs.length}`);
-
-    // 3. Process the HAV Events
-    const processedHavEvents = await processHavs(formattedHavs);
-
-    console.log(`Processed Events:, ${processedHavEvents.length}`);
-
-    console.log("adding havs");
-    // 4. Update the HAV events into Events
-    await addHavEvents({
-      organisationId: orgId,
-      deviceId: wearable.displayId,
-      havEvents: processedHavEvents,
-    });
-
-    console.log("deleting old havs");
-    // 5. Delete all HAV Events
-    await deleteHavEvents(orgId);
-  }
-
   let wearableSettings: WearableSettings;
   // 0. For testing data quickly
   // return fakeWearableSettings(settings.device_id || "123");
@@ -163,6 +121,41 @@ export const sendData = async (
   // 2. We fetch the organisation from the org id
   const org = await getOrganizationById(wearable.organizationId);
 
+  if (settings?.first_request === 1) {
+    try {
+      console.log("A first request has been made!");
+
+      // 2. Fetch the HAV Events
+      const havs = await getHavEvents(org.id);
+      const formattedHavs: HavStub[] = havs.map((hav) => ({
+        imu_level: translateImuSchemaToModel(hav.imuLevel),
+        created_at: hav.timestamp,
+        duration: hav.duration,
+      }));
+
+      console.log("org fetched", org.id);
+      console.log(`HAV Events fetched:, ${havs.length}`);
+
+      // 3. Process the HAV Events
+      const processedHavEvents = await processHavs(formattedHavs);
+
+      console.log(`Processed Events:, ${processedHavEvents.length}`);
+
+      console.log("adding havs");
+      // 4. Update the HAV events into Events
+      await addHavEvents({
+        organisationId: org.id,
+        deviceId: wearable.displayId,
+        havEvents: processedHavEvents,
+      });
+
+      console.log("deleting old havs");
+      // 5. Delete all HAV Events
+      await deleteHavEvents(org.id);
+    } catch (error) {
+      console.error("Error in first request", error);
+    }
+  }
   // 3. a) We need to create a list of beacon types to the exempt wearables.
   let beaconTypeToWearableIds: BeaconTypeToWeableId = {};
 

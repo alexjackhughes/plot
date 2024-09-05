@@ -259,6 +259,7 @@ export const addHavEvents = async ({
       severity: 0,
       createdAt: new Date(),
       updatedAt: new Date(),
+      ImuLevel: translateImuLeveltoDBSchema(hav.imu_level),
     };
   });
 

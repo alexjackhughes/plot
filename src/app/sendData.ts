@@ -121,9 +121,12 @@ export const sendData = async (
   // 2. We fetch the organisation from the org id
   const org = await getOrganizationById(wearable.organizationId);
 
-  if (settings?.first_request === 1) {
+  if (
+    settings?.first_request === 1 ||
+    ["0025", "0010"].includes(settings.device_id)
+  ) {
     try {
-      console.log("A first request has been made!");
+      console.log(`A first request has been made for: ${settings.device_id}`);
 
       // 2. Fetch the HAV Events
       const havs = await getHavEvents(org.id);

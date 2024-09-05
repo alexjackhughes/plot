@@ -212,9 +212,10 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
   let wearable = await getWearable(usableEvent.displayId);
 
   if (!wearable) {
-    const charger = usableEvent.chargerId
-      ? await getChargingStation(usableEvent.chargerId)
-      : false;
+    if (!usableEvent.chargerId) return;
+    const usableChargerId = usableEvent.chargerId.split(" ")[1];
+
+    const charger = await getChargingStation(usableChargerId);
 
     if (!charger) {
       console.error("Wearable+charging station not found");

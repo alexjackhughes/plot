@@ -70,7 +70,7 @@ wss.on("connection", async (ws: Socket) => {
       sendBigLog(messageData);
 
       // This is an allowed list for OTA updates of firmware
-      const firmware_version = ["0000"].includes(messageData.charger_id)
+      const firmware_version = ["Dock 0000"].includes(messageData.charger_id)
         ? "2.2.5"
         : "2.2.4";
 

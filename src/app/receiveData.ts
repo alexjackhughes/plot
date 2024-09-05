@@ -189,7 +189,7 @@ const createUsableEvent = (input: WearableEvent): UsableEvent => {
     displayId: input.device_id,
     beaconId:
       input.beacon_minor === "0" ? null : input.beacon_minor?.toLocaleString(),
-    isBeacon: input.beacon_minor === "0" ? false : true,
+    isBeacon: input.event_type === 2,
     duration: convertMillisecondsToSeconds(input.duration),
     beacon: input.beacon_minor
       ? getProximityDetails(input.beacon_minor.toLocaleString())

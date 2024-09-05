@@ -24,6 +24,8 @@ export const getWearable = async (displayId: string): Promise<any> => {
 };
 
 export const getBeacon = async (displayId: string): Promise<Beacon> => {
+  if (!displayId) return;
+
   try {
     console.log("Getting beacon with displayId:", displayId);
 

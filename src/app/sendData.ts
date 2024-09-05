@@ -106,6 +106,7 @@ export const sendData = async (
   settings: SendSettings,
 ): Promise<WearableSettings> => {
   if (settings?.first_request === 1) {
+    console.log("A first request has been made");
     // Here is where we process havs
     // 1. Fetch the organisation
     const wearable = await getWearable(settings.device_id);
@@ -125,9 +126,14 @@ export const sendData = async (
       duration: hav.duration,
     }));
 
+    console.log(`HAV Events fetched:, ${havs.length}`);
+
     // 3. Process the HAV Events
     const processedHavEvents = await processHavs(formattedHavs);
 
+    console.log(`Processed Events:, ${processedHavEvents.length}`);
+
+    console.log("adding havs");
     // 4. Update the HAV events into Events
     await addHavEvents({
       organisationId: orgId,
@@ -135,6 +141,7 @@ export const sendData = async (
       havEvents: processedHavEvents,
     });
 
+    console.log("deleting old havs");
     // 5. Delete all HAV Events
     await deleteHavEvents(orgId);
   }

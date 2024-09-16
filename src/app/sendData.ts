@@ -143,6 +143,9 @@ export const sendData = async (
       const processedHavEvents = await processHavs(formattedHavs);
 
       console.log(`Processed Events: ${processedHavEvents.length}`);
+      processedHavEvents.map((hav) =>
+        console.log(`${hav.duration} - ${hav.imu_level}`),
+      );
 
       console.log("adding havs");
       // 4. Update the HAV events into Events

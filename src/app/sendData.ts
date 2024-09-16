@@ -123,7 +123,7 @@ export const sendData = async (
 
   if (
     settings?.first_request === 1 ||
-    ["0025", "0010"].includes(settings.device_id)
+    ["0135", "0136", "0146"].includes(settings.device_id)
   ) {
     try {
       console.log(`A first request has been made for: ${settings.device_id}`);

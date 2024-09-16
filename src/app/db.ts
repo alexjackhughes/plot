@@ -223,11 +223,15 @@ export const updateBeacon = async (id: string, battery: number) => {
   });
 };
 
-export const getHavEvents = async (organizationId: string) => {
+export const getHavEventsByWearableId = async (
+  organizationId: string,
+  wearableId: string,
+) => {
   try {
     const havEvents = await prisma.hav_events.findMany({
       where: {
         organizationId,
+        deviceId: wearableId,
       },
     });
 

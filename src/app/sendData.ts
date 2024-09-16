@@ -90,7 +90,7 @@ import { Wearable } from "@prisma/client";
 import {
   addHavEvents,
   deleteHavEvents,
-  getHavEvents,
+  getHavEventsByWearableId,
   getOrganizationById,
   getWearable,
   translateImuSchemaToModel,
@@ -121,15 +121,12 @@ export const sendData = async (
   // 2. We fetch the organisation from the org id
   const org = await getOrganizationById(wearable.organizationId);
 
-  // allowed
-  let alwaysAdd = ["0135", "0136", "0146"].includes(settings.device_id);
-
   if (settings?.first_request === 1) {
     try {
       console.log(`A first request has been made for: ${settings.device_id}`);
 
       // 2. Fetch the HAV Events
-      const havs = await getHavEvents(org.id);
+      const havs = await getHavEventsByWearableId(org.id, wearable.id);
       const formattedHavs: HavStub[] = havs.map((hav) => ({
         imu_level: translateImuSchemaToModel(hav.imuLevel),
         created_at: hav.timestamp,
@@ -137,17 +134,18 @@ export const sendData = async (
       }));
 
       console.log("org fetched:", org.id);
+      console.log("wearable fetched:", wearable.id);
       console.log(`HAV Events fetched: ${havs.length}`);
+      havs.map((hav) => console.log(`${hav.duration} - ${hav.imuLevel}`));
 
       // 3. Process the HAV Events
       const processedHavEvents = await processHavs(formattedHavs);
 
-      console.log(`Processed Events: ${processedHavEvents.length}`);
+      console.log(`Processed Events fetched: ${processedHavEvents.length}`);
       processedHavEvents.map((hav) =>
         console.log(`${hav.duration} - ${hav.imu_level}`),
       );
 
-      console.log("adding havs");
       // 4. Update the HAV events into Events
       await addHavEvents({
         organisationId: org.id,
@@ -155,7 +153,6 @@ export const sendData = async (
         havEvents: processedHavEvents,
       });
 
-      console.log("deleting old havs");
       // 5. Delete all HAV Events
       await deleteHavEvents(org.id);
     } catch (error) {

@@ -121,10 +121,10 @@ export const sendData = async (
   // 2. We fetch the organisation from the org id
   const org = await getOrganizationById(wearable.organizationId);
 
-  if (
-    settings?.first_request === 1 ||
-    ["0135", "0136", "0146"].includes(settings.device_id)
-  ) {
+  // allowed
+  let alwaysAdd = ["0135", "0136", "0146"].includes(settings.device_id);
+
+  if (settings?.first_request === 1) {
     try {
       console.log(`A first request has been made for: ${settings.device_id}`);
 

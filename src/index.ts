@@ -69,6 +69,8 @@ wss.on("connection", async (ws: Socket) => {
     } else {
       sendBigLog(messageData);
 
+      // TO-DO: How this should work is 2.2.4 is stable, and then anything else is a beta
+
       ws.send(
         JSON.stringify({
           firmware_version: "2.2.6",

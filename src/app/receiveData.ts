@@ -199,11 +199,13 @@ const createUsableEvent = (input: WearableEvent): UsableEvent => {
 
     beaconBattery: input.beacon_battery || undefined,
     chargerId: input.charger_id || undefined,
-    imuLevel: (input.imu_level as any) || undefined,
+    imuLevel: imuLevelSelector(input.imu_level),
   };
 };
 
-const imuLevelSelector = (imuLevel: string): ImuLevel => {
+const imuLevelSelector = (imuLevel?: string): ImuLevel | undefined => {
+  if (!imuLevel) return undefined;
+
   const fixed = imuLevel.toLowerCase().replace(/\s+/g, "");
 
   switch (fixed) {

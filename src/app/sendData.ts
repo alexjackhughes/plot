@@ -105,7 +105,7 @@ interface BeaconTypeToWeableId {
 export const sendData = async (
   settings: SendSettings,
 ): Promise<WearableSettings> => {
-  console.log("first request:", settings.first_request, settings.device_id);
+  // console.log("first request:", settings.first_request, settings.device_id);
 
   let wearableSettings: WearableSettings;
   // 0. For testing data quickly
@@ -135,19 +135,19 @@ export const sendData = async (
 
       if (havs.length === 0) return;
 
-      console.log("org fetched:", org.id);
-      console.log("wearable fetched:", wearable.id);
+      // console.log("org fetched:", org.id);
+      // console.log("wearable fetched:", wearable.id);
 
-      console.log(`HAV Events fetched: ${havs.length}`);
-      havs.map((hav) => console.log(`${hav.duration} - ${hav.imuLevel}`));
+      // console.log(`HAV Events fetched: ${havs.length}`);
+      // havs.map((hav) => console.log(`${hav.duration} - ${hav.imuLevel}`));
 
       // 3. Process the HAV Events
       const processedHavEvents = await processHavs(formattedHavs);
 
-      console.log(`Processed Events fetched: ${processedHavEvents.length}`);
-      processedHavEvents.map((hav) =>
-        console.log(`${hav.duration} - ${hav.imu_level}`),
-      );
+      // console.log(`Processed Events fetched: ${processedHavEvents.length}`);
+      // processedHavEvents.map((hav) =>
+      //   console.log(`${hav.duration} - ${hav.imu_level}`),
+      // );
 
       // 4. Update the HAV events into Events
       await addHavEvents({

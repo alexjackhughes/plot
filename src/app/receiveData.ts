@@ -177,10 +177,12 @@ export interface UsableEvent {
   beacon?: ProximityDetails;
 
   // New things
-  imuLevel?: "low" | "medium" | "high" | "extreme";
+  imuLevel?: ImuLevel;
   beaconBattery?: number;
   chargerId?: string;
 }
+
+type ImuLevel = "low" | "medium" | "high" | "extreme";
 
 const createUsableEvent = (input: WearableEvent): UsableEvent => {
   return {
@@ -199,6 +201,23 @@ const createUsableEvent = (input: WearableEvent): UsableEvent => {
     chargerId: input.charger_id || undefined,
     imuLevel: (input.imu_level as any) || undefined,
   };
+};
+
+const imuLevelSelector = (imuLevel: string): ImuLevel => {
+  const fixed = imuLevel.toLowerCase().replace(/\s+/g, "");
+
+  switch (fixed) {
+    case "low":
+      return "low";
+    case "medium":
+      return "medium";
+    case "high":
+      return "high";
+    case "extreme":
+      return "extreme";
+    default:
+      return "low";
+  }
 };
 
 export const receiveData = async (event: WearableEvent): Promise<void> => {

@@ -133,10 +133,36 @@ export const sendData = async (
         duration: hav.duration,
       }));
 
+      if (havs.length === 0) return;
+
       console.log("org fetched:", org.id);
       console.log("wearable fetched:", wearable.id);
       console.log(`HAV Events fetched: ${havs.length}`);
       havs.map((hav) => console.log(`${hav.duration} - ${hav.imuLevel}`));
+
+      /**
+
+
+2 - Medium
+
+2 - Low
+
+21 - Medium
+
+22 - Low
+
+16 - Low
+
+17 - High
+
+Processed Events fetched: 3
+
+17 - low
+
+6 - medium
+
+17 - high
+       */
 
       // 3. Process the HAV Events
       const processedHavEvents = await processHavs(formattedHavs);

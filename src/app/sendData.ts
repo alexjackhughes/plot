@@ -133,31 +133,33 @@ export const sendData = async (
         duration: hav.duration,
       }));
 
-      if (havs.length === 0) return;
+      if (havs.length === 0) {
+        console.log("No HAV events processed");
+      } else {
+        // console.log("org fetched:", org.id);
+        // console.log("wearable fetched:", wearable.id);
 
-      // console.log("org fetched:", org.id);
-      // console.log("wearable fetched:", wearable.id);
+        // console.log(`HAV Events fetched: ${havs.length}`);
+        // havs.map((hav) => console.log(`${hav.duration} - ${hav.imuLevel}`));
 
-      // console.log(`HAV Events fetched: ${havs.length}`);
-      // havs.map((hav) => console.log(`${hav.duration} - ${hav.imuLevel}`));
+        // 3. Process the HAV Events
+        const processedHavEvents = await processHavs(formattedHavs);
 
-      // 3. Process the HAV Events
-      const processedHavEvents = await processHavs(formattedHavs);
+        // console.log(`Processed Events fetched: ${processedHavEvents.length}`);
+        // processedHavEvents.map((hav) =>
+        //   console.log(`${hav.duration} - ${hav.imu_level}`),
+        // );
 
-      // console.log(`Processed Events fetched: ${processedHavEvents.length}`);
-      // processedHavEvents.map((hav) =>
-      //   console.log(`${hav.duration} - ${hav.imu_level}`),
-      // );
+        // 4. Update the HAV events into Events
+        await addHavEvents({
+          organisationId: org.id,
+          deviceId: wearable.id,
+          havEvents: processedHavEvents,
+        });
 
-      // 4. Update the HAV events into Events
-      await addHavEvents({
-        organisationId: org.id,
-        deviceId: wearable.id,
-        havEvents: processedHavEvents,
-      });
-
-      // 5. Delete all HAV Events
-      await deleteHavEvents(org.id);
+        // 5. Delete all HAV Events
+        await deleteHavEvents(org.id);
+      }
     } catch (error) {
       console.error("Error in first request", error);
     }

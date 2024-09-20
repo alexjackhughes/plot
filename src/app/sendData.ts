@@ -122,6 +122,11 @@ export const sendData = async (
   // 2. We fetch the organisation from the org id
   const org = await getOrganizationById(wearable.organizationId);
 
+  if (!org) {
+    console.error("Org not found");
+    return false;
+  }
+
   if (settings?.first_request === 1) {
     try {
       console.log(`A first request has been made for: ${settings.device_id}`);
@@ -163,6 +168,7 @@ export const sendData = async (
       console.error("Error in first request", error);
     }
   }
+  
   // 3. a) We need to create a list of beacon types to the exempt wearables.
   let beaconTypeToWearableIds: BeaconTypeToWeableId = {};
 

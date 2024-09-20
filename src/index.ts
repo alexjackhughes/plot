@@ -68,8 +68,16 @@ wss.on("connection", async (ws: Socket) => {
       return;
     } else {
       sendBigLog(messageData);
+      const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
 
-      // TO-DO: How this should work is 2.2.4 is stable, and then anything else is a beta
+      if (["0005"].includes(chargerId)) {
+        ws.send(
+          JSON.stringify({
+            firmware_version: "2.2.7",
+          }),
+        );
+        return;
+      }
 
       ws.send(
         JSON.stringify({

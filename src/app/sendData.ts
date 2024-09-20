@@ -104,7 +104,7 @@ interface BeaconTypeToWeableId {
 
 export const sendData = async (
   settings: SendSettings,
-): Promise<WearableSettings | false> => {
+): Promise<WearableSettings> => {
   // console.log("first request:", settings.first_request, settings.device_id);
 
   let wearableSettings: WearableSettings;
@@ -114,17 +114,11 @@ export const sendData = async (
   // 1. We fetch the wearable from its display id
   const wearable = await getWearable(settings.device_id);
 
-  if (!wearable) {
-    console.error("Wearable not found");
-    return false;
-  }
-
   // 2. We fetch the organisation from the org id
   const org = await getOrganizationById(wearable.organizationId);
 
-  if (!org) {
-    console.error("Org not found");
-    return false;
+  if (!wearable || !org) {
+    return dummySettings(settings.device_id);
   }
 
   if (settings?.first_request === 1) {
@@ -168,7 +162,7 @@ export const sendData = async (
       console.error("Error in first request", error);
     }
   }
-  
+
   // 3. a) We need to create a list of beacon types to the exempt wearables.
   let beaconTypeToWearableIds: BeaconTypeToWeableId = {};
 
@@ -370,3 +364,108 @@ function isWearableExemptFromTypes(
 
   return exemptions;
 }
+
+const dummySettings = (device_id: string): WearableSettings => {
+  return {
+    device_id,
+    sensor_haptic_low: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 0,
+      sound_alert: 0,
+      trigger_condition: 30,
+    },
+    sensor_haptic_medium: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 0,
+      sound_alert: 0,
+      trigger_condition: 50,
+    },
+    sensor_haptic_high: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 0,
+      sound_alert: 0,
+      trigger_condition: 100,
+    },
+    sensor_haptic_extreme: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 0,
+      sound_alert: 0,
+      trigger_condition: 150,
+    },
+
+    sensor_MIC: {
+      enable: 0,
+      icon_display: 0,
+      vibration_alert: 0,
+      sound_alert: 0,
+      trigger_condition: 80,
+    },
+    sensor_PPE1: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 1,
+    },
+    sensor_PPE2: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 3,
+    },
+    sensor_PPE3: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 6,
+    },
+    sensor_access1: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 1,
+    },
+    sensor_access2: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 3,
+    },
+    sensor_access3: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 6,
+    },
+    sensor_forklift1: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 1,
+    },
+    sensor_forklift2: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 3,
+    },
+    sensor_forklift3: {
+      enable: 1,
+      icon_display: 1,
+      vibration_alert: 1,
+      sound_alert: 1,
+      trigger_condition: 6,
+    },
+  };
+};

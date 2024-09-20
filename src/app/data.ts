@@ -1,8 +1,13 @@
-import { SendSettings, VersionSettings, WearableEvent } from "../models/models";
+import {
+  SendSettings,
+  VersionSettings,
+  WearableEvent,
+  RequestTimezone,
+} from "../models/models";
 
 export const getData = (
   data: any,
-): WearableEvent | SendSettings | VersionSettings => {
+): WearableEvent | SendSettings | VersionSettings | RequestTimezone => {
   if (data.request_type === 2) {
     return {
       charger_id: data?.charger_id || "",

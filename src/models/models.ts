@@ -32,3 +32,9 @@ export interface VersionSettings {
   charger_id: string;
   firmware_version: string;
 }
+
+export interface RequestTimezone {
+  charger_id: string;
+  request_timezone: string;
+  request_type: 3;
+}

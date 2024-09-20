@@ -66,11 +66,12 @@ wss.on("connection", async (ws: Socket) => {
       let data = await sendData(messageData);
       ws.send(JSON.stringify(data));
       return;
-    } else {
+    } else if (messageData.request_type === 2) {
       sendBigLog(messageData);
       const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
+      const chargersForTesting = ["0005"];
 
-      if (["0005"].includes(chargerId)) {
+      if (chargersForTesting.includes(chargerId)) {
         ws.send(
           JSON.stringify({
             firmware_version: "2.2.7",
@@ -84,6 +85,13 @@ wss.on("connection", async (ws: Socket) => {
           firmware_version: "2.2.6",
         }),
       );
+      return;
+    } else if (messageData.request_type === 3) {
+      // TODO: Implement the timezone request
+      sendBigLog(messageData);
+      return;
+    } else {
+      console.log("Unknown request type");
       return;
     }
   });

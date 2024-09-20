@@ -70,7 +70,7 @@ wss.on("connection", async (ws: Socket) => {
       sendBigLog(messageData);
       const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
       const taiwan = ["0009"];
-      const chargersForTesting = ["0005"];
+      const chargersForTesting = ["0005", "0011"];
 
       if (taiwan.includes(chargerId)) {
         ws.send(

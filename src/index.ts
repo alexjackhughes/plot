@@ -59,11 +59,19 @@ wss.on("connection", async (ws: Socket) => {
       return;
     } else if (messageData.request_type === 1) {
       console.log("Sending settings:");
-
       if (process.env.FAKE_DB === "true") return;
 
       // Fetch the settings and send them back to the device
       let data = await sendData(messageData);
+      if (!data) {
+        ws.send(
+          JSON.stringify({
+            error: `No wearable found with ID: ${messageData.device_id}`,
+          }),
+        );
+        return;
+      }
+
       ws.send(JSON.stringify(data));
       return;
     } else if (messageData.request_type === 2) {

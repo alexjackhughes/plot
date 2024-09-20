@@ -104,7 +104,7 @@ interface BeaconTypeToWeableId {
 
 export const sendData = async (
   settings: SendSettings,
-): Promise<WearableSettings> => {
+): Promise<WearableSettings | false> => {
   // console.log("first request:", settings.first_request, settings.device_id);
 
   let wearableSettings: WearableSettings;
@@ -113,9 +113,10 @@ export const sendData = async (
 
   // 1. We fetch the wearable from its display id
   const wearable = await getWearable(settings.device_id);
+
   if (!wearable) {
     console.error("Wearable not found");
-    return;
+    return false;
   }
 
   // 2. We fetch the organisation from the org id

@@ -69,7 +69,17 @@ wss.on("connection", async (ws: Socket) => {
     } else if (messageData.request_type === 2) {
       sendBigLog(messageData);
       const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
+      const taiwan = ["0009"];
       const chargersForTesting = ["0005"];
+
+      if (taiwan.includes(chargerId)) {
+        ws.send(
+          JSON.stringify({
+            firmware_version: "2.2.8",
+          }),
+        );
+        return;
+      }
 
       if (chargersForTesting.includes(chargerId)) {
         ws.send(

@@ -87,8 +87,34 @@ wss.on("connection", async (ws: Socket) => {
       );
       return;
     } else if (messageData.request_type === 3) {
-      // TODO: Implement the timezone request
+      const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
+      const westCoastAmerica = [""];
+      const westCoastCanada = [""];
+
+      if (westCoastAmerica.includes(chargerId)) {
+        ws.send(
+          JSON.stringify({
+            request_timezone: "GMT-7",
+          }),
+        );
+        return;
+      }
+
+      if (westCoastCanada.includes(chargerId)) {
+        ws.send(
+          JSON.stringify({
+            request_timezone: "GMT-7GMT,GMT-6,M3.2.0/2:00:00,M11.1.0/2:00:00",
+          }),
+        );
+        return;
+      }
+
       sendBigLog(messageData);
+      ws.send(
+        JSON.stringify({
+          request_timezone: "GMT-0",
+        }),
+      );
       return;
     } else {
       console.log("Unknown request type");

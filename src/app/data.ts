@@ -8,6 +8,14 @@ import {
 export const getData = (
   data: any,
 ): WearableEvent | SendSettings | VersionSettings | RequestTimezone => {
+  if (data.request_type === 3) {
+    return {
+      charger_id: data?.charger_id || "",
+      request_timezone: data.request_timezone || "GMT-0",
+      request_type: 3,
+    };
+  }
+
   if (data.request_type === 2) {
     return {
       charger_id: data?.charger_id || "",

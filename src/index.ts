@@ -77,14 +77,14 @@ wss.on("connection", async (ws: Socket) => {
         return;
       }
 
-      if (chargersForTesting.includes(chargerId)) {
-        ws.send(
-          JSON.stringify({
-            firmware_version: "2.2.8",
-          }),
-        );
-        return;
-      }
+      // if (chargersForTesting.includes(chargerId)) {
+      //   ws.send(
+      //     JSON.stringify({
+      //       firmware_version: "2.2.7",
+      //     }),
+      //   );
+      //   return;
+      // }
 
       ws.send(
         JSON.stringify({

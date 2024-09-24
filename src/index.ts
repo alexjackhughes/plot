@@ -65,8 +65,8 @@ wss.on("connection", async (ws: Socket) => {
     } else if (messageData.request_type === 2) {
       sendBigLog(messageData);
       const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
-      const taiwan = ["0009", "3000", "4000", "5000"];
-      const chargersForTesting = ["0005", "0011"];
+      const taiwan = ["3000", "4000", "5000"];
+      const chargersForTesting = ["0005", "0011", "0014", "0010"];
 
       if (taiwan.includes(chargerId)) {
         ws.send(
@@ -77,14 +77,14 @@ wss.on("connection", async (ws: Socket) => {
         return;
       }
 
-      // if (chargersForTesting.includes(chargerId)) {
-      //   ws.send(
-      //     JSON.stringify({
-      //       firmware_version: "2.2.7",
-      //     }),
-      //   );
-      //   return;
-      // }
+      if (chargersForTesting.includes(chargerId)) {
+        ws.send(
+          JSON.stringify({
+            firmware_version: "2.2.8",
+          }),
+        );
+        return;
+      }
 
       ws.send(
         JSON.stringify({
@@ -94,8 +94,8 @@ wss.on("connection", async (ws: Socket) => {
       return;
     } else if (messageData.request_type === 3) {
       const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
-      const westCoastAmerica = ["3000"];
-      const westCoastCanada = ["4000"];
+      const westCoastAmerica = ["3000", "0014"];
+      const westCoastCanada = ["4000", "0010"];
       const taiwan = ["0009", "5000"];
 
       if (westCoastAmerica.includes(chargerId)) {

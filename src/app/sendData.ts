@@ -221,10 +221,9 @@ export const sendData = async (
       sound_alert: 0,
       trigger_condition: 150,
     },
-
     sensor_MIC: {
-      enable: 0,
-      icon_display: 0,
+      enable: 1,
+      icon_display: 1,
       vibration_alert: 0,
       sound_alert: 0,
       trigger_condition: 80,

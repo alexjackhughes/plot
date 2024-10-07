@@ -172,6 +172,7 @@ model hav_events {
   duration       Int
   createdAt      DateTime  @default(now())
   updatedAt      DateTime
+  userId         String?
 }
 
 enum EventType {

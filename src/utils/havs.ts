@@ -6,6 +6,7 @@ export interface HavStub {
   imu_level: ImuLevel;
   created_at: Date;
   duration: number;
+  userId?: string;
 }
 
 export function processHavs(havs: HavStub[]): HavStub[] {

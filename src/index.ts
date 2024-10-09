@@ -71,7 +71,7 @@ wss.on("connection", async (ws: Socket) => {
       if (taiwan.includes(chargerId)) {
         ws.send(
           JSON.stringify({
-            firmware_version: "2.2.8",
+            firmware_version: "2.2.9",
           }),
         );
         return;
@@ -80,7 +80,7 @@ wss.on("connection", async (ws: Socket) => {
       if (chargersForTesting.includes(chargerId)) {
         ws.send(
           JSON.stringify({
-            firmware_version: "2.2.8",
+            firmware_version: "2.2.9",
           }),
         );
         return;
@@ -88,7 +88,7 @@ wss.on("connection", async (ws: Socket) => {
 
       ws.send(
         JSON.stringify({
-          firmware_version: "2.2.7",
+          firmware_version: "2.2.9",
         }),
       );
       return;

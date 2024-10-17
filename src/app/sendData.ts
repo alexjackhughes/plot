@@ -190,6 +190,25 @@ export const sendData = async (
     beaconTypeToWearableIds,
   );
 
+  // Knauf Insulations want the microphone alerts to always be on
+  const microphoneSettings = ["0811", "0161", "0805", "0798"].includes(
+    wearable.displayId,
+  )
+    ? {
+        enable: 1,
+        icon_display: 1,
+        vibration_alert: 1,
+        sound_alert: 1,
+        trigger_condition: 80,
+      }
+    : {
+        enable: 1,
+        icon_display: 1,
+        vibration_alert: 0,
+        sound_alert: 0,
+        trigger_condition: 80,
+      };
+
   // 4. Map the distances to the org ones with ternary checks for exemptions
   wearableSettings = {
     device_id: settings.device_id,
@@ -221,13 +240,7 @@ export const sendData = async (
       sound_alert: 0,
       trigger_condition: 150,
     },
-    sensor_MIC: {
-      enable: 1,
-      icon_display: 1,
-      vibration_alert: 0,
-      sound_alert: 0,
-      trigger_condition: 80,
-    },
+    sensor_MIC: microphoneSettings,
     sensor_PPE1: {
       enable: wearableExempt.SmallPPE ? 0 : 1,
       icon_display: 1,

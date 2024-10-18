@@ -91,7 +91,14 @@ const getDateWithEventTime = (eventTime: WearableEventTime): Date => {
   today.setMinutes(eventTime.minute);
   today.setSeconds(eventTime.second);
   today.setMilliseconds(0); // Ensure no leftover milliseconds
-  return today;
+
+  const currentDate = new Date();
+
+  if (today.getFullYear() === currentDate.getFullYear()) {
+    return today;
+  } else {
+    return currentDate;
+  }
 };
 
 function createDate(eventTime: WearableEventTime): Date {

@@ -199,7 +199,7 @@ export const sendData = async (
         icon_display: 1,
         vibration_alert: 1,
         sound_alert: 1,
-        trigger_condition: 80,
+        trigger_condition: 65,
       }
     : {
         enable: 1,

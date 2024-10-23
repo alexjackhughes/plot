@@ -58,7 +58,7 @@ export const insertEvent = async (
     console.log("Adding event");
 
     if (usableEvent.eventType === "HandArmVibration") {
-      await prisma.hav_events.create({
+      await prisma.hAVEvent.create({
         data: {
           timestamp: usableEvent.eventDate,
           deviceId: wearable.id,
@@ -68,6 +68,7 @@ export const insertEvent = async (
           duration: usableEvent.duration,
           createdAt: new Date(),
           updatedAt: new Date(),
+          status: "pending",
         },
       });
       return;
@@ -229,10 +230,11 @@ export const getHavEventsByWearableId = async (
   wearableId: string,
 ) => {
   try {
-    const havEvents = await prisma.hav_events.findMany({
+    const havEvents = await prisma.hAVEvent.findMany({
       where: {
         organizationId,
         deviceId: wearableId,
+        status: "pending",
       },
     });
 
@@ -276,14 +278,20 @@ export const addHavEvents = async ({
 
 export const deleteHavEvents = async (organizationId: string) => {
   try {
-    await prisma.hav_events.deleteMany({
+    const result = await prisma.hAVEvent.updateMany({
       where: {
         organizationId,
+        status: "pending"
       },
+      data: {
+        status: "done",
+        updatedAt: new Date()
+      }
     });
+    console.log(`Updated ${result.count} HAV events to 'done' for organization: ${organizationId}`);
   } catch (error) {
-    console.error("Error deleting HAV events:", error);
-    return;
+    console.error("Error updating HAV events:", error);
+    throw error;
   } finally {
     await prisma.$disconnect();
   }

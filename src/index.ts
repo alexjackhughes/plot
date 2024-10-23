@@ -126,9 +126,19 @@ wss.on("connection", async (ws: Socket) => {
       }
 
       sendBigLog(messageData);
+
+      // Get the current date
+      const now = new Date();
+
+      // Check if it's currently British Summer Time (BST)
+      const isBST = (
+        now.toLocaleString('en-US', { timeZone: 'Europe/London', timeZoneName: 'short' })
+        .split(' ')[2] === 'BST'
+      );
+
       ws.send(
         JSON.stringify({
-          request_timezone: "GMT-0",
+          request_timezone: isBST ? "GMT+1" : "GMT+0",
         }),
       );
       return;

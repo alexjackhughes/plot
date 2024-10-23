@@ -163,16 +163,19 @@ model Event {
   @@map("events")
 }
 
-model hav_events {
-  id             String    @id @default(dbgenerated("gen_random_uuid()"))
+model HAVEvent {
+  id             String          @id @default(dbgenerated("gen_random_uuid()"))
   timestamp      DateTime
-  imuLevel       ImuLevel? @default(Low)
+  imuLevel       ImuLevel?       @default(Low)
   deviceId       String
   organizationId String
   duration       Int
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   userId         String?
+  status         HAVEventStatus? @default(pending)
+
+  @@map("hav_events")
 }
 
 enum EventType {
@@ -181,6 +184,13 @@ enum EventType {
   PreventativeProtectiveEquipment
   HandArmVibration
   LoudNoise
+}
+
+enum ImuLevel {
+  Low
+  Medium
+  High
+  Extreme
 }
 
 enum AuthorizationLevel {
@@ -202,9 +212,7 @@ enum Descriptor {
   LargeUnauthorised
 }
 
-enum ImuLevel {
-  Low
-  Medium
-  High
-  Extreme
+enum HAVEventStatus {
+  pending
+  done
 }

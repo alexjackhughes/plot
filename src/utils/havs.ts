@@ -4,9 +4,9 @@ export type ImuLevel = "low" | "medium" | "high" | "extreme";
 
 export interface HavStub {
   imu_level: ImuLevel;
-  created_at: Date;
+  timestamp: Date;
   duration: number;
-  userId?: string;
+  userId: string | undefined;
 }
 
 export function processHavs(havs: HavStub[]): HavStub[] {
@@ -19,7 +19,7 @@ export function processHavs(havs: HavStub[]): HavStub[] {
 export function groupHavsByDate(havs: HavStub[]): HavStub[][] {
   if (havs.length === 0) return [];
 
-  havs.sort((a, b) => a.created_at.getTime() - b.created_at.getTime());
+  havs.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
 
   const groupedHavs: HavStub[][] = [];
   let currentGroup: HavStub[] = [];
@@ -32,7 +32,7 @@ export function groupHavsByDate(havs: HavStub[]): HavStub[][] {
 
     const previousHav = havs[index - 1];
 
-    if (isWithinSameHour(currentHav.created_at, previousHav.created_at)) {
+    if (isWithinSameHour(currentHav.timestamp, previousHav.timestamp)) {
       currentGroup.push(currentHav);
     } else {
       groupedHavs.push(currentGroup);
@@ -63,13 +63,14 @@ export function aggregateHavsByIMU(havs: HavStub[][]): HavStub[][] {
         // If there are no HAVs for this level, return an object with 0 duration and a default created_at date
         return {
           imu_level: level,
-          created_at: new Date(0), // Default to epoch time, could be customized
+          timestamp: new Date(0), // Default to epoch time, could be customized
           duration: 0,
+          userId: undefined,
         };
       }
 
       const earliestCreatedAt = filteredGroup.reduce((earliest, current) => {
-        return current.created_at < earliest.created_at ? current : earliest;
+        return current.timestamp < earliest.timestamp ? current : earliest;
       });
 
       const totalDuration = filteredGroup.reduce(
@@ -79,8 +80,9 @@ export function aggregateHavsByIMU(havs: HavStub[][]): HavStub[][] {
 
       return {
         imu_level: level,
-        created_at: earliestCreatedAt.created_at,
+        timestamp: earliestCreatedAt.timestamp,
         duration: totalDuration,
+        userId: earliestCreatedAt.userId,
       };
     });
   });
@@ -175,23 +177,27 @@ export function fixDurations(havs: HavStub[][]): HavStub[] {
     fixedHavs.push(
       {
         imu_level: "low",
-        created_at: group[0].created_at,
+        timestamp: group[0].timestamp,
         duration: adjustedLowTime,
+        userId: group[0].userId,
       },
       {
         imu_level: "medium",
-        created_at: group[0].created_at,
+        timestamp: group[0].timestamp,
         duration: adjustedMediumTime,
+        userId: group[0].userId,
       },
       {
         imu_level: "high",
-        created_at: group[0].created_at,
+        timestamp: group[0].timestamp,
         duration: adjustedHighTime,
+        userId: group[0].userId,
       },
       {
         imu_level: "extreme",
-        created_at: group[0].created_at,
+        timestamp: group[0].timestamp,
         duration: remainingExtremeTime,
+        userId: group[0].userId,
       },
     );
   });

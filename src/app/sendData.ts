@@ -129,8 +129,9 @@ export const sendData = async (
       const havs = await getHavEventsByWearableId(org.id, wearable.id);
       const formattedHavs: HavStub[] = havs.map((hav) => ({
         imu_level: translateImuSchemaToModel(hav.imuLevel),
-        created_at: hav.timestamp,
+        timestamp: hav.timestamp,
         duration: hav.duration,
+        userId: hav.userId,
       }));
 
       if (havs.length === 0) {

@@ -246,7 +246,7 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
     const charger = await getChargingStation(usableChargerId);
 
     if (!charger) {
-      console.error("Wearable+charging station not found");
+      console.error("Wearable/charging station not found");
       return;
     }
 

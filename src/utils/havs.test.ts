@@ -11,105 +11,125 @@ const havs: HavStub[] = [
   // 10 HAV stubs within 1 hour of each other (starting from 9:00 AM)
   {
     imu_level: "low",
-    created_at: new Date("2023-09-02T09:00:00Z"),
+    timestamp: new Date("2023-09-02T09:00:00Z"),
     duration: 10,
+    userId: "123",
   },
   {
     imu_level: "medium",
-    created_at: new Date("2023-09-02T09:05:00Z"),
+    timestamp: new Date("2023-09-02T09:05:00Z"),
     duration: 15,
+    userId: "123",
   },
   {
     imu_level: "high",
-    created_at: new Date("2023-09-02T09:10:00Z"),
+    timestamp: new Date("2023-09-02T09:10:00Z"),
     duration: 20,
+    userId: "123",
   },
   {
     imu_level: "extreme",
-    created_at: new Date("2023-09-02T09:15:00Z"),
+    timestamp: new Date("2023-09-02T09:15:00Z"),
     duration: 25,
+    userId: "123",
   },
   {
     imu_level: "low",
-    created_at: new Date("2023-09-02T09:20:00Z"),
+    timestamp: new Date("2023-09-02T09:20:00Z"),
     duration: 30,
+    userId: "123",
   },
   {
     imu_level: "medium",
-    created_at: new Date("2023-09-02T09:25:00Z"),
+    timestamp: new Date("2023-09-02T09:25:00Z"),
     duration: 12,
+    userId: "123",
   },
   {
     imu_level: "high",
-    created_at: new Date("2023-09-02T09:30:00Z"),
+    timestamp: new Date("2023-09-02T09:30:00Z"),
     duration: 18,
+    userId: "123",
   },
   {
     imu_level: "extreme",
-    created_at: new Date("2023-09-02T09:35:00Z"),
+    timestamp: new Date("2023-09-02T09:35:00Z"),
     duration: 22,
+    userId: "123",
   },
   {
     imu_level: "low",
-    created_at: new Date("2023-09-02T09:40:00Z"),
+    timestamp: new Date("2023-09-02T09:40:00Z"),
     duration: 28,
+    userId: "123",
   },
   {
     imu_level: "medium",
-    created_at: new Date("2023-09-02T09:45:00Z"),
+    timestamp: new Date("2023-09-02T09:45:00Z"),
     duration: 32,
+    userId: "123",
   },
 
   // 10 HAV stubs at random times throughout the day
   {
     imu_level: "high",
-    created_at: new Date("2023-09-02T00:15:00Z"),
+    timestamp: new Date("2023-09-02T00:15:00Z"),
     duration: 14,
+    userId: "123",
   },
   {
     imu_level: "extreme",
-    created_at: new Date("2023-09-02T02:30:00Z"),
+    timestamp: new Date("2023-09-02T02:30:00Z"),
     duration: 16,
+    userId: "123",
   },
   {
     imu_level: "low",
-    created_at: new Date("2023-09-02T05:45:00Z"),
+    timestamp: new Date("2023-09-02T05:45:00Z"),
     duration: 20,
+    userId: "123",
   },
   {
     imu_level: "medium",
-    created_at: new Date("2023-09-02T08:00:00Z"),
+    timestamp: new Date("2023-09-02T08:00:00Z"),
     duration: 18,
+    userId: "123",
   },
   {
     imu_level: "high",
-    created_at: new Date("2023-09-02T11:20:00Z"),
+    timestamp: new Date("2023-09-02T11:20:00Z"),
     duration: 15,
+    userId: "123",
   },
   {
     imu_level: "extreme",
-    created_at: new Date("2023-09-02T13:55:00Z"),
+    timestamp: new Date("2023-09-02T13:55:00Z"),
     duration: 10,
+    userId: "123",
   },
   {
     imu_level: "low",
-    created_at: new Date("2023-09-02T16:10:00Z"),
+    timestamp: new Date("2023-09-02T16:10:00Z"),
     duration: 25,
+    userId: "123",
   },
   {
     imu_level: "medium",
-    created_at: new Date("2023-09-02T19:35:00Z"),
+    timestamp: new Date("2023-09-02T19:35:00Z"),
     duration: 30,
+    userId: "123",
   },
   {
     imu_level: "high",
-    created_at: new Date("2023-09-02T21:50:00Z"),
+    timestamp: new Date("2023-09-02T21:50:00Z"),
     duration: 35,
+    userId: "123",
   },
   {
     imu_level: "extreme",
-    created_at: new Date("2023-09-02T23:00:00Z"),
+    timestamp: new Date("2023-09-02T23:00:00Z"),
     duration: 40,
+    userId: "123",
   },
 ];
 
@@ -155,23 +175,27 @@ describe("groupHavsByDate", () => {
   const havs: HavStub[] = [
     {
       imu_level: "low",
-      created_at: new Date("2023-09-02T12:00:00"),
+      timestamp: new Date("2023-09-02T12:00:00"),
       duration: 30,
+      userId: "123",
     },
     {
       imu_level: "medium",
-      created_at: new Date("2023-09-02T12:15:00"),
+      timestamp: new Date("2023-09-02T12:15:00"),
       duration: 30,
+      userId: "123",
     },
     {
       imu_level: "high",
-      created_at: new Date("2023-09-02T13:00:00"),
+      timestamp: new Date("2023-09-02T13:00:00"),
       duration: 30,
+      userId: "123",
     },
     {
       imu_level: "extreme",
-      created_at: new Date("2023-09-02T14:00:00"),
+      timestamp: new Date("2023-09-02T14:00:00"),
       duration: 30,
+      userId: "123",
     },
   ];
 
@@ -191,8 +215,9 @@ describe("groupHavsByDate", () => {
     const singleHav: HavStub[] = [
       {
         imu_level: "low",
-        created_at: new Date("2023-09-02T12:00:00"),
+        timestamp: new Date("2023-09-02T12:00:00"),
         duration: 30,
+        userId: "123",
       },
     ];
 
@@ -205,13 +230,15 @@ describe("groupHavsByDate", () => {
     const boundaryHavs: HavStub[] = [
       {
         imu_level: "low",
-        created_at: new Date("2023-09-02T12:59:59"),
+        timestamp: new Date("2023-09-02T12:59:59"),
         duration: 30,
+        userId: "123",
       },
       {
         imu_level: "medium",
-        created_at: new Date("2023-09-02T13:00:00"),
+        timestamp: new Date("2023-09-02T13:00:00"),
         duration: 30,
+        userId: "123",
       },
     ];
 
@@ -225,13 +252,15 @@ describe("groupHavsByDate", () => {
     const nonSortedHavs: HavStub[] = [
       {
         imu_level: "medium",
-        created_at: new Date("2023-09-02T13:15:00"),
+        timestamp: new Date("2023-09-02T13:15:00"),
         duration: 30,
+        userId: "123",
       },
       {
         imu_level: "low",
-        created_at: new Date("2023-09-02T12:00:00"),
+        timestamp: new Date("2023-09-02T12:00:00"),
         duration: 30,
+        userId: "123",
       },
     ];
 
@@ -250,23 +279,27 @@ describe("fixDurations", () => {
       [
         {
           imu_level: "low",
-          created_at: new Date("2023-09-02T09:00:00Z"),
+          timestamp: new Date("2023-09-02T09:00:00Z"),
           duration: 60,
+          userId: "123",
         },
         {
           imu_level: "medium",
-          created_at: new Date("2023-09-02T09:05:00Z"),
+          timestamp: new Date("2023-09-02T09:05:00Z"),
           duration: 60,
+          userId: "123",
         },
         {
           imu_level: "high",
-          created_at: new Date("2023-09-02T09:10:00Z"),
+          timestamp: new Date("2023-09-02T09:10:00Z"),
           duration: 60,
+          userId: "123",
         },
         {
           imu_level: "extreme",
-          created_at: new Date("2023-09-02T09:15:00Z"),
+          timestamp: new Date("2023-09-02T09:15:00Z"),
           duration: 60,
+          userId: "123",
         },
       ],
     ];
@@ -288,19 +321,22 @@ describe("fixDurations", () => {
       [
         {
           imu_level: "low",
-          created_at: new Date("2023-09-02T09:00:00Z"),
+          timestamp: new Date("2023-09-02T09:00:00Z"),
           duration: 30,
+          userId: "123",
         },
 
         {
           imu_level: "medium",
-          created_at: new Date("2023-09-02T09:00:00Z"),
+          timestamp: new Date("2023-09-02T09:00:00Z"),
           duration: 0,
+          userId: "123",
         },
         {
           imu_level: "extreme",
-          created_at: new Date("2023-09-02T09:30:00Z"),
+          timestamp: new Date("2023-09-02T09:30:00Z"),
           duration: 30,
+          userId: "123",
         },
       ],
     ];
@@ -322,23 +358,27 @@ describe("fixDurations", () => {
       [
         {
           imu_level: "low",
-          created_at: new Date("2023-09-02T09:00:00Z"),
+          timestamp: new Date("2023-09-02T09:00:00Z"),
           duration: 40,
+          userId: "123",
         },
         {
           imu_level: "medium",
-          created_at: new Date("2023-09-02T09:10:00Z"),
+          timestamp: new Date("2023-09-02T09:10:00Z"),
           duration: 30,
+          userId: "123",
         },
         {
           imu_level: "high",
-          created_at: new Date("2023-09-02T09:20:00Z"),
+          timestamp: new Date("2023-09-02T09:20:00Z"),
           duration: 20,
+          userId: "123",
         },
         {
           imu_level: "extreme",
-          created_at: new Date("2023-09-02T09:30:00Z"),
+          timestamp: new Date("2023-09-02T09:30:00Z"),
           duration: 10,
+          userId: "123",
         },
       ],
     ];

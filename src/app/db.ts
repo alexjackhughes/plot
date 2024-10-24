@@ -1,4 +1,4 @@
-import { Beacon, EventType, Wearable } from "@prisma/client";
+import { Beacon, EventType, HAVEvent, Wearable } from "@prisma/client";
 import prisma from "../../prisma/db";
 import { UsableEvent } from "./receiveData";
 import { HavStub, ImuLevel } from "../utils/havs";
@@ -258,7 +258,7 @@ export const addHavEvents = async ({
 }) => {
   const data = havEvents.map((hav) => {
     return {
-      timestamp: hav.created_at,
+      timestamp: hav.timestamp,
       eventType: "HandArmVibration" as EventType,
       deviceId: deviceId,
       organizationId: organisationId,
@@ -281,14 +281,16 @@ export const deleteHavEvents = async (organizationId: string) => {
     const result = await prisma.hAVEvent.updateMany({
       where: {
         organizationId,
-        status: "pending"
+        status: "pending",
       },
       data: {
         status: "done",
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     });
-    console.log(`Updated ${result.count} HAV events to 'done' for organization: ${organizationId}`);
+    console.log(
+      `Updated ${result.count} HAV events to 'done' for organization: ${organizationId}`,
+    );
   } catch (error) {
     console.error("Error updating HAV events:", error);
     throw error;

@@ -191,10 +191,21 @@ export const sendData = async (
     beaconTypeToWearableIds,
   );
 
+  const airbus = [
+    "0186",
+    "0193",
+    "0185",
+    "0200",
+    "0196",
+    "0204",
+    "0197",
+    "0779",
+  ];
+
+  const knauf = [["0811", "0161", "0805", "0798"]];
+
   // Knauf Insulations want the microphone alerts to always be on
-  const microphoneSettings = ["0811", "0161", "0805", "0798"].includes(
-    wearable.displayId,
-  )
+  const microphoneSettings = knauf.includes(wearable.displayId)
     ? {
         enable: 1,
         icon_display: 1,
@@ -245,64 +256,64 @@ export const sendData = async (
     sensor_PPE1: {
       enable: wearableExempt.SmallPPE ? 0 : 1,
       icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      vibration_alert: airbus.includes(wearable.displayId) ? 0 : 1,
+      sound_alert: airbus.includes(wearable.displayId) ? 0 : 1,
       trigger_condition: org.ppeZoneSmall || 1,
     },
     sensor_PPE2: {
       enable: wearableExempt.MediumPPE ? 0 : 1,
       icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      vibration_alert: airbus.includes(wearable.displayId) ? 0 : 1,
+      sound_alert: airbus.includes(wearable.displayId) ? 0 : 1,
       trigger_condition: org.ppeZoneMedium || 3,
     },
     sensor_PPE3: {
       enable: wearableExempt.LargePPE ? 0 : 1,
       icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      vibration_alert: airbus.includes(wearable.displayId) ? 0 : 1,
+      sound_alert: airbus.includes(wearable.displayId) ? 0 : 1,
       trigger_condition: org.ppeZoneLarge || 6,
     },
     sensor_access1: {
       enable: wearableExempt.SmallUnauthorised ? 0 : 1,
       icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      vibration_alert: airbus.includes(wearable.displayId) ? 0 : 1,
+      sound_alert: airbus.includes(wearable.displayId) ? 0 : 1,
       trigger_condition: org.unauthorisedZoneSmall || 1,
     },
     sensor_access2: {
       enable: wearableExempt.MediumUnauthorised ? 0 : 1,
       icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      vibration_alert: airbus.includes(wearable.displayId) ? 0 : 1,
+      sound_alert: airbus.includes(wearable.displayId) ? 0 : 1,
       trigger_condition: org.unauthorisedZoneMedium || 3,
     },
     sensor_access3: {
       enable: wearableExempt.LargeUnauthorised ? 0 : 1,
       icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      vibration_alert: airbus.includes(wearable.displayId) ? 0 : 1,
+      sound_alert: airbus.includes(wearable.displayId) ? 0 : 1,
       trigger_condition: org.unauthorisedZoneLarge || 6,
     },
     sensor_forklift1: {
       enable: wearableExempt.SmallMachine ? 0 : 1,
       icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      vibration_alert: airbus.includes(wearable.displayId) ? 0 : 1,
+      sound_alert: airbus.includes(wearable.displayId) ? 0 : 1,
       trigger_condition: org.machineSmall || 1,
     },
     sensor_forklift2: {
       enable: wearableExempt.MediumMachine ? 0 : 1,
       icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      vibration_alert: airbus.includes(wearable.displayId) ? 0 : 1,
+      sound_alert: airbus.includes(wearable.displayId) ? 0 : 1,
       trigger_condition: org.machineMedium || 3,
     },
     sensor_forklift3: {
       enable: wearableExempt.LargeMachine ? 0 : 1,
       icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      vibration_alert: airbus.includes(wearable.displayId) ? 0 : 1,
+      sound_alert: airbus.includes(wearable.displayId) ? 0 : 1,
       trigger_condition: org.machineLarge || 6,
     },
   };

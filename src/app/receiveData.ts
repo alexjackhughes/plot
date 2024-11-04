@@ -230,12 +230,20 @@ const imuLevelSelector = (imuLevel?: string): ImuLevel | undefined => {
 };
 
 export const receiveData = async (event: WearableEvent): Promise<void> => {
+  console.log(
+    `timestamp for: ${event.device_id}`,
+    event.event_time.hour,
+    event.event_time.minute,
+    event.event_time.second,
+  );
   // 1. Format the data in an easy to use way
   const usableEvent = createUsableEvent(event);
 
+  console.log("After time modification:", usableEvent.eventDate.toString());
+
   // For railway log
-  const message = JSON.stringify(event, null, 2);
-  console.log("Usable Event received:", message);
+  // const message = JSON.stringify(event, null, 2);
+  // console.log("Usable Event received:", message);
 
   let wearable = await getWearable(usableEvent.displayId);
 

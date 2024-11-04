@@ -27,8 +27,6 @@ export const getBeacon = async (displayId: string): Promise<Beacon> => {
   if (!displayId) return;
 
   try {
-    console.log("Getting beacon with displayId:", displayId);
-
     const beacon = await prisma.beacon.findFirst({
       where: {
         displayId: displayId,
@@ -55,8 +53,6 @@ export const insertEvent = async (
   beacon?: undefined | Beacon,
 ) => {
   try {
-    console.log("Adding event");
-
     if (usableEvent.eventType === "HandArmVibration") {
       await prisma.hAVEvent.create({
         data: {

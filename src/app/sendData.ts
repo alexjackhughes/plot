@@ -202,10 +202,13 @@ export const sendData = async (
     "0779",
   ];
 
-  const knauf = [["0811", "0161", "0805", "0798"]];
+  const arabelle = ["0177", "0786", "0180", "0176"];
+  const knauf = ["0811", "0161", "0805", "0798"];
 
   // Knauf Insulations want the microphone alerts to always be on
-  const microphoneSettings = knauf.includes(wearable.displayId)
+  const microphoneSettings = [...knauf, ...arabelle].includes(
+    wearable.displayId,
+  )
     ? {
         enable: 1,
         icon_display: 1,
@@ -218,7 +221,7 @@ export const sendData = async (
         icon_display: 1,
         vibration_alert: 0,
         sound_alert: 0,
-        trigger_condition: 80,
+        trigger_condition: 70,
       };
 
   // 4. Map the distances to the org ones with ternary checks for exemptions

@@ -93,7 +93,12 @@ const getDateWithEventTime = (eventTime: WearableEventTime): Date => {
   today.setMilliseconds(0); // Ensure no leftover milliseconds
 
   const currentDate = new Date();
+  currentDate.setHours(eventTime.hour);
+  currentDate.setMinutes(eventTime.minute);
+  currentDate.setSeconds(eventTime.second);
+  currentDate.setMilliseconds(0);
 
+  // This prevents dates being in the distant past
   if (today.getFullYear() === currentDate.getFullYear()) {
     return today;
   } else {
@@ -235,6 +240,9 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
     event.event_time.hour,
     event.event_time.minute,
     event.event_time.second,
+    event.event_time.year,
+    event.event_time.month,
+    event.event_time.day,
   );
   // 1. Format the data in an easy to use way
   const usableEvent = createUsableEvent(event);

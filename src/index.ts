@@ -104,7 +104,7 @@ wss.on("connection", async (ws: Socket) => {
       return;
     } else if (messageData.request_type === 3) {
       const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
-      const westCoastAmerica = ["3000", "0014"];
+      const westCoastAmerica = ["3000", "0014", "0000"];
       const westCoastCanada = ["4000", "0010"];
       const taiwan = ["0009", "5000"];
 
@@ -151,7 +151,7 @@ wss.on("connection", async (ws: Socket) => {
 
       ws.send(
         JSON.stringify({
-          request_timezone: isBST ? "GMT+1" : "GMT+0",
+          request_timezone: isBST ? "GMT+0" : "GMT+0",
         }),
       );
       return;

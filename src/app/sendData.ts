@@ -202,13 +202,11 @@ export const sendData = async (
     "0779",
   ];
 
-  const arabelle = ["0177", "0786", "0180", "0176"];
+  // const arabelle = ["0177", "0786", "0180", "0176"];
   const knauf = ["0811", "0161", "0805", "0798"];
 
   // Knauf Insulations want the microphone alerts to always be on
-  const microphoneSettings = [...knauf, ...arabelle].includes(
-    wearable.displayId,
-  )
+  const microphoneSettings = [...knauf].includes(wearable.displayId)
     ? {
         enable: 1,
         icon_display: 1,

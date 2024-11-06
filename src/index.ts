@@ -104,8 +104,8 @@ wss.on("connection", async (ws: Socket) => {
       return;
     } else if (messageData.request_type === 3) {
       const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
-      const westCoastAmerica = ["3000", "0014"];
-      const westCoastCanada = ["4000", "0010"];
+      const westCoastAmerica = ["3000", "0014", "0021"];
+      const westCoastCanada = ["4000", "0010", "0047"];
       const taiwan = ["0009", "5000"];
 
       if (westCoastAmerica.includes(chargerId)) {

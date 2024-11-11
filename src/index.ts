@@ -106,12 +106,22 @@ wss.on("connection", async (ws: Socket) => {
       const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
       const westCoastAmerica = ["3000", "0014", "0021"];
       const westCoastCanada = ["4000", "0010", "0047"];
+      const germany = ["0034"];
       const taiwan = ["0009", "5000"];
 
       if (westCoastAmerica.includes(chargerId)) {
         ws.send(
           JSON.stringify({
             request_timezone: "GMT-7",
+          }),
+        );
+        return;
+      }
+
+      if (germany.includes(chargerId)) {
+        ws.send(
+          JSON.stringify({
+            request_timezone: "GMT+1",
           }),
         );
         return;

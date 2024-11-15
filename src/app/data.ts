@@ -36,12 +36,12 @@ export const getData = (
 
   return {
     event_time: {
-      hour: data?.event_time?.hour,
-      minute: data?.event_time?.minute,
-      second: data?.event_time?.second,
-      day: data?.event_time?.day,
-      month: data?.event_time?.month,
-      year: data?.event_time?.year,
+      hour: parseInt(removeSpaces(data?.event_time?.hour)),
+      minute: parseInt(removeSpaces(data?.event_time?.minute)),
+      second: parseInt(removeSpaces(data?.event_time?.second)),
+      day: parseInt(removeSpaces(data?.event_time?.day)),
+      month: parseInt(removeSpaces(data?.event_time?.month)),
+      year: parseInt(removeSpaces(data?.event_time?.year)),
     },
     event_type: data?.event_type,
     device_id: data?.device_id,
@@ -53,6 +53,8 @@ export const getData = (
     request_type: 0,
   };
 };
+
+const removeSpaces = (str: string) => str.replace(/\s+/g, "");
 
 export function flattenData(
   data: WearableEvent | SendSettings | VersionSettings,

@@ -210,6 +210,18 @@ export const wearableUpdated = async (id: string) => {
 export const updateBeacon = async (id: string, battery: number) => {
   const date = new Date();
 
+  if (battery === 0) {
+    await prisma.beacon.update({
+      where: {
+        id,
+      },
+      data: {
+        updatedAt: date,
+      },
+    });
+    return;
+  }
+
   await prisma.beacon.update({
     where: {
       id,

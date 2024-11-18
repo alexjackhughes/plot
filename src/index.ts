@@ -97,7 +97,7 @@ wss.on("connection", async (ws: Socket) => {
       const westCoastAmerica = ["3000", "0014", "0021"];
       const westCoastCanada = ["4000", "0010", "0047"];
       const germany = ["0034"];
-      const taiwan = ["0009", "5000"];
+      const taiwan = ["3000", "4000", "5000", "9999", "0000"];
 
       if (westCoastAmerica.includes(chargerId)) {
         ws.send(

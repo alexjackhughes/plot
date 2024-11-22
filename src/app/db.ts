@@ -149,10 +149,11 @@ export const translateImuSchemaToModel = (imuLevel: SafeImuLevel): ImuLevel => {
   }
 };
 
-const returnSeverenessOfEvent = (usableEvent: UsableEvent): number => {
+const returnSeverenessOfEvent = (usableEvent: UsableEvent): 0 | 10 => {
   if (
     usableEvent.eventType === "PreventativeProtectiveEquipment" ||
-    usableEvent.eventType === "HandArmVibration"
+    usableEvent.eventType === "HandArmVibration" ||
+    usableEvent.eventType === "MovingMachinery"
   ) {
     return 0;
   }

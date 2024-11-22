@@ -116,12 +116,32 @@ function createDate(eventTime: WearableEventTime): Date {
   return new Date();
 }
 
-const getWearableEventType = (eventType: number): WearableEventType => {
+const getWearableEventType = (
+  eventType: number,
+  beaconId: string,
+): WearableEventType => {
+  const firstLetter = beaconId.charAt(0);
+
+  switch (firstLetter) {
+    case "1":
+    case "2":
+    case "3":
+      return "PreventativeProtectiveEquipment";
+    case "4":
+    case "5":
+    case "6":
+      return "UnauthorisedAccess";
+    case "7":
+    case "8":
+    case "9":
+      return "MovingMachinery";
+  }
+
   switch (eventType) {
     case 1:
       return "HandArmVibration";
     case 2:
-      return "MovingMachinery"; // we need to get this from the beacon
+      return "MovingMachinery"; // we should never hit this as the above switch covers all cases
     case 3:
     default:
       return "LoudNoise";
@@ -199,7 +219,7 @@ type ImuLevel = "low" | "medium" | "high" | "extreme";
 const createUsableEvent = (input: WearableEvent): UsableEvent => {
   return {
     eventDate: getDateWithEventTime(input.event_time),
-    eventType: getWearableEventType(input.event_type),
+    eventType: getWearableEventType(input.event_type, input.beacon_minor), // This is WRONG for beacon events
     displayId: input.device_id,
     beaconId:
       input.beacon_minor === "0" ? null : input.beacon_minor?.toLocaleString(),

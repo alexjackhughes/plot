@@ -69,8 +69,9 @@ wss.on("connection", async (ws: Socket) => {
       const jack = ["9912", "9900", "0034"];
       const chargersForTesting = ["0005", "0011", "0014", "0010"];
       const coachman = ["0001", "0012", "0017"];
+      const others = ["0007"];
 
-      if (coachman.includes(chargerId)) {
+      if (coachman.includes(chargerId) || others.includes(chargerId)) {
         ws.send(
           JSON.stringify({
             firmware_version: "2.2.10",

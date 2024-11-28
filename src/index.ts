@@ -64,52 +64,12 @@ wss.on("connection", async (ws: Socket) => {
       return;
     } else if (messageData.request_type === 2) {
       sendBigLog(messageData);
-      const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
-      const taiwan = ["3000", "4000", "5000", "9999", "0000"];
-      const jack = ["9912", "9900", "0034"];
-      const chargersForTesting = ["0005", "0011", "0014", "0010"];
-      const coachman = ["0001", "0012", "0017"];
-      const others = ["0007", "0073"];
+      // const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
 
-      if (coachman.includes(chargerId) || others.includes(chargerId)) {
-        ws.send(
-          JSON.stringify({
-            firmware_version: "2.2.10",
-          }),
-        );
-        return;
-      }
-
-      if (jack.includes(chargerId)) {
-        ws.send(
-          JSON.stringify({
-            firmware_version: "2.2.10",
-          }),
-        );
-        return;
-      }
-
-      if (taiwan.includes(chargerId)) {
-        ws.send(
-          JSON.stringify({
-            firmware_version: "2.2.10",
-          }),
-        );
-        return;
-      }
-
-      if (chargersForTesting.includes(chargerId)) {
-        ws.send(
-          JSON.stringify({
-            firmware_version: "2.2.9",
-          }),
-        );
-        return;
-      }
-
+      // 10 is the DEFAULT firmware we know works
       ws.send(
         JSON.stringify({
-          firmware_version: "2.2.9",
+          firmware_version: "2.2.10",
         }),
       );
       return;

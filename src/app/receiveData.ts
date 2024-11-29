@@ -120,6 +120,11 @@ const getWearableEventType = (
   eventType: number,
   beaconId: string,
 ): WearableEventType => {
+  if (eventType === 1) return "HandArmVibration";
+  if (eventType === 3) return "LoudNoise";
+
+  if (!beaconId) return "PreventativeProtectiveEquipment";
+
   const firstLetter = beaconId.charAt(0);
 
   switch (firstLetter) {
@@ -161,6 +166,9 @@ type ProximityDetails = {
 };
 
 const getProximityDetails = (beaconId: string): ProximityDetails => {
+  if (!beaconId)
+    return { type: "PreventativeProtectiveEquipment", size: "small" };
+
   const beaconDescriptorId = parseInt(beaconId.charAt(0), 10);
 
   switch (beaconDescriptorId) {
@@ -219,7 +227,7 @@ type ImuLevel = "low" | "medium" | "high" | "extreme";
 const createUsableEvent = (input: WearableEvent): UsableEvent => {
   return {
     eventDate: getDateWithEventTime(input.event_time),
-    eventType: getWearableEventType(input.event_type, input.beacon_minor), // This is WRONG for beacon events
+    eventType: getWearableEventType(input.event_type, input.beacon_minor),
     displayId: input.device_id,
     beaconId:
       input.beacon_minor === "0" ? null : input.beacon_minor?.toLocaleString(),

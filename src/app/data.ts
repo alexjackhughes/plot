@@ -45,7 +45,7 @@ export const getData = (
     },
     event_type: data?.event_type,
     device_id: data?.device_id,
-    beacon_minor: data?.beacon_minor,
+    beacon_minor: data?.beacon_minor || "",
     duration: data?.duration,
     imu_level: data?.imu_level,
     charger_id: data?.charger_id || "",

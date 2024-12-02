@@ -4,7 +4,7 @@ import { close } from "./utils/message.js";
 import { WebSocketServer } from "ws";
 
 import { sendBigLog } from "./app/logging.js";
-import { flattenData, getData } from "./app/data.js";
+import { getData } from "./app/data.js";
 import { sendData } from "./app/sendData.js";
 import { receiveData } from "./app/receiveData.js";
 
@@ -37,13 +37,13 @@ wss.on("connection", async (ws: Socket) => {
 
     // Log for Railway
     const message = data.toString();
-    console.log("Raw Device Message:", message, messageData.request_type);
+    console.log("Raw Device Message:", message);
 
     if (messageData.request_type === 0) {
       try {
         // Log the event for LogSnag
-        const flattened = flattenData(messageData);
-        sendBigLog(flattened);
+        // const flattened = flattenData(messageData);
+        // sendBigLog(flattened);
 
         if (process.env.FAKE_DB === "true") return;
 
@@ -51,6 +51,7 @@ wss.on("connection", async (ws: Socket) => {
         await receiveData(messageData);
       } catch (error) {
         console.error("Error saving data:", error);
+        sendBigLog({ problem: "Error saving data", ...error });
       } finally {
         // Send acknowledgment for the received message
         ws.send("ACK\r\n");

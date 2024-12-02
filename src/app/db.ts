@@ -297,9 +297,9 @@ export const deleteHavEvents = async (organizationId: string) => {
         updatedAt: new Date(),
       },
     });
-    console.log(
-      `Updated ${result.count} HAV events to 'done' for organization: ${organizationId}`,
-    );
+    // console.log(
+    //   `Updated ${result.count} HAV events to 'done' for organization: ${organizationId}`,
+    // );
   } catch (error) {
     console.error("Error updating HAV events:", error);
     throw error;

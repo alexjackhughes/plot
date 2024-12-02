@@ -135,7 +135,7 @@ export const sendData = async (
       }));
 
       if (havs.length === 0) {
-        console.log("No HAV events processed");
+        // console.log("No HAV events processed");
       } else {
         // console.log("org fetched:", org.id);
         // console.log("wearable fetched:", wearable.id);

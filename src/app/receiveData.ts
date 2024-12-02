@@ -139,17 +139,8 @@ const getWearableEventType = (
     case "7":
     case "8":
     case "9":
-      return "MovingMachinery";
-  }
-
-  switch (eventType) {
-    case 1:
-      return "HandArmVibration";
-    case 2:
-      return "MovingMachinery"; // we should never hit this as the above switch covers all cases
-    case 3:
     default:
-      return "LoudNoise";
+      return "MovingMachinery";
   }
 };
 
@@ -263,19 +254,19 @@ const imuLevelSelector = (imuLevel?: string): ImuLevel | undefined => {
 };
 
 export const receiveData = async (event: WearableEvent): Promise<void> => {
-  console.log(
-    `timestamp for: ${event.device_id}`,
-    event.event_time.hour,
-    event.event_time.minute,
-    event.event_time.second,
-    event.event_time.year,
-    event.event_time.month,
-    event.event_time.day,
-  );
+  // console.log(
+  //   `timestamp for: ${event.device_id}`,
+  //   event.event_time.hour,
+  //   event.event_time.minute,
+  //   event.event_time.second,
+  //   event.event_time.year,
+  //   event.event_time.month,
+  //   event.event_time.day,
+  // );
   // 1. Format the data in an easy to use way
   const usableEvent = createUsableEvent(event);
 
-  console.log("After time modification:", usableEvent.eventDate.toString());
+  // console.log("After time modification:", usableEvent.eventDate.toString());
 
   // For railway log
   // const message = JSON.stringify(event, null, 2);

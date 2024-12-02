@@ -82,7 +82,7 @@ export const insertEvent = async (
           organizationId: wearable.organizationId,
           userId: wearable.userId,
           duration: usableEvent.duration,
-          severity: returnSeverenessOfEvent(usableEvent),
+          severity: 0,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -97,7 +97,7 @@ export const insertEvent = async (
           userId: wearable.userId,
           organizationId: wearable.organizationId,
           duration: usableEvent.duration,
-          severity: returnSeverenessOfEvent(usableEvent),
+          severity: usableEvent.duration > 10000 ? 10 : 0,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -147,22 +147,6 @@ export const translateImuSchemaToModel = (imuLevel: SafeImuLevel): ImuLevel => {
     default:
       return "low";
   }
-};
-
-const returnSeverenessOfEvent = (usableEvent: UsableEvent): 0 | 10 => {
-  if (
-    usableEvent.eventType === "PreventativeProtectiveEquipment" ||
-    usableEvent.eventType === "HandArmVibration" ||
-    usableEvent.eventType === "MovingMachinery"
-  ) {
-    return 0;
-  }
-
-  if (usableEvent.duration > 120) {
-    return 10;
-  }
-
-  return 0;
 };
 
 export async function getOrganizationById(organizationId: string) {

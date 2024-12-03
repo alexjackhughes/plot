@@ -64,7 +64,7 @@ wss.on("connection", async (ws: Socket) => {
 
       return;
     } else if (messageData.request_type === 2) {
-      sendBigLog(messageData);
+      // sendBigLog(messageData);
       // const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
 
       // 10 is the DEFAULT firmware we know works
@@ -117,7 +117,7 @@ wss.on("connection", async (ws: Socket) => {
         return;
       }
 
-      sendBigLog(messageData);
+      // sendBigLog(messageData);
 
       // Get the current date
       const now = new Date();

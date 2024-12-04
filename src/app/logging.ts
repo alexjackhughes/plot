@@ -24,9 +24,9 @@ export const sendLog = async (message: string) => {
 export const sendBigLog = async (message: any) => {
   await logsnag.track({
     channel: "devices",
-    event: "New device message",
+    event: "Error Adding Data",
     user_id: "user-123",
-    icon: "✅",
+    icon: "❌",
     notify: true,
     tags: {
       ...message,

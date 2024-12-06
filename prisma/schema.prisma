@@ -134,6 +134,7 @@ model ChargingStation {
   updatedAt      DateTime     @updatedAt
   displayName    String?
   displayId      String?
+  timezone       String?      @default("GMT-0")
   organization   Organization @relation(fields: [organizationId], references: [id])
 
   @@index([organizationId], map: "idx_charging_station_organization")

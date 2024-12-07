@@ -22,7 +22,7 @@
     "dayjs": "^1.11.13",
     "esbuild": "^0.17.16",
     "logsnag": "^1.0.0",
-    "ws": "^8.13.0"
+    "ws": "^8.17.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",

@@ -7,6 +7,7 @@ import { sendBigLog } from "./app/logging.js";
 import { getData } from "./app/data.js";
 import { sendData } from "./app/sendData.js";
 import { receiveData } from "./app/receiveData.js";
+import { findChargerTimezone } from "./app/chargerTimezone.js";
 
 const wss = new WebSocketServer({ port: Number(process.env.PORT) });
 
@@ -76,69 +77,14 @@ wss.on("connection", async (ws: Socket) => {
       return;
     } else if (messageData.request_type === 3) {
       const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
-      const westCoastAmerica = ["3000", "0014", "0021"];
-      const westCoastCanada = ["4000", "0010", "0047"];
-      const germany = ["0034"];
-      const taiwan = ["3000", "4000", "5000", "9999", "0000"];
-
-      if (westCoastAmerica.includes(chargerId)) {
-        ws.send(
-          JSON.stringify({
-            request_timezone: "GMT-7",
-          }),
-        );
-        return;
-      }
-
-      if (germany.includes(chargerId)) {
-        ws.send(
-          JSON.stringify({
-            request_timezone: "GMT+1",
-          }),
-        );
-        return;
-      }
-
-      if (taiwan.includes(chargerId)) {
-        ws.send(
-          JSON.stringify({
-            request_timezone: "GMT+8",
-          }),
-        );
-        return;
-      }
-
-      if (westCoastCanada.includes(chargerId)) {
-        ws.send(
-          JSON.stringify({
-            request_timezone: "GMT-7GMT,GMT-6,M3.2.0/2:00:00,M11.1.0/2:00:00",
-          }),
-        );
-        return;
-      }
-
-      // sendBigLog(messageData);
-
-      // Get the current date
-      const now = new Date();
-
-      // Check if it's currently British Summer Time (BST)
-      const isBST =
-        now
-          .toLocaleString("en-US", {
-            timeZone: "Europe/London",
-            timeZoneName: "short",
-          })
-          .split(" ")[2] === "BST";
+      const timezone = await findChargerTimezone(chargerId);
 
       ws.send(
         JSON.stringify({
-          request_timezone: isBST ? "GMT+0" : "GMT+0",
+          request_timezone: timezone,
         }),
       );
-      return;
-    } else {
-      console.log("Unknown request type");
+
       return;
     }
   });

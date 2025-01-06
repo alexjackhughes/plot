@@ -27,5 +27,5 @@ export const findChargerTimezone = async (
       })
       .split(" ")[2] === "BST";
 
-  return isBST ? "GMT+0" : "GMT+0";
+  return isBST ? "GMT+1" : "GMT+0";
 };

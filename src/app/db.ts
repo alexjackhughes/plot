@@ -293,9 +293,9 @@ export const deleteHavEvents = async (organizationId: string) => {
 };
 
 export const getChargingStation = async (id: string) => {
-  const chargingStation = prisma.chargingStation.findUnique({
+  const chargingStation = prisma.chargingStation.findFirst({
     where: {
-      id,
+      displayId: id,
     },
   });
   return chargingStation;

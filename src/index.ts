@@ -66,7 +66,7 @@ wss.on("connection", async (ws: Socket) => {
       return;
     } else if (messageData.request_type === 2) {
       // sendBigLog(messageData);
-      // const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
+      const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
 
       // 10 is the DEFAULT firmware we know works
       ws.send(
@@ -82,6 +82,16 @@ wss.on("connection", async (ws: Socket) => {
       ws.send(
         JSON.stringify({
           request_timezone: timezone,
+        }),
+      );
+
+      return;
+    } else if (messageData.request_type === 4) {
+      // const wearableId = messageData.device_id.replace(/[^\d]/g, ""); should only be 9999
+
+      ws.send(
+        JSON.stringify({
+          firmware_version: "1.3.36",
         }),
       );
 

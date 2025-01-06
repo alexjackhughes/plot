@@ -3,11 +3,24 @@ import {
   VersionSettings,
   WearableEvent,
   RequestTimezone,
+  RequestFirmwareVersion,
 } from "../models/models";
 
 export const getData = (
   data: any,
-): WearableEvent | SendSettings | VersionSettings | RequestTimezone => {
+):
+  | WearableEvent
+  | SendSettings
+  | VersionSettings
+  | RequestTimezone
+  | RequestFirmwareVersion => {
+  if (data.request_type === 4) {
+    return {
+      device_id: data?.device_id || "",
+      request_type: 4,
+    };
+  }
+
   if (data.request_type === 3) {
     return {
       charger_id: data?.charger_id || "",

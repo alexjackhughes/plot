@@ -38,3 +38,8 @@ export interface RequestTimezone {
   request_timezone: string;
   request_type: 3;
 }
+
+export interface RequestFirmwareVersion {
+  device_id: string;
+  request_type: 4;
+}

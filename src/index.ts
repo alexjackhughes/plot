@@ -91,7 +91,7 @@ wss.on("connection", async (ws: Socket) => {
 
       ws.send(
         JSON.stringify({
-          firmware_version: "1.3.36",
+          firmware_version: "1.3.37",
         }),
       );
 

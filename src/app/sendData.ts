@@ -222,8 +222,8 @@ export const sendData = async (
         trigger_condition: 70,
       };
 
-  const gravesham = ["0154", "0208", "0203", "0187"];
-  const isGravesham = gravesham.includes(wearable.deviceId);
+  // const gravesham = ["0154", "0208", "0203", "0187"];
+  // const isGravesham = gravesham.includes(wearable.deviceId);
 
   // 4. Map the distances to the org ones with ternary checks for exemptions
   wearableSettings = {
@@ -233,7 +233,7 @@ export const sendData = async (
       icon_display: 0,
       vibration_alert: 0,
       sound_alert: 0,
-      trigger_condition: isGravesham ? 5 : 30,
+      trigger_condition: 10,
     },
     sensor_haptic_medium: {
       enable: 1,

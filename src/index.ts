@@ -87,11 +87,19 @@ wss.on("connection", async (ws: Socket) => {
 
       return;
     } else if (messageData.request_type === 4) {
-      // const wearableId = messageData.device_id.replace(/[^\d]/g, ""); should only be 9999
+      const wearableId = messageData.device_id.replace(/[^\d]/g, ""); // should only be 9999
+
+      if (wearableId === "9999") {
+        ws.send(
+          JSON.stringify({
+            firmware_version: "1.3.37",
+          }),
+        );
+      }
 
       ws.send(
         JSON.stringify({
-          firmware_version: "1.3.37",
+          firmware_version: "1.3.35",
         }),
       );
 

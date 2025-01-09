@@ -43,3 +43,8 @@ export interface RequestFirmwareVersion {
   device_id: string;
   request_type: 4;
 }
+
+export interface RequestHAVGrouping {
+  device_id: string;
+  request_type: 5;
+}

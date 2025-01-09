@@ -8,6 +8,7 @@ import { getData } from "./app/data.js";
 import { sendData } from "./app/sendData.js";
 import { receiveData } from "./app/receiveData.js";
 import { findChargerTimezone } from "./app/chargerTimezone.js";
+import { groupHAVs } from "./app/groupHAVs.js";
 
 const wss = new WebSocketServer({ port: Number(process.env.PORT) });
 
@@ -110,6 +111,16 @@ wss.on("connection", async (ws: Socket) => {
       );
 
       return;
+    }
+
+    if (messageData.request_type === 5) {
+      await groupHAVs(messageData.device_id);
+
+      ws.send(
+        JSON.stringify({
+          message: "working",
+        }),
+      );
     }
   });
 

@@ -4,6 +4,7 @@ import {
   WearableEvent,
   RequestTimezone,
   RequestFirmwareVersion,
+  RequestHAVGrouping,
 } from "../models/models";
 
 export const getData = (
@@ -13,7 +14,15 @@ export const getData = (
   | SendSettings
   | VersionSettings
   | RequestTimezone
-  | RequestFirmwareVersion => {
+  | RequestFirmwareVersion
+  | RequestHAVGrouping => {
+  if (data.request_type === 5) {
+    return {
+      device_id: data?.device_id || "",
+      request_type: 5,
+    };
+  }
+
   if (data.request_type === 4) {
     return {
       device_id: data?.device_id || "",

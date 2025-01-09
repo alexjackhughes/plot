@@ -269,11 +269,15 @@ export const addHavEvents = async ({
   });
 };
 
-export const deleteHavEvents = async (organizationId: string) => {
+export const deleteHavEvents = async (
+  organizationId: string,
+  wearableId: string,
+) => {
   try {
-    const result = await prisma.hAVEvent.updateMany({
+    await prisma.hAVEvent.updateMany({
       where: {
         organizationId,
+        deviceId: wearableId,
         status: "pending",
       },
       data: {

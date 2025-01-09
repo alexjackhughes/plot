@@ -51,8 +51,8 @@ export const groupHAVs = async (device_id: string) => {
         havEvents: processedHavEvents,
       });
 
-      // 5. Delete all HAV Events
-      await deleteHavEvents(org.id);
+      // 5. Delete all HAV Events for that wearable
+      await deleteHavEvents(org.id, wearable.id);
     }
   } catch (error) {
     console.error("Error in first request", error);

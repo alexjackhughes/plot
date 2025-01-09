@@ -274,22 +274,54 @@ export const deleteHavEvents = async (
   wearableId: string,
 ) => {
   try {
-    await prisma.hAVEvent.updateMany({
+    // Get all pending HAV events
+    const pendingEvents = await prisma.hAVEvent.findMany({
       where: {
         organizationId,
         deviceId: wearableId,
         status: "pending",
       },
-      data: {
-        status: "done",
-        updatedAt: new Date(),
-      },
+      select: { id: true },
     });
-    // console.log(
-    //   `Updated ${result.count} HAV events to 'done' for organization: ${organizationId}`,
-    // );
+
+    const batchSize = 50;
+    const results = {
+      totalProcessed: 0,
+      successCount: 0,
+      failedBatches: 0,
+    };
+
+    // Process in batches of 50
+    for (let i = 0; i < pendingEvents.length; i += batchSize) {
+      const batch = pendingEvents.slice(i, i + batchSize);
+      const ids = batch.map((event) => event.id);
+
+      try {
+        await prisma.hAVEvent.updateMany({
+          where: {
+            id: { in: ids },
+          },
+          data: {
+            status: "done",
+            updatedAt: new Date(),
+          },
+        });
+        results.successCount += batch.length;
+      } catch (error) {
+        console.error(`Error updating batch ${i / batchSize + 1}:`, error);
+        results.failedBatches++;
+      }
+      results.totalProcessed += batch.length;
+    }
+
+    console.log(`Processed ${results.totalProcessed} HAV events:`, {
+      successful: results.successCount,
+      failedBatches: results.failedBatches,
+    });
+
+    return results;
   } catch (error) {
-    console.error("Error updating HAV events:", error);
+    console.error("Error in deleteHavEvents:", error);
     throw error;
   } finally {
     await prisma.$disconnect();

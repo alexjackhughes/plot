@@ -89,7 +89,12 @@ wss.on("connection", async (ws: Socket) => {
     } else if (messageData.request_type === 4) {
       const wearableId = messageData.device_id.replace(/[^\d]/g, ""); // should only be 9999
 
-      if (wearableId === "9999") {
+      // This the OTA firmware version for testing
+      if (
+        wearableId === "9999" ||
+        wearableId === "0135" ||
+        wearableId === "0146"
+      ) {
         ws.send(
           JSON.stringify({
             firmware_version: "1.3.37",
@@ -97,6 +102,7 @@ wss.on("connection", async (ws: Socket) => {
         );
       }
 
+      // This is the default firmware version
       ws.send(
         JSON.stringify({
           firmware_version: "1.3.35",

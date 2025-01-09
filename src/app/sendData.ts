@@ -97,6 +97,7 @@ import {
 } from "./db";
 import { HavStub, processHavs } from "../utils/havs";
 import { SendSettings } from "../models/models";
+import { groupHAVs } from "./groupHAVs";
 
 interface BeaconTypeToWeableId {
   [key: string]: string[];
@@ -121,49 +122,9 @@ export const sendData = async (
     return dummySettings(settings.device_id);
   }
 
+  // Group the HAVs and remove duplicates
   if (settings?.first_request === 1) {
-    try {
-      console.log(`A first request has been made for: ${settings.device_id}`);
-
-      // 2. Fetch the HAV Events
-      const havs = await getHavEventsByWearableId(org.id, wearable.id);
-      const formattedHavs: HavStub[] = havs.map((hav) => ({
-        imu_level: translateImuSchemaToModel(hav.imuLevel),
-        timestamp: hav.timestamp,
-        duration: hav.duration,
-        userId: hav.userId,
-      }));
-
-      if (havs.length === 0) {
-        // console.log("No HAV events processed");
-      } else {
-        // console.log("org fetched:", org.id);
-        // console.log("wearable fetched:", wearable.id);
-
-        // console.log(`HAV Events fetched: ${havs.length}`);
-        // havs.map((hav) => console.log(`${hav.duration} - ${hav.imuLevel}`));
-
-        // 3. Process the HAV Events
-        const processedHavEvents = await processHavs(formattedHavs);
-
-        // console.log(`Processed Events fetched: ${processedHavEvents.length}`);
-        // processedHavEvents.map((hav) =>
-        //   console.log(`${hav.duration} - ${hav.imu_level}`),
-        // );
-
-        // 4. Update the HAV events into Events
-        await addHavEvents({
-          organisationId: org.id,
-          deviceId: wearable.id,
-          havEvents: processedHavEvents,
-        });
-
-        // 5. Delete all HAV Events
-        await deleteHavEvents(org.id);
-      }
-    } catch (error) {
-      console.error("Error in first request", error);
-    }
+    await groupHAVs(settings.device_id);
   }
 
   // 3. a) We need to create a list of beacon types to the exempt wearables.

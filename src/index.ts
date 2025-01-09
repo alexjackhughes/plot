@@ -25,12 +25,12 @@ wss.on("connection", async (ws: Socket) => {
         !(typeof rawData === "object") ||
         !("request_type" in rawData)
       ) {
-        console.log("Error parsing data");
+        console.log("Error parsing data", rawData);
         ws.send("ACK\r\n");
         return;
       }
     } catch (error) {
-      console.log("Error parsing data");
+      console.log("Error parsing data", error);
       ws.send("ACK\r\n");
       return;
     }

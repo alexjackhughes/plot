@@ -70,6 +70,15 @@ wss.on("connection", async (ws: Socket) => {
       // sendBigLog(messageData);
       const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
 
+      // Jack's charger
+      if (chargerId === "9912") {
+        ws.send(
+          JSON.stringify({
+            firmware_version: "2.2.12",
+          }),
+        );
+      }
+
       // 10 is the DEFAULT firmware we know works
       ws.send(
         JSON.stringify({

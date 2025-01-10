@@ -152,19 +152,10 @@ export const sendData = async (
     beaconTypeToWearableIds,
   );
 
-  const airbus = [
-    "0186",
-    "0193",
-    "0185",
-    "0200",
-    "0196",
-    "0204",
-    "0197",
-    "0779",
-  ];
+  const airbus = [];
 
   // const arabelle = ["0177", "0786", "0180", "0176"];
-  const knauf = ["0811", "0161", "0805", "0798"];
+  const knauf = [];
 
   // Knauf Insulations want the microphone alerts to always be on
   const microphoneSettings = [...knauf].includes(wearable.displayId)

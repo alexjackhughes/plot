@@ -104,7 +104,9 @@ wss.on("connection", async (ws: Socket) => {
       if (
         wearableId === "9999" ||
         wearableId === "0135" ||
-        wearableId === "0146"
+        wearableId === "0146" ||
+        wearableId === "0136" ||
+        wearableId === "0121"
       ) {
         ws.send(
           JSON.stringify({

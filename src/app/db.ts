@@ -54,6 +54,9 @@ export const insertEvent = async (
 ) => {
   try {
     if (usableEvent.eventType === "HandArmVibration") {
+      // If the event is too low, just delete it
+      if (usableEvent.duration <= 10) return;
+
       await prisma.hAVEvent.create({
         data: {
           timestamp: usableEvent.eventDate,
@@ -220,13 +223,13 @@ export const updateBeacon = async (id: string, battery: number) => {
 
 export const getHavEventsByWearableId = async (
   organizationId: string,
-  wearableId: string,
+  deviceId: string,
 ) => {
   try {
     const havEvents = await prisma.hAVEvent.findMany({
       where: {
         organizationId,
-        deviceId: wearableId,
+        deviceId,
         status: "pending",
       },
     });

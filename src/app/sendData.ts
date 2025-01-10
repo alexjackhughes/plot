@@ -194,7 +194,7 @@ export const sendData = async (
       icon_display: 0,
       vibration_alert: 0,
       sound_alert: 0,
-      trigger_condition: 10,
+      trigger_condition: 30,
     },
     sensor_haptic_medium: {
       enable: 1,

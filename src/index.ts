@@ -112,9 +112,7 @@ wss.on("connection", async (ws: Socket) => {
       );
 
       return;
-    }
-
-    if (messageData.request_type === 5) {
+    } else if (messageData.request_type === 5) {
       await groupHAVs(messageData.device_id);
 
       ws.send(

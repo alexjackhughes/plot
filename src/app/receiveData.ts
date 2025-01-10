@@ -274,6 +274,8 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
 
   let wearable = await getWearable(usableEvent.displayId);
 
+  // If wearable and charger ID here are different, re-assign the charger ID to the wearable
+
   if (!wearable) {
     if (!usableEvent.chargerId) return;
     const usableChargerId = usableEvent.chargerId.split(" ")[1];

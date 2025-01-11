@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.14.0",
-    "@supabase/supabase-js": "^2.39.8",
+    "@supabase/supabase-js": "^2.46.2",
     "dayjs": "^1.11.13",
     "esbuild": "^0.17.16",
     "logsnag": "^1.0.0",

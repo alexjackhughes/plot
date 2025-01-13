@@ -178,14 +178,14 @@ export const sendData = async (
     },
     sensor_haptic_extreme: {
       enable: 1,
-      icon_display: 1,
+      icon_display: 0,
       vibration_alert: 0,
       sound_alert: 0,
       trigger_condition: 150,
     },
     sensor_MIC: {
       enable: 1,
-      icon_display: 1,
+      icon_display: 0,
       vibration_alert: 0,
       sound_alert: 0,
       trigger_condition: 70,

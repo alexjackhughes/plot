@@ -71,9 +71,7 @@ export const insertEvent = async (
         },
       });
       return;
-    }
-
-    if (usableEvent.isBeacon && beacon) {
+    } else if (usableEvent.isBeacon && beacon) {
       const eventType = beacon.type;
 
       await prisma.event.create({

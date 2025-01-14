@@ -30,13 +30,19 @@ export const groupHAVs = async (device_id: string) => {
     }));
 
     if (havs.length === 0) {
-      console.log("No HAV events processed [org, wearable]:", org.id, wearable.id);
+      console.log(
+        "No HAV events processed [org, wearable]:",
+        org.id,
+        wearable.id,
+      );
     } else {
       // console.log("org fetched:", org.id);
       // console.log("wearable fetched:", wearable.id);
 
-      // console.log(`HAV Events fetched: ${havs.length}`);
-      // havs.map((hav) => console.log(`${hav.duration} - ${hav.imuLevel}`));
+      console.log(`HAV Events fetched: ${havs.length}`);
+      havs.map((hav) =>
+        console.log(`${hav.id}: ${hav.duration} - ${hav.imuLevel}`),
+      );
 
       // 3. Process the HAV Events
       const processedHavEvents = await processHavs(formattedHavs);

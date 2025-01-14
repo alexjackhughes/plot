@@ -30,7 +30,7 @@ export const groupHAVs = async (device_id: string) => {
     }));
 
     if (havs.length === 0) {
-      console.log("No HAV events processed", org.id, wearable.id);
+      console.log("No HAV events processed [org, wearable]:", org.id, wearable.id);
     } else {
       // console.log("org fetched:", org.id);
       // console.log("wearable fetched:", wearable.id);

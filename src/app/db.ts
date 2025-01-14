@@ -252,26 +252,33 @@ export const addHavEvents = async ({
   deviceId: string;
   havEvents: HavStub[];
 }) => {
-  const data = havEvents.map((hav) => {
-    return {
-      timestamp: hav.timestamp,
-      eventType: "HandArmVibration" as EventType,
-      deviceId: deviceId,
-      organizationId: organisationId,
-      userId: hav.userId,
-      duration: hav.duration,
-      severity: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      imuLevel: translateImuLeveltoDBSchema(hav.imu_level),
-    };
-  });
+  try {
+    const data = havEvents.map((hav) => {
+      return {
+        timestamp: hav.timestamp,
+        eventType: "HandArmVibration" as EventType,
+        deviceId: deviceId,
+        organizationId: organisationId,
+        userId: hav.userId,
+        duration: hav.duration,
+        severity: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        imuLevel: translateImuLeveltoDBSchema(hav.imu_level),
+      };
+    });
 
-  console.log("creating HAV events:", data);
+    console.log("creating HAV events:", data);
 
-  await prisma.event.createMany({
-    data,
-  });
+    await prisma.event.createMany({
+      data,
+    });
+  } catch (error) {
+    console.error("Error in addHavEvents:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
 };
 
 export const deleteHavEvents = async (

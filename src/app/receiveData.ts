@@ -254,32 +254,23 @@ const imuLevelSelector = (imuLevel?: string): ImuLevel | undefined => {
 };
 
 export const receiveData = async (event: WearableEvent): Promise<void> => {
-  // console.log(
-  //   `timestamp for: ${event.device_id}`,
-  //   event.event_time.hour,
-  //   event.event_time.minute,
-  //   event.event_time.second,
-  //   event.event_time.year,
-  //   event.event_time.month,
-  //   event.event_time.day,
-  // );
   // 1. Format the data in an easy to use way
   const usableEvent = createUsableEvent(event);
 
-  // console.log("After time modification:", usableEvent.eventDate.toString());
-
   // For railway log
-  // const message = JSON.stringify(event, null, 2);
-  // console.log("Usable Event received:", message);
+  const message = JSON.stringify(event, null, 2);
+  console.log("Usable Event received:", message);
 
   let wearable = await getWearable(usableEvent.displayId);
 
   // If wearable and charger ID here are different, re-assign the charger ID to the wearable
 
   if (!wearable) {
-    if (!usableEvent.chargerId) return;
-    const usableChargerId = usableEvent.chargerId.split(" ")[1];
+    console.log("No wearable found for id: ", usableEvent.displayId);
 
+    if (!usableEvent.chargerId) return;
+
+    const usableChargerId = usableEvent.chargerId.split(" ")[1];
     const charger = await getChargingStation(usableChargerId);
 
     if (!charger) {

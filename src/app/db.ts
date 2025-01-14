@@ -267,6 +267,8 @@ export const addHavEvents = async ({
     };
   });
 
+  console.log("creating HAV events:", data);
+
   await prisma.event.createMany({
     data,
   });

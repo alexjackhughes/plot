@@ -57,7 +57,7 @@ export const insertEvent = async (
       // If the event is too low, just delete it
       if (usableEvent.duration <= 10) return;
 
-      await prisma.hAVEvent.create({
+      const event = await prisma.hAVEvent.create({
         data: {
           timestamp: usableEvent.eventDate,
           deviceId: wearable.id,
@@ -70,6 +70,9 @@ export const insertEvent = async (
           status: "pending",
         },
       });
+
+      console.log("HAV event created:", event.id);
+
       return;
     } else if (usableEvent.isBeacon && beacon) {
       const eventType = beacon.type;

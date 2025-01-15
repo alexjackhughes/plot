@@ -110,7 +110,13 @@ function createDate(eventTime: WearableEventTime): Date {
   let { year, month, day } = eventTime;
 
   if (year === -1) {
-    year = new Date().getFullYear();
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1; // JavaScript months are 0-based
+
+    // If the event month is in the past compared to current month, use current year
+    // Otherwise use previous year
+    year = month <= currentMonth ? currentYear : currentYear - 1;
   }
 
   if (year !== undefined && month !== undefined && day !== undefined) {

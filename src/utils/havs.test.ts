@@ -1,10 +1,9 @@
-import dayjs from "dayjs";
 import {
   groupHavsByDate,
   HavStub,
   isWithinSameHour,
-  processHavs,
   fixDurations,
+  processHavs,
 } from "./havs";
 
 const havs: HavStub[] = [
@@ -392,5 +391,423 @@ describe("fixDurations", () => {
     expect(result.find((hav) => hav.imu_level === "extreme")?.duration).toBe(
       10,
     );
+  });
+});
+
+describe("processHavs", () => {
+  it("should handle empty input", () => {
+    expect(processHavs([])).toEqual([]);
+  });
+
+  it("should handle a single event", () => {
+    const input: HavStub[] = [
+      {
+        imu_level: "extreme",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 60,
+        userId: "user1",
+      },
+    ];
+
+    const result = processHavs(input);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual({
+      imu_level: "extreme",
+      timestamp: new Date("2024-01-01T10:00:00Z"),
+      duration: 60,
+      userId: "user1",
+    });
+  });
+
+  it("should handle multiple events in the same hour with same IMU level", () => {
+    const input: HavStub[] = [
+      {
+        imu_level: "high",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+      {
+        imu_level: "high",
+        timestamp: new Date("2024-01-01T10:30:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+    ];
+
+    const result = processHavs(input);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual({
+      imu_level: "high",
+      timestamp: new Date("2024-01-01T10:00:00Z"),
+      duration: 60,
+      userId: "user1",
+    });
+  });
+
+  it("should handle events with low and extreme", () => {
+    const input: HavStub[] = [
+      {
+        imu_level: "low",
+        timestamp: new Date("2024-01-01T11:00:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+      {
+        imu_level: "medium",
+        timestamp: new Date("2024-01-01T11:00:00Z"),
+        duration: 0,
+        userId: "user1",
+      },
+      {
+        imu_level: "high",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 0,
+        userId: "user1",
+      },
+      {
+        imu_level: "extreme",
+        timestamp: new Date("2024-01-01T11:00:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+    ];
+
+    const result = processHavs(input);
+    expect(result).toHaveLength(2);
+    expect(result).toEqual([
+      {
+        imu_level: "low",
+        timestamp: new Date("2024-01-01T11:00:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+      {
+        imu_level: "extreme",
+        timestamp: new Date("2024-01-01T11:00:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+    ]);
+  });
+
+  it("should handle events in different hours", () => {
+    const input: HavStub[] = [
+      {
+        imu_level: "high",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+      {
+        imu_level: "high",
+        timestamp: new Date("2024-01-01T11:00:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+    ];
+
+    const result = processHavs(input);
+    expect(result).toHaveLength(2);
+    expect(result).toEqual([
+      {
+        imu_level: "high",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+      {
+        imu_level: "high",
+        timestamp: new Date("2024-01-01T11:00:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+    ]);
+  });
+
+  it("should handle overlapping IMU levels in same hour", () => {
+    const input: HavStub[] = [
+      {
+        imu_level: "low",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 60,
+        userId: "user1",
+      },
+      {
+        imu_level: "medium",
+        timestamp: new Date("2024-01-01T10:15:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+      {
+        imu_level: "high",
+        timestamp: new Date("2024-01-01T10:30:00Z"),
+        duration: 20,
+        userId: "user1",
+      },
+      {
+        imu_level: "extreme",
+        timestamp: new Date("2024-01-01T10:45:00Z"),
+        duration: 10,
+        userId: "user1",
+      },
+    ];
+
+    const result = processHavs(input);
+    expect(result).toHaveLength(4);
+    expect(result).toEqual([
+      {
+        imu_level: "low",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+      {
+        imu_level: "medium",
+        timestamp: new Date("2024-01-01T10:15:00Z"),
+        duration: 10,
+        userId: "user1",
+      },
+      {
+        imu_level: "high",
+        timestamp: new Date("2024-01-01T10:30:00Z"),
+        duration: 10,
+        userId: "user1",
+      },
+      {
+        imu_level: "extreme",
+        timestamp: new Date("2024-01-01T10:45:00Z"),
+        duration: 10,
+        userId: "user1",
+      },
+    ]);
+  });
+
+  it("should handle extreme level overriding lower levels", () => {
+    const input: HavStub[] = [
+      {
+        imu_level: "low",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 60,
+        userId: "user1",
+      },
+      {
+        imu_level: "medium",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 60,
+        userId: "user1",
+      },
+      {
+        imu_level: "high",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 60,
+        userId: "user1",
+      },
+      {
+        imu_level: "extreme",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 60,
+        userId: "user1",
+      },
+    ];
+
+    const result = processHavs(input);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual({
+      imu_level: "extreme",
+      timestamp: new Date("2024-01-01T10:00:00Z"),
+      duration: 60,
+      userId: "user1",
+    });
+  });
+
+  it("should filter out events with zero duration", () => {
+    const input: HavStub[] = [
+      {
+        imu_level: "low",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 0,
+        userId: "user1",
+      },
+      {
+        imu_level: "extreme",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+    ];
+
+    const result = processHavs(input);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual({
+      imu_level: "extreme",
+      timestamp: new Date("2024-01-01T10:00:00Z"),
+      duration: 30,
+      userId: "user1",
+    });
+  });
+
+  it("should preserve original timestamps for each IMU level", () => {
+    const input: HavStub[] = [
+      {
+        imu_level: "low",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 60,
+        userId: "user1",
+      },
+      {
+        imu_level: "extreme",
+        timestamp: new Date("2024-01-01T10:30:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+    ];
+
+    const result = processHavs(input);
+    expect(result).toHaveLength(2);
+    expect(result).toEqual([
+      {
+        imu_level: "low",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 60,
+        userId: "user1",
+      },
+      {
+        imu_level: "extreme",
+        timestamp: new Date("2024-01-01T10:30:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+    ]);
+  });
+
+  it("should handle extreme level for 60 seconds", () => {
+    const input: HavStub[] = [
+      {
+        imu_level: "low",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 60,
+        userId: "user1",
+      },
+      {
+        imu_level: "medium",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 60,
+        userId: "user1",
+      },
+      {
+        imu_level: "high",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 60,
+        userId: "user1",
+      },
+      {
+        imu_level: "extreme",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 60,
+        userId: "user1",
+      },
+    ];
+
+    const result = processHavs(input);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual({
+      imu_level: "extreme",
+      timestamp: new Date("2024-01-01T10:00:00Z"),
+      duration: 60,
+      userId: "user1",
+    });
+  });
+
+  it("should handle low for 30s then extreme for 30s", () => {
+    const input: HavStub[] = [
+      {
+        imu_level: "low",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+      {
+        imu_level: "extreme",
+        timestamp: new Date("2024-01-01T10:30:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+    ];
+
+    const result = processHavs(input);
+    expect(result).toHaveLength(2);
+    expect(result).toEqual([
+      {
+        imu_level: "low",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+      {
+        imu_level: "extreme",
+        timestamp: new Date("2024-01-01T10:30:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+    ]);
+  });
+
+  it("should handle progressive 10s intervals from low to extreme", () => {
+    const input: HavStub[] = [
+      {
+        imu_level: "low",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 40,
+        userId: "user1",
+      },
+      {
+        imu_level: "medium",
+        timestamp: new Date("2024-01-01T10:10:00Z"),
+        duration: 30,
+        userId: "user1",
+      },
+      {
+        imu_level: "high",
+        timestamp: new Date("2024-01-01T10:20:00Z"),
+        duration: 20,
+        userId: "user1",
+      },
+      {
+        imu_level: "extreme",
+        timestamp: new Date("2024-01-01T10:30:00Z"),
+        duration: 10,
+        userId: "user1",
+      },
+    ];
+
+    const result = processHavs(input);
+    expect(result).toHaveLength(4);
+    expect(result).toEqual([
+      {
+        imu_level: "low",
+        timestamp: new Date("2024-01-01T10:00:00Z"),
+        duration: 10,
+        userId: "user1",
+      },
+      {
+        imu_level: "medium",
+        timestamp: new Date("2024-01-01T10:10:00Z"),
+        duration: 10,
+        userId: "user1",
+      },
+      {
+        imu_level: "high",
+        timestamp: new Date("2024-01-01T10:20:00Z"),
+        duration: 10,
+        userId: "user1",
+      },
+      {
+        imu_level: "extreme",
+        timestamp: new Date("2024-01-01T10:30:00Z"),
+        duration: 10,
+        userId: "user1",
+      },
+    ]);
   });
 });

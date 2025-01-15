@@ -39,8 +39,8 @@ wss.on("connection", async (ws: Socket) => {
     const messageData = getData(JSON.parse(data.toString()));
 
     // Log for Railway
-    const message = data.toString();
-    console.log("Raw Device Message:", message);
+    // const message = data.toString();
+    // console.log("Raw Device Message:", message);
 
     if (messageData.request_type === 0) {
       try {

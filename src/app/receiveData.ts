@@ -107,7 +107,11 @@ const getDateWithEventTime = (eventTime: WearableEventTime): Date => {
 };
 
 function createDate(eventTime: WearableEventTime): Date {
-  const { year, month, day } = eventTime;
+  let { year, month, day } = eventTime;
+
+  if (year === -1) {
+    year = new Date().getFullYear();
+  }
 
   if (year !== undefined && month !== undefined && day !== undefined) {
     return new Date(Date.UTC(year, month - 1, day));
@@ -258,8 +262,8 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
   const usableEvent = createUsableEvent(event);
 
   // For railway log
-  const message = JSON.stringify(event, null, 2);
-  console.log("Usable Event received:", message);
+  // const message = JSON.stringify(event, null, 2);
+  // console.log("Usable Event received:", message);
 
   let wearable = await getWearable(usableEvent.displayId);
 

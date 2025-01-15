@@ -152,6 +152,11 @@ export const sendData = async (
     beaconTypeToWearableIds,
   );
 
+  // ALEX MAKE SURE TO DELETE AT END OF TRIAL
+  const SRCGroup = ["0154", "0176", "0177", "0786"];
+  const isSrcGroup = SRCGroup.includes(wearable.displayId);
+  const enabledForSRC = isSrcGroup ? 0 : 1;
+
   // 4. Map the distances to the org ones with ternary checks for exemptions
   wearableSettings = {
     device_id: settings.device_id,
@@ -192,65 +197,65 @@ export const sendData = async (
     },
     sensor_PPE1: {
       enable: wearableExempt.SmallPPE ? 0 : 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      icon_display: enabledForSRC,
+      vibration_alert: enabledForSRC,
+      sound_alert: enabledForSRC,
       trigger_condition: org.ppeZoneSmall || 1,
     },
     sensor_PPE2: {
       enable: wearableExempt.MediumPPE ? 0 : 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      icon_display: enabledForSRC,
+      vibration_alert: enabledForSRC,
+      sound_alert: enabledForSRC,
       trigger_condition: org.ppeZoneMedium || 3,
     },
     sensor_PPE3: {
       enable: wearableExempt.LargePPE ? 0 : 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      icon_display: enabledForSRC,
+      vibration_alert: enabledForSRC,
+      sound_alert: enabledForSRC,
       trigger_condition: org.ppeZoneLarge || 6,
     },
     sensor_access1: {
       enable: wearableExempt.SmallUnauthorised ? 0 : 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      icon_display: enabledForSRC,
+      vibration_alert: enabledForSRC,
+      sound_alert: enabledForSRC,
       trigger_condition: org.unauthorisedZoneSmall || 1,
     },
     sensor_access2: {
       enable: wearableExempt.MediumUnauthorised ? 0 : 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      icon_display: enabledForSRC,
+      vibration_alert: enabledForSRC,
+      sound_alert: enabledForSRC,
       trigger_condition: org.unauthorisedZoneMedium || 3,
     },
     sensor_access3: {
       enable: wearableExempt.LargeUnauthorised ? 0 : 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      icon_display: enabledForSRC,
+      vibration_alert: enabledForSRC,
+      sound_alert: enabledForSRC,
       trigger_condition: org.unauthorisedZoneLarge || 6,
     },
     sensor_forklift1: {
       enable: wearableExempt.SmallMachine ? 0 : 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      icon_display: enabledForSRC,
+      vibration_alert: enabledForSRC,
+      sound_alert: enabledForSRC,
       trigger_condition: org.machineSmall || 1,
     },
     sensor_forklift2: {
       enable: wearableExempt.MediumMachine ? 0 : 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      icon_display: enabledForSRC,
+      vibration_alert: enabledForSRC,
+      sound_alert: enabledForSRC,
       trigger_condition: org.machineMedium || 3,
     },
     sensor_forklift3: {
       enable: wearableExempt.LargeMachine ? 0 : 1,
-      icon_display: 1,
-      vibration_alert: 1,
-      sound_alert: 1,
+      icon_display: enabledForSRC,
+      vibration_alert: enabledForSRC,
+      sound_alert: enabledForSRC,
       trigger_condition: org.machineLarge || 6,
     },
   };

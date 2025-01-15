@@ -2,6 +2,7 @@ import { Beacon, EventType, HAVEvent, Wearable } from "@prisma/client";
 import prisma from "../../prisma/db";
 import { UsableEvent } from "./receiveData";
 import { HavStub, ImuLevel } from "../utils/havs";
+import dayjs from "dayjs";
 
 export const getWearable = async (displayId: string): Promise<any> => {
   try {
@@ -71,13 +72,18 @@ export const insertEvent = async (
         },
       });
 
-      console.log("HAV event created:", event.id);
+      console.log(
+        "HAV event created:",
+        event.id,
+        event.duration,
+        dayjs(event.timestamp).format("YYYY-MM-DD HH:mm:ss"),
+      );
 
       return;
     } else if (usableEvent.isBeacon && beacon) {
       const eventType = beacon.type;
 
-      await prisma.event.create({
+      const event = await prisma.event.create({
         data: {
           timestamp: usableEvent.eventDate,
           eventType: eventType,
@@ -91,9 +97,16 @@ export const insertEvent = async (
           updatedAt: new Date(),
         },
       });
+
+      console.log(
+        "Beacon event created:",
+        event.id,
+        event.duration,
+        dayjs(event.timestamp).format("YYYY-MM-DD HH:mm:ss"),
+      );
       return;
     } else {
-      await prisma.event.create({
+      const event = await prisma.event.create({
         data: {
           timestamp: usableEvent.eventDate,
           eventType: usableEvent.eventType,
@@ -106,6 +119,14 @@ export const insertEvent = async (
           updatedAt: new Date(),
         },
       });
+
+      console.log(
+        "Loud Noise event created:",
+        event.id,
+        event.duration,
+        dayjs(event.timestamp).format("YYYY-MM-DD HH:mm:ss"),
+      );
+      return;
     }
   } catch (error) {
     console.error(

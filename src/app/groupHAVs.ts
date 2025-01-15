@@ -39,10 +39,10 @@ export const groupHAVs = async (device_id: string) => {
       // console.log("org fetched:", org.id);
       // console.log("wearable fetched:", wearable.id);
 
-      console.log(`HAV Events fetched: ${havs.length}`);
-      havs.map((hav) =>
-        console.log(`${hav.id}: ${hav.duration} - ${hav.imuLevel}`),
-      );
+      // console.log(`HAV Events fetched: ${havs.length}`);
+      // havs.map((hav) =>
+      //   console.log(`${hav.id}: ${hav.duration} - ${hav.imuLevel}`),
+      // );
 
       // 3. Process the HAV Events
       const processedHavEvents = await processHavs(formattedHavs);

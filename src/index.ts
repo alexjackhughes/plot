@@ -71,7 +71,7 @@ wss.on("connection", async (ws: Socket) => {
       const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
 
       // Jack's charger
-      if (chargerId === "9912") {
+      if (chargerId === "9912" || chargerId === "9999") {
         ws.send(
           JSON.stringify({
             firmware_version: "2.2.12",

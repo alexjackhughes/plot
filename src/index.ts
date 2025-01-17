@@ -70,13 +70,69 @@ wss.on("connection", async (ws: Socket) => {
       // sendBigLog(messageData);
       const chargerId = messageData.charger_id.replace(/[^\d]/g, "");
 
-      // Jack's charger
-      if (chargerId === "9912" || chargerId === "9999") {
+      const testingChargers = [
+        "0015",
+        "0023",
+        "0030",
+        "0036",
+        "0037",
+        "0038",
+        "0039",
+        "0040",
+        "0041",
+        "0043",
+        "0045",
+        "0046",
+        "0048",
+        "0049",
+        "0051",
+        "0052",
+        "0053",
+        "0054",
+        "0055",
+        "0056",
+        "0057",
+        "0058",
+        "0059",
+        "0060",
+        "0061",
+        "0062",
+        "0063",
+        "0064",
+        "0065",
+        "0066",
+        "0067",
+        "0068",
+        "0069",
+        "0070",
+        "0071",
+        "0072",
+        "0075",
+        "0076",
+        "0077",
+        "0078",
+        "0080",
+        "0081",
+        "0082",
+        "0083",
+        "0084",
+        "0085",
+        "0086",
+        "0090",
+        "0091",
+        "0093",
+        "9999",
+        "9912",
+      ];
+
+      // Testing charger
+      if (testingChargers.includes(chargerId)) {
         ws.send(
           JSON.stringify({
             firmware_version: "2.2.12",
           }),
         );
+        return;
       }
 
       // 10 is the DEFAULT firmware we know works
@@ -113,6 +169,7 @@ wss.on("connection", async (ws: Socket) => {
             firmware_version: "1.3.37",
           }),
         );
+        return;
       }
 
       // This is the default firmware version

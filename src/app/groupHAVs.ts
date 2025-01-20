@@ -10,7 +10,7 @@ import { HavStub, processHavs } from "../utils/havs";
 
 export const groupHAVs = async (device_id: string) => {
   try {
-    console.log(`Manually creating a first request for: ${device_id}`);
+    // console.log(`Manually creating a first request for: ${device_id}`);
 
     // 1. We fetch the wearable from its display id
     const wearable = await getWearable(device_id);
@@ -20,7 +20,7 @@ export const groupHAVs = async (device_id: string) => {
 
     // 2. Fetch the HAV Events
     const havs = await getHavEventsByWearableId(org.id, wearable.id);
-    console.log("count of havs:", havs.length);
+    // console.log("count of havs:", havs.length);
 
     const formattedHavs: HavStub[] = havs.map((hav) => ({
       imu_level: translateImuSchemaToModel(hav.imuLevel),

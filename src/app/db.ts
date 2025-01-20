@@ -2,7 +2,6 @@ import { Beacon, EventType, HAVEvent, Wearable } from "@prisma/client";
 import prisma from "../../prisma/db";
 import { UsableEvent } from "./receiveData";
 import { HavStub, ImuLevel } from "../utils/havs";
-import dayjs from "dayjs";
 
 export const getWearable = async (displayId: string): Promise<any> => {
   try {
@@ -48,94 +47,160 @@ export const getBeacon = async (displayId: string): Promise<Beacon> => {
   }
 };
 
+// Event insertion helpers
+type DuplicateCheckParams = {
+  timestamp: Date;
+  deviceId: string;
+  eventType: EventType;
+  duration: number;
+};
+
+const checkForDuplicate = async ({
+  timestamp,
+  deviceId,
+  eventType,
+  duration,
+}: DuplicateCheckParams) => {
+  if (eventType === "HandArmVibration") {
+    const existingEvent = await prisma.hAVEvent.findFirst({
+      where: { timestamp, deviceId, duration },
+    });
+    return !!existingEvent;
+  }
+
+  const existingEvent = await prisma.event.findFirst({
+    where: { timestamp, deviceId, eventType, duration },
+  });
+  return !!existingEvent;
+};
+
+type HAVEventParams = {
+  eventDate: Date;
+  wearable: Wearable;
+  duration: number;
+  imuLevel: string;
+};
+
+const insertHAVEvent = async ({
+  eventDate,
+  wearable,
+  duration,
+  imuLevel,
+}: HAVEventParams) => {
+  if (duration <= 10) return null;
+
+  return await prisma.hAVEvent.create({
+    data: {
+      timestamp: eventDate,
+      deviceId: wearable.id,
+      organizationId: wearable.organizationId,
+      userId: wearable.userId || null,
+      imuLevel: translateImuLeveltoDBSchema(imuLevel),
+      duration,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      status: "pending",
+    },
+  });
+};
+
+type BeaconEventParams = {
+  eventDate: Date;
+  wearable: Wearable;
+  beacon: Beacon;
+  duration: number;
+};
+
+const insertBeaconEvent = async ({
+  eventDate,
+  wearable,
+  beacon,
+  duration,
+}: BeaconEventParams) => {
+  return await prisma.event.create({
+    data: {
+      timestamp: eventDate,
+      eventType: beacon.type,
+      deviceId: wearable.id,
+      beaconId: beacon.id,
+      organizationId: wearable.organizationId,
+      userId: wearable.userId,
+      duration,
+      severity: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  });
+};
+
+type LoudNoiseEventParams = {
+  eventDate: Date;
+  wearable: Wearable;
+  eventType: EventType;
+  duration: number;
+};
+
+const insertLoudNoiseEvent = async ({
+  eventDate,
+  wearable,
+  eventType,
+  duration,
+}: LoudNoiseEventParams) => {
+  return await prisma.event.create({
+    data: {
+      timestamp: eventDate,
+      eventType: "LoudNoise",
+      deviceId: wearable.id,
+      userId: wearable.userId,
+      organizationId: wearable.organizationId,
+      duration,
+      severity: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  });
+};
+
 export const insertEvent = async (
   usableEvent: UsableEvent,
   wearable: Wearable,
   beacon?: undefined | Beacon,
 ) => {
   try {
+    const isDuplicate = await checkForDuplicate({
+      timestamp: usableEvent.eventDate,
+      deviceId: wearable.id,
+      eventType: usableEvent.eventType,
+      duration: usableEvent.duration,
+    });
+
+    if (isDuplicate) return null;
+
     if (usableEvent.eventType === "HandArmVibration") {
-      // If the event is too low, just delete it
-      if (usableEvent.duration <= 10) return;
-
-      const event = await prisma.hAVEvent.create({
-        data: {
-          timestamp: usableEvent.eventDate,
-          deviceId: wearable.id,
-          organizationId: wearable.organizationId,
-          userId: wearable.userId || null,
-          imuLevel: translateImuLeveltoDBSchema(usableEvent.imuLevel),
-          duration: usableEvent.duration,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          status: "pending",
-        },
+      return await insertHAVEvent({
+        eventDate: usableEvent.eventDate,
+        wearable,
+        duration: usableEvent.duration,
+        imuLevel: usableEvent.imuLevel,
       });
-
-      console.log(
-        "HAV event created:",
-        event.id,
-        event.duration,
-        dayjs(event.timestamp).format("YYYY-MM-DD HH:mm:ss"),
-      );
-
-      return;
-    } else if (usableEvent.isBeacon && beacon) {
-      const eventType = beacon.type;
-
-      const event = await prisma.event.create({
-        data: {
-          timestamp: usableEvent.eventDate,
-          eventType: eventType,
-          deviceId: wearable.id,
-          beaconId: beacon.id,
-          organizationId: wearable.organizationId,
-          userId: wearable.userId,
-          duration: usableEvent.duration,
-          severity: 0,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      });
-
-      console.log(
-        "Beacon event created:",
-        event.id,
-        event.duration,
-        dayjs(event.timestamp).format("YYYY-MM-DD HH:mm:ss"),
-      );
-      return;
-    } else {
-      const event = await prisma.event.create({
-        data: {
-          timestamp: usableEvent.eventDate,
-          eventType: usableEvent.eventType,
-          deviceId: wearable.id,
-          userId: wearable.userId,
-          organizationId: wearable.organizationId,
-          duration: usableEvent.duration,
-          severity: usableEvent.duration > 10000 ? 10 : 0,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      });
-
-      console.log(
-        "Loud Noise event created:",
-        event.id,
-        event.duration,
-        dayjs(event.timestamp).format("YYYY-MM-DD HH:mm:ss"),
-      );
-      return;
     }
+
+    if (usableEvent.isBeacon && beacon) {
+      return await insertBeaconEvent({
+        eventDate: usableEvent.eventDate,
+        wearable,
+        beacon,
+        duration: usableEvent.duration,
+      });
+    }
+
+    return await insertLoudNoiseEvent({
+      eventDate: usableEvent.eventDate,
+      wearable,
+      eventType: usableEvent.eventType,
+      duration: usableEvent.duration,
+    });
   } catch (error) {
-    console.error(
-      "ERROR: Inserting event",
-      usableEvent?.displayId,
-      wearable.id,
-      beacon?.id,
-    );
-    console.error(error);
     throw error;
   } finally {
     await prisma.$disconnect();
@@ -290,7 +355,7 @@ export const addHavEvents = async ({
       };
     });
 
-    console.log("creating HAV events:", data);
+    // console.log("creating HAV events:", data);
 
     await prisma.event.createMany({
       data,
@@ -348,10 +413,10 @@ export const deleteHavEvents = async (
       results.totalProcessed += batch.length;
     }
 
-    console.log(`Processed ${results.totalProcessed} HAV events:`, {
-      successful: results.successCount,
-      failedBatches: results.failedBatches,
-    });
+    // console.log(`Processed ${results.totalProcessed} HAV events:`, {
+    //   successful: results.successCount,
+    //   failedBatches: results.failedBatches,
+    // });
 
     return results;
   } catch (error) {

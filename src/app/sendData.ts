@@ -87,15 +87,7 @@ And then another function that fetches:
 */
 
 import { Wearable } from "@prisma/client";
-import {
-  addHavEvents,
-  deleteHavEvents,
-  getHavEventsByWearableId,
-  getOrganizationById,
-  getWearable,
-  translateImuSchemaToModel,
-} from "./db";
-import { HavStub, processHavs } from "../utils/havs";
+import { getOrganizationById, getWearable } from "./db";
 import { SendSettings } from "../models/models";
 import { groupHAVs } from "./groupHAVs";
 

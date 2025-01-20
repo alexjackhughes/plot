@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 import { Beacon, EventType, HAVEvent, Wearable } from "@prisma/client";
 import prisma from "../../prisma/db";
 import { UsableEvent } from "./receiveData";
@@ -166,6 +168,16 @@ export const insertEvent = async (
   wearable: Wearable,
   beacon?: undefined | Beacon,
 ) => {
+  if (usableEvent.eventType !== "HandArmVibration") {
+    console.log(
+      "Adding event:",
+      wearable.displayId,
+      usableEvent.duration,
+      dayjs(usableEvent.eventDate).format("YYYY-MM-DD HH:mm:ss"),
+      usableEvent.eventType,
+    );
+  }
+
   try {
     const isDuplicate = await checkForDuplicate({
       timestamp: usableEvent.eventDate,

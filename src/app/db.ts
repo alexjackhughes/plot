@@ -367,7 +367,13 @@ export const addHavEvents = async ({
       };
     });
 
-    // console.log("creating HAV events:", data);
+    data.map((hav) =>
+      console.log(
+        `Adding HAV event: ${dayjs(hav.timestamp).format(
+          "YYYY-MM-DD HH:mm:ss",
+        )} - ${hav.duration} - ${hav.imuLevel} - ${hav.deviceId}`,
+      ),
+    );
 
     await prisma.event.createMany({
       data,

@@ -471,3 +471,21 @@ export const addWearable = async ({
     },
   });
 };
+
+export const updateWearableOrgById = async ({
+  id,
+  organizationId,
+}: {
+  id: string;
+  organizationId: string;
+}) => {
+  await prisma.wearable.update({
+    where: {
+      id: id,
+    },
+    data: {
+      organizationId: organizationId,
+      updatedAt: new Date(),
+    },
+  });
+};

@@ -74,6 +74,7 @@ import {
   wearableUpdated,
   getChargingStation,
   addWearable,
+  updateWearableOrgById,
 } from "./db";
 import { WearableEvent, WearableEventTime } from "../models/models";
 
@@ -273,8 +274,6 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
 
   let wearable = await getWearable(usableEvent.displayId);
 
-  // If wearable and charger ID here are different, re-assign the charger ID to the wearable
-
   if (!wearable) {
     console.log("No wearable found for id: ", usableEvent.displayId);
 
@@ -286,6 +285,21 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
     if (!charger) {
       console.error("Wearable/charging station not found");
       return;
+    }
+
+    // If the wearable belongs to a different organization,
+    // it's likely that this wearable was used on a previous trial, and we should swap it
+    // to the charger's organization.
+    if (charger.organizationId !== wearable.organization.organizationId) {
+      await updateWearableOrgById({
+        id: wearable.id,
+        organizationId: charger.organizationId,
+      });
+
+      wearable = {
+        ...wearable,
+        organizationId: charger.organizationId,
+      };
     }
 
     await addWearable({

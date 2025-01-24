@@ -136,10 +136,10 @@ wss.on("connection", async (ws: Socket) => {
         return;
       }
 
-      // 10 is the DEFAULT firmware we know works
+      // 12 is the DEFAULT firmware we know works
       ws.send(
         JSON.stringify({
-          firmware_version: "2.2.10",
+          firmware_version: "2.2.12",
         }),
       );
       return;

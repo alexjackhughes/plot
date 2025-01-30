@@ -238,7 +238,6 @@ const createUsableEvent = (input: WearableEvent): UsableEvent => {
     beacon: input.beacon_minor
       ? getProximityDetails(input.beacon_minor.toLocaleString())
       : undefined,
-
     beaconBattery: input.beacon_battery || undefined,
     chargerId: input.charger_id || undefined,
     imuLevel: imuLevelSelector(input.imu_level),

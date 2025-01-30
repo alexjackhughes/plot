@@ -17,7 +17,7 @@ wss.on("connection", async (ws: Socket) => {
 
   ws.on("message", async (data) => {
     try {
-      // console.log("Raw data:", data.toString());
+      console.log("Raw data:", data.toString());
       const rawData = JSON.parse(data.toString());
 
       if (

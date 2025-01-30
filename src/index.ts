@@ -176,7 +176,7 @@ wss.on("connection", async (ws: Socket) => {
       // This is the default firmware version
       ws.send(
         JSON.stringify({
-          firmware_version: "1.3.35",
+          firmware_version: "1.3.36",
         }),
       );
 

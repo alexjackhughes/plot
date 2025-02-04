@@ -149,42 +149,46 @@ export const sendData = async (
   const isSrcGroup = SRCGroup.includes(wearable.displayId);
   const enabledForSRC = isSrcGroup ? 0 : 1;
 
+  const isWearableEnabledAlerts = ["0135", "0136"].includes(wearable.displayId)
+    ? 1
+    : 0;
+
   // 4. Map the distances to the org ones with ternary checks for exemptions
   wearableSettings = {
     device_id: settings.device_id,
     sensor_haptic_low: {
       enable: 1,
-      icon_display: 0,
-      vibration_alert: 0,
-      sound_alert: 0,
+      icon_display: isWearableEnabledAlerts,
+      vibration_alert: isWearableEnabledAlerts,
+      sound_alert: isWearableEnabledAlerts,
       trigger_condition: 30,
     },
     sensor_haptic_medium: {
       enable: 1,
-      icon_display: 0,
-      vibration_alert: 0,
-      sound_alert: 0,
+      icon_display: isWearableEnabledAlerts,
+      vibration_alert: isWearableEnabledAlerts,
+      sound_alert: isWearableEnabledAlerts,
       trigger_condition: 50,
     },
     sensor_haptic_high: {
       enable: 1,
-      icon_display: 0,
-      vibration_alert: 0,
-      sound_alert: 0,
+      icon_display: isWearableEnabledAlerts,
+      vibration_alert: isWearableEnabledAlerts,
+      sound_alert: isWearableEnabledAlerts,
       trigger_condition: 100,
     },
     sensor_haptic_extreme: {
       enable: 1,
-      icon_display: 0,
-      vibration_alert: 0,
-      sound_alert: 0,
+      icon_display: isWearableEnabledAlerts,
+      vibration_alert: isWearableEnabledAlerts,
+      sound_alert: isWearableEnabledAlerts,
       trigger_condition: 150,
     },
     sensor_MIC: {
       enable: 1,
-      icon_display: 0,
-      vibration_alert: 0,
-      sound_alert: 0,
+      icon_display: isWearableEnabledAlerts,
+      vibration_alert: isWearableEnabledAlerts,
+      sound_alert: isWearableEnabledAlerts,
       trigger_condition: 80,
     },
     sensor_PPE1: {

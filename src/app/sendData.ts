@@ -153,7 +153,9 @@ export const sendData = async (
     ? 1
     : 0;
 
-  const disableMic = ["0135", "0136"].includes(wearable.displayId) ? 0 : 1;
+  const disabledOtherAlertTypes = ["0135", "0136"].includes(wearable.displayId)
+    ? 0
+    : 1;
 
   // 4. Map the distances to the org ones with ternary checks for exemptions
   wearableSettings = {
@@ -187,10 +189,10 @@ export const sendData = async (
       trigger_condition: 150,
     },
     sensor_MIC: {
-      enable: disableMic,
+      enable: 1,
       icon_display: isWearableEnabledAlerts,
-      vibration_alert: isWearableEnabledAlerts,
-      sound_alert: isWearableEnabledAlerts,
+      vibration_alert: disabledOtherAlertTypes,
+      sound_alert: disabledOtherAlertTypes,
       trigger_condition: 80,
     },
     sensor_PPE1: {

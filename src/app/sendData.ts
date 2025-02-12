@@ -149,50 +149,57 @@ export const sendData = async (
   const isSrcGroup = SRCGroup.includes(wearable.displayId);
   const enabledForSRC = isSrcGroup ? 0 : 1;
 
-  const isWearableEnabledAlerts = ["0135", "0136"].includes(wearable.displayId)
-    ? 1
-    : 0;
+  const cockwells = [
+    "0156",
+    "0162",
+    "0173",
+    "0175",
+    "0208",
+    "0796",
+    "0809",
+    "0810",
+  ];
+  const enableCockwells = cockwells.includes(wearable.displayId) ? 1 : 0;
 
-  const disabledOtherAlertTypes = ["0135", "0136"].includes(wearable.displayId)
-    ? 0
-    : 1;
+  const testing = ["0135", "0136"];
+  const enableAlertsForTesting = testing.includes(wearable.displayId) ? 1 : 0;
 
   // 4. Map the distances to the org ones with ternary checks for exemptions
   wearableSettings = {
     device_id: settings.device_id,
     sensor_haptic_low: {
       enable: 1,
-      icon_display: isWearableEnabledAlerts,
+      icon_display: enableAlertsForTesting,
       vibration_alert: 0,
       sound_alert: 0,
       trigger_condition: 30,
     },
     sensor_haptic_medium: {
       enable: 1,
-      icon_display: isWearableEnabledAlerts,
+      icon_display: enableAlertsForTesting,
       vibration_alert: 0,
       sound_alert: 0,
       trigger_condition: 50,
     },
     sensor_haptic_high: {
       enable: 1,
-      icon_display: isWearableEnabledAlerts,
+      icon_display: enableAlertsForTesting,
       vibration_alert: 0,
       sound_alert: 0,
       trigger_condition: 100,
     },
     sensor_haptic_extreme: {
       enable: 1,
-      icon_display: isWearableEnabledAlerts,
+      icon_display: enableAlertsForTesting,
       vibration_alert: 0,
       sound_alert: 0,
       trigger_condition: 150,
     },
     sensor_MIC: {
       enable: 1,
-      icon_display: isWearableEnabledAlerts,
-      vibration_alert: disabledOtherAlertTypes,
-      sound_alert: disabledOtherAlertTypes,
+      icon_display: enableCockwells,
+      vibration_alert: enableCockwells,
+      sound_alert: enableCockwells,
       trigger_condition: 80,
     },
     sensor_PPE1: {

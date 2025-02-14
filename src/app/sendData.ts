@@ -145,9 +145,9 @@ export const sendData = async (
   );
 
   // ALEX MAKE SURE TO DELETE AT END OF TRIAL
-  const SRCGroup = ["0154", "0176", "0177", "0786"];
+  const SRCGroup = ["0181", "0198"];
   const isSrcGroup = SRCGroup.includes(wearable.displayId);
-  const enabledForSRC = isSrcGroup ? 0 : 1;
+  const enabledForSRC = isSrcGroup ? 1 : 0;
 
   const cockwells = [
     "0156",
@@ -197,9 +197,9 @@ export const sendData = async (
     },
     sensor_MIC: {
       enable: 1,
-      icon_display: enableCockwells,
-      vibration_alert: enableCockwells,
-      sound_alert: enableCockwells,
+      icon_display: enableCockwells || enabledForSRC,
+      vibration_alert: enableCockwells || enabledForSRC,
+      sound_alert: enableCockwells || enabledForSRC,
       trigger_condition: 80,
     },
     sensor_PPE1: {

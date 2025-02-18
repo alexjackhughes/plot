@@ -281,7 +281,7 @@ export async function getOrganizationById(organizationId: string) {
   }
 }
 
-export const wearableUpdated = async (id: string) => {
+export const wearableUpdated = async (id: string, version?: string) => {
   const date = new Date();
 
   await prisma.wearable.update({
@@ -290,6 +290,19 @@ export const wearableUpdated = async (id: string) => {
     },
     data: {
       updatedAt: date,
+      version,
+    },
+  });
+};
+
+export const chargerUpdated = async (id: string, version?: string) => {
+  const date = new Date();
+
+  await prisma.chargingStation.update({
+    where: { id },
+    data: {
+      updatedAt: date,
+      version,
     },
   });
 };

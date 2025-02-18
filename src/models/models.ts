@@ -17,6 +17,7 @@ export interface WearableEvent {
   beacon_battery: number; // 1-100
   duration: number;
   charger_id: string;
+  version: string;
 }
 
 export interface SendSettings {

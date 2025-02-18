@@ -70,6 +70,7 @@ export const getData = (
     beacon_minor: data?.beacon_minor || "",
     duration: data?.duration,
     imu_level: data?.imu_level,
+    version: data?.version || "",
     charger_id: data?.charger_id || "",
     beacon_battery: data?.beacon_battery,
     request_type: 0,

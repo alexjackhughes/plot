@@ -222,6 +222,7 @@ export interface UsableEvent {
   imuLevel?: ImuLevel;
   beaconBattery?: number;
   chargerId?: string;
+  version: string;
 }
 
 type ImuLevel = "low" | "medium" | "high" | "extreme";
@@ -241,6 +242,7 @@ const createUsableEvent = (input: WearableEvent): UsableEvent => {
     beaconBattery: input.beacon_battery || undefined,
     chargerId: input.charger_id || undefined,
     imuLevel: imuLevelSelector(input.imu_level),
+    version: input.version,
   };
 };
 
@@ -307,7 +309,15 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
     });
   }
 
-  await wearableUpdated(wearable.id);
+  // Update wearable version if it has changed
+  const hasVersionChanged = wearable.version !== usableEvent.version;
+  const newVersion = hasVersionChanged ? usableEvent.version : undefined;
+
+  if (hasVersionChanged) {
+    await wearableUpdated(wearable.id, newVersion);
+  } else {
+    await wearableUpdated(wearable.id);
+  }
 
   let beacon: Beacon = undefined;
 

@@ -31,3 +31,13 @@ A WebSocket chatrooms server.
    ```
 
 2. Join a room with your friends and plot away! :tada:
+
+
+### Prisma Commands for database
+
+All changes to the database should first happen in the other repo, and then you run the following commands here:
+
+```sh
+npx prisma db pull
+npx prisma generate
+```

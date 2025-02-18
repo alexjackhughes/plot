@@ -96,6 +96,7 @@ model Wearable {
   displayId      String?      @unique
   beaconId       String?
   beaconTypeId   String?
+  version        String?
   events         Event[]
   user           User?
   beacon         Beacon?      @relation(fields: [beaconId], references: [id])
@@ -118,6 +119,7 @@ model Beacon {
   displayId      String?
   beaconTypeId   String?
   battery        Int?         @default(100)
+  version        String?
   beaconType     BeaconType?  @relation(fields: [beaconTypeId], references: [id])
   organization   Organization @relation(fields: [organizationId], references: [id])
   events         Event[]
@@ -135,6 +137,7 @@ model ChargingStation {
   displayName    String?
   displayId      String?
   timezone       String?      @default("GMT-0")
+  version        String?
   organization   Organization @relation(fields: [organizationId], references: [id])
 
   @@index([organizationId], map: "idx_charging_station_organization")

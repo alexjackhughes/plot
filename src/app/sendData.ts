@@ -5,7 +5,7 @@ import { groupHAVs } from "./groupHAVs";
 import {
   getDeviceConfiguration,
   mapConfigurationToWearableSettings,
-} from "~/core/Configuration";
+} from "../core/Configuration";
 
 interface BeaconTypeToWeableId {
   [key: string]: string[];
@@ -61,11 +61,11 @@ export const sendData = async (
       ...beaconTypeToWearableIds,
       [beaconType.descriptor]: displayIds,
     };
-  } );
+  });
 
   // We exempt wearables based on their beacon types
   // This might be easier to do by having the alerts disabled at the wearable level, now that we have that ability
-    let wearableExempt = isWearableExemptFromTypes(
+  let wearableExempt = isWearableExemptFromTypes(
     wearable,
     beaconTypeToWearableIds,
   );
@@ -74,7 +74,6 @@ export const sendData = async (
     deviceId: settings.device_id,
     configMap,
     wearableExempt,
-
   });
 
   return mappedSettings;

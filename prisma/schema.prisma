@@ -27,34 +27,26 @@ model User {
 }
 
 model Organization {
-  id                     String                  @id @default(dbgenerated("gen_random_uuid()"))
-  name                   String                  @unique
-  websiteUrl             String?                 @map("website_url")
-  industry               String
-  avatarUrl              String?                 @map("avatar_url")
-  createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @updatedAt
-  description            String?
-  location               String?
-  size                   Int?
-  primaryContactEmail    String?                 @map("primary_contact_email")
-  contractLength         Int?                    @map("contract_length")
-  machineLarge           Int                     @default(10)
-  machineMedium          Int                     @default(3)
-  machineSmall           Int                     @default(2)
-  ppeZoneLarge           Int                     @default(10)
-  ppeZoneMedium          Int                     @default(3)
-  ppeZoneSmall           Int                     @default(2)
-  unauthorisedZoneLarge  Int                     @default(10)
-  unauthorisedZoneMedium Int                     @default(3)
-  unauthorisedZoneSmall  Int                     @default(2)
-  beaconTypes            BeaconType[]
-  beacons                Beacon[]
-  chargingStations       ChargingStation[]
-  events                 Event[]
-  allowList              OrganizationAllowList[]
-  users                  User[]
-  wearables              Wearable[]
+  id                  String                  @id @default(dbgenerated("gen_random_uuid()"))
+  name                String                  @unique
+  websiteUrl          String?                 @map("website_url")
+  industry            String
+  avatarUrl           String?                 @map("avatar_url")
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+  description         String?
+  location            String?
+  size                Int?
+  primaryContactEmail String?                 @map("primary_contact_email")
+  contractLength      Int?                    @map("contract_length")
+  beaconTypes         BeaconType[]
+  beacons             Beacon[]
+  chargingStations    ChargingStation[]
+  configurations      Configuration[]
+  events              Event[]
+  allowList           OrganizationAllowList[]
+  users               User[]
+  wearables           Wearable[]
 
   @@index([primaryContactEmail], map: "idx_organization_primary_contact")
   @@map("organizations")
@@ -87,21 +79,22 @@ model BeaconType {
 }
 
 model Wearable {
-  id             String       @id @default(dbgenerated("gen_random_uuid()"))
-  userId         String?      @unique
+  id             String          @id @default(dbgenerated("gen_random_uuid()"))
+  userId         String?         @unique
   organizationId String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   displayName    String?
-  displayId      String?      @unique
+  displayId      String?         @unique
   beaconId       String?
   beaconTypeId   String?
   version        String?
+  configurations Configuration[]
   events         Event[]
   user           User?
-  beacon         Beacon?      @relation(fields: [beaconId], references: [id])
-  BeaconType     BeaconType?  @relation(fields: [beaconTypeId], references: [id])
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  beacon         Beacon?         @relation(fields: [beaconId], references: [id])
+  BeaconType     BeaconType?     @relation(fields: [beaconTypeId], references: [id])
+  organization   Organization    @relation(fields: [organizationId], references: [id])
 
   @@index([organizationId], map: "idx_wearable_organization")
   @@index([userId], map: "idx_wearable_user")
@@ -182,6 +175,25 @@ model HAVEvent {
   @@map("hav_events")
 }
 
+model Configuration {
+  id              String                @id @default(dbgenerated("gen_random_uuid()"))
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @default(now()) @updatedAt
+  category        ConfigurationCategory
+  organizationId  String?
+  wearableId      String?
+  enabled         Boolean               @default(true)
+  icon_alert      Boolean               @default(true)
+  vibration_alert Boolean               @default(false)
+  sound_alert     Boolean               @default(false)
+  threshold       Int                   @default(0)
+  organization    Organization?         @relation(fields: [organizationId], references: [id])
+  wearable        Wearable?             @relation(fields: [wearableId], references: [id])
+
+  @@unique([organizationId, wearableId, category])
+  @@map("customizations")
+}
+
 enum EventType {
   MovingMachinery
   UnauthorisedAccess
@@ -219,4 +231,25 @@ enum Descriptor {
 enum HAVEventStatus {
   pending
   done
+}
+
+enum ConfigurationCategory {
+  MACHINERY_SMALL
+  MACHINERY_MEDIUM
+  MACHINERY_LARGE
+  ACCESS_SMALL
+  ACCESS_MEDIUM
+  ACCESS_LARGE
+  PPE_SMALL
+  PPE_MEDIUM
+  PPE_LARGE
+  HAV_LOW
+  HAV_MEDIUM
+  HAV_HIGH
+  HAV_EXTREME
+  NOISE_LOW
+  NOISE_MEDIUM
+  NOISE_HIGH
+  NOISE_EXTREME
+  NOISE_SEVERE
 }

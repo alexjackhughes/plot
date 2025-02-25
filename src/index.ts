@@ -173,10 +173,10 @@ wss.on("connection", async (ws: Socket) => {
         return;
       }
 
-      // This is the default firmware version
+      // This is the latest firmware version for all wearables
       ws.send(
         JSON.stringify({
-          firmware_version: "1.3.36",
+          firmware_version: "1.3.39",
         }),
       );
 

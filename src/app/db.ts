@@ -5,7 +5,7 @@ import prisma from "../../prisma/db";
 import { UsableEvent } from "./receiveData";
 import { HavStub, ImuLevel } from "../utils/havs";
 
-export const getWearable = async (displayId: string): Promise<any> => {
+export const getWearable = async (displayId: string) => {
   try {
     const wearable = await prisma.wearable.findUnique({
       where: {
@@ -14,7 +14,7 @@ export const getWearable = async (displayId: string): Promise<any> => {
     });
 
     if (!wearable) {
-      console.error(`Wearable not found: ${displayId}`);
+      // console.error(`Wearable not found: ${displayId}`);
       return;
     }
 

@@ -288,21 +288,6 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
       return;
     }
 
-    // If the wearable belongs to a different organization,
-    // it's likely that this wearable was used on a previous trial, and we should swap it
-    // to the charger's organization.
-    if (charger.organizationId !== wearable.organization.organizationId) {
-      await updateWearableOrgById({
-        id: wearable.id,
-        organizationId: charger.organizationId,
-      });
-
-      wearable = {
-        ...wearable,
-        organizationId: charger.organizationId,
-      };
-    }
-
     await addWearable({
       id: usableEvent.displayId,
       organizationId: charger.organizationId,

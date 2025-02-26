@@ -474,7 +474,7 @@ export const addWearable = async ({
   id: string;
   organizationId: string;
 }) => {
-  await prisma.wearable.create({
+  const wearable = await prisma.wearable.create({
     data: {
       displayId: id,
       organizationId,
@@ -483,6 +483,8 @@ export const addWearable = async ({
       updatedAt: new Date(),
     },
   });
+
+  return wearable;
 };
 
 export const updateWearableOrgById = async ({

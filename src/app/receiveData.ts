@@ -275,23 +275,41 @@ export const receiveData = async (event: WearableEvent): Promise<void> => {
 
   let wearable = await getWearable(usableEvent.displayId);
 
+  if (!usableEvent.chargerId) return;
+
+  const usableChargerId = usableEvent.chargerId.split(" ")[1];
+  const charger = await getChargingStation(usableChargerId);
+
   if (!wearable) {
-    console.log("No wearable found for id: ", usableEvent.displayId);
-
-    if (!usableEvent.chargerId) return;
-
-    const usableChargerId = usableEvent.chargerId.split(" ")[1];
-    const charger = await getChargingStation(usableChargerId);
+    console.log("No wearable found for id - adding: ", usableEvent.displayId);
 
     if (!charger) {
       console.error("Wearable/charging station not found");
       return;
     }
 
-    await addWearable({
+    wearable = await addWearable({
       id: usableEvent.displayId,
       organizationId: charger.organizationId,
     });
+  }
+
+  // If the wearable belongs to a different organization,
+  // it's likely that this wearable was used on a previous trial, and we should swap it
+  // to the charger's organization.
+  if (charger.organizationId !== wearable.organizationId) {
+    console.log(
+      `Wearable ${wearable.displayId} belongs to a different organization - swapping to charger's organization`,
+    );
+    await updateWearableOrgById({
+      id: wearable.id,
+      organizationId: charger.organizationId,
+    });
+
+    wearable = {
+      ...wearable,
+      organizationId: charger.organizationId,
+    };
   }
 
   // Update wearable version if it has changed
